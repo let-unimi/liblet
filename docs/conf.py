@@ -23,7 +23,7 @@ def find_version(*file_paths):
 project = 'LibLET'
 copyright = '2019, Massimo Santini'
 author = 'Massimo Santini'
-version = find_version('..', 'liblet', '__init__.py')
+version = find_version('..', 'src', 'liblet', '__init__.py')
 release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
