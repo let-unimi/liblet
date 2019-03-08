@@ -1,0 +1,4 @@
+#!/bin/bash
+
+coverage run --include 'liblet/*' -m unittest discover -s tests -p '*_test.py'
+coverage html -d ./build/coverage

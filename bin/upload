@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo twine upload --repository-url https://test.pypi.org/legacy/ ./build/dist/*
+else
+    echo twine upload ./build/dist/*
+fi
