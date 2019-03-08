@@ -6,4 +6,4 @@ install:
   - install_antlrjar
 # command to run tests
 script:
-  - export ANTLR4_JAR=jars && ./bin/test
+  - export ANTLR4_JAR=jars && ./bin/tests
