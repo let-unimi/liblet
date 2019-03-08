@@ -1,6 +1,6 @@
 from importlib import util as imputil
 from os import environ, mkdir
-from os.path import join as pjoin
+from os.path import join as pjoin, exists
 from subprocess import run
 from sys import modules, stderr
 from tempfile import TemporaryDirectory
@@ -11,6 +11,10 @@ from antlr4.tree.Tree import ParseTreeVisitor
 
 from .graphviz import Tree
 
+if 'ANTLR4_JAR' not in environ:
+    raise ImportError('Please define the ANTLR4_JAR environment variable')
+if not exists(environ['ANTLR4_JAR']):
+    raise ImportError('The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR']))
 
 def generate_and_load(name, grammar):
     with TemporaryDirectory() as tmpdir:
