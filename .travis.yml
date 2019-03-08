@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.7-dev"  # 3.7 development branch
+install:
+  - pip install .
+  - install_antlrjar
+# command to run tests
+script:
+  - export ANTLR4_JAR=jars && ./bin/test
