@@ -58,7 +58,7 @@ class TestGrammar(unittest.TestCase):
             B -> b
         """, False)
         d = Derivation(G)
-        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d.step(prod, pos)
+        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d = d.step(prod, pos)
         self.assertEqual('S -> AB -> aB -> ab', str(d))
 
     def test_derivation_steps(self):
@@ -69,7 +69,7 @@ class TestGrammar(unittest.TestCase):
         """, False)
         d = Derivation(G)
         steps = [(0, 0), (1, 0), (2, 1)]
-        for prod, pos in steps: d.step(prod, pos)
+        for prod, pos in steps: d = d.step(prod, pos)
         self.assertEqual(steps, d.steps())
 
     def test_derivation_matches(self):
@@ -81,18 +81,6 @@ class TestGrammar(unittest.TestCase):
         expected = [(1, 0), (2, 1)]
         actual = list(Derivation(G).step(0,0).matches())
         self.assertEqual(expected, actual)
-
-    def test_derivation_copy(self):
-        G = Grammar.from_string("""
-            S -> A B
-            A -> a 
-            B -> b
-        """, False)
-        d = Derivation(G)
-        for prod, pos in [(0, 0), (1, 0), (2, 1)]:
-            d.step(prod, pos)
-        c = d.copy()
-        self.assertEqual('ab', d.sentential_form())
 
 
 if __name__ == '__main__': unittest.main()

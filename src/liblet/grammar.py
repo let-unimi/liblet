@@ -134,7 +134,7 @@ class Derivation:
         copy._steps = list(self._steps)
         copy._sf = list(_ for _ in sf[:pos] + list(P.rhs) + sf[pos + len(P.lhs):] if _ != 'ε')
         copy._steps = self._steps + [(prod, pos)]
-        copy._repr = self._repr + ' -> ' + ''.join(self._sf)
+        copy._repr = self._repr + ' -> ' + ''.join(copy._sf)
         return copy
 
     def matches(self):
