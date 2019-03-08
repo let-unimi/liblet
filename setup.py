@@ -17,7 +17,7 @@ def find_version(*file_paths):
 
 setup(
     name = 'liblet',
-    version = find_version('liblet', '__init__.py'),
+    #version = find_version('src', 'liblet', '__init__.py'),
     description = 'A teaching aid library for formal languages and compiler courses.',
     long_description = read('README.md'),
     long_description_content_type = 'text/markdown',
@@ -31,19 +31,20 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.7',
     ],
-    keywords = 'automata grammar formal language graph tree', 
-    packages = find_packages(exclude = ['tests']),
+    keywords = 'automata grammar formal language graph tree',
+    package_dir = {'': 'src'},
+    packages = find_packages('src', exclude = ['tests']),
     python_requires='>=3.7',
     install_requires = ['antlr4-python3-runtime', 'jupyter', 'graphviz'],
     extras_require = {
-        'dev': ['bumpversion', 'shpinx'],
+        'dev': ['bumpversion', 'sphinx', 'twine'],
         'test': ['coverage'],
     },
-    # entry_points={  # Optional
-    #     'console_scripts': [
-    #         'sample=sample:main',
-    #     ],
-    # },
+    entry_points={  # Optional
+        'console_scripts': [
+            'install_antlrjar=scripts:install_antlrjar',
+        ],
+    },
     project_urls = {
         'Bug Tracker': 'https://github.com/let-unimi/liblet/issues',
         'Source': 'https://github.com/let-unimi/liblet',
