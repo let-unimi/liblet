@@ -1,4 +1,4 @@
 #!/bin/bash
 
 python setup.py bdist_wheel -d build/dist
-rm -rf src/liblet.egg-info
+rm -rf ./src/liblet.egg-info
