@@ -140,7 +140,7 @@ class StateTransitionGraph(BaseGraph):
 class ProductionGraph(BaseGraph):
 
     def __init__(self, derivation):
-        self.derivation = derivation.copy()
+        self.derivation = derivation
 
     def __repr__(self):
         return 'ProductionGraph({})'.format(self.derivation)
@@ -150,7 +150,7 @@ class ProductionGraph(BaseGraph):
         G = gvDigraph(
             graph_attr = {
                 'nodesep': '.25',
-                'ranksep': '.25'    
+                'ranksep': '.25'
             },
             node_attr = {
                 'size': '8',
@@ -191,8 +191,9 @@ class ProductionGraph(BaseGraph):
                     self.node(G, to[0], hash(to))
                     self.edge(G, id_dot, hash(to))
             
-            with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
-                for f, t in zip(rhsn, rhsn[1:]): self.edge(S, hash(f), hash(t))
+            if len(rhs) > 1:
+                with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
+                    for f, t in zip(rhsn, rhsn[1:]): self.edge(S, hash(f), hash(t))
 
             sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
 

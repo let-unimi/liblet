@@ -128,23 +128,20 @@ class Derivation:
         sf = self._sf
         P = self.G.P[prod]
         if tuple(sf[pos: pos + len(P.lhs)]) != P.lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, ''.join(sf)))
-        self._sf = list(_ for _ in sf[:pos] + list(P.rhs) + sf[pos + len(P.lhs):] if _ != 'ε')
-        self._steps.append((prod, pos))
-        self._repr += ' -> ' + ''.join(self._sf)
-        return self # should copy first and elminate copy method?
+        copy = Derivation(self.G)
+        copy._sf = list(self._sf)
+        copy._repr = self._repr
+        copy._steps = list(self._steps)
+        copy._sf = list(_ for _ in sf[:pos] + list(P.rhs) + sf[pos + len(P.lhs):] if _ != 'ε')
+        copy._steps = self._steps + [(prod, pos)]
+        copy._repr = self._repr + ' -> ' + ''.join(self._sf)
+        return copy
 
     def matches(self):
         for nprod, prod in enumerate(self.G.P):
             for pos in range(len(self._sf) - len(prod.lhs) + 1):
                 if tuple(self._sf[pos: pos + len(prod.lhs)]) == prod.lhs:
                     yield nprod, pos
-
-    def copy(self):
-        c = Derivation(self.G)
-        c._sf = list(self._sf)
-        c._repr = self._repr
-        c._steps = list(self._steps)
-        return c
     
     def steps(self):
         return list(self._steps)
