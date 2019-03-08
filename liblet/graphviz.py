@@ -1,0 +1,199 @@
+from abc import ABC, abstractmethod
+from graphviz import Digraph as gvDigraph
+
+from .utils import letstr
+
+class BaseGraph(ABC):
+
+    @abstractmethod
+    def _gvgraph_(self):
+        pass
+
+    # letstr(node) is always used as node_label 
+    # node_id is str(x) where x is id (if not None) or hash(node_label)
+    def node(self, G, node, id = None, sep = None, gv_args = None):
+        if gv_args is None: gv_args = {}
+        if not hasattr(self, '_nodes'): self._nodes = set()
+        node_label = letstr(node, sep)
+        node_id = str(hash(node_label) if id is None else id)
+        if node_id in self._nodes: return node_id
+        G.node(node_id, node_label, **gv_args)
+        self._nodes.add(node_id)
+        return node_id
+
+    # src and dst as str()-ed and used as ids
+    def edge(self, G, src, dst, label = None, large_label = False):
+        label_param = {} if label is None else {'xlabel' if large_label else 'label': label}
+        G.edge(str(src), str(dst), **label_param)
+
+    def _repr_svg_(self):
+        return self._gvgraph_()._repr_svg_()
+
+    def _repr_png_(self):
+        return self._gvgraph_().pipe(format='png')
+
+
+class Tree(BaseGraph):
+    
+    def __init__(self, root, children = None):
+        self.root = root
+        self.children = children if children else []
+
+    @classmethod
+    def from_lol(cls, nl):
+        def _to_tree(lst):
+            return cls(str(lst[0]), [_to_tree(sl) for sl in lst[1:]])
+        return _to_tree(nl)
+
+    def __repr__(self):
+        def walk(T):
+            return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else T.root
+        return walk(self)
+
+    def _gvgraph_(self):
+        def walk(T, parent):
+            if parent: 
+                self.node(G, T.root, id(T))
+                self.edge(G, id(parent), id(T))
+            with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
+                for f, t in zip(T.children, T.children[1:]): self.edge(S, id(f), id(t))
+            for child in T.children: walk(child, T)
+        G = gvDigraph(
+            graph_attr = {
+                'nodesep': '.25',
+                'ranksep': '.25'    
+            },
+            node_attr = {
+                'shape': 'box',
+                'margin': '.05',
+                'width': '0',
+                'height': '0',
+                'style': 'rounded, setlinewidth(.25)'
+             },
+             edge_attr = {
+                'dir': 'none'
+             }
+        )
+        G.node(str(id(self)), self.root)
+        walk(self, None)
+        return G
+
+
+class Graph(BaseGraph):
+
+    def __init__(self, arcs, sep = None):
+        self.G = gvDigraph(graph_attr = {'size': '8', 'rankdir': 'LR'})
+        for src, dst in arcs: self.G.edge(letstr(src, sep = sep), letstr(dst, sep = sep))
+
+    @classmethod
+    def from_adjdict(cls, adjdict):
+        return cls((src, dst) for src, dsts in adjdict.items() for dst in dsts)
+
+    def _gvgraph_(self):
+        return self.G
+
+
+class StateTransitionGraph(BaseGraph):
+
+    def __init__(self, transitions, S = None, F = None, large_labels = False):
+        self.transitions = transitions
+        self.S = S
+        self.F = set() if F is None else F
+        self.large_labels = large_labels
+        self.G = None
+
+    @classmethod
+    def from_automaton(cls, A):
+        return cls(A.transitions, A.q0, A.F)
+
+    @classmethod
+    def from_lr(cls, STATES, GOTO):
+        transitions = [(STATES[s], X, STATES[t]) for s in GOTO for X, t in GOTO[s].items() if t]
+        return cls(transitions, STATES[0], [s for s in STATES if any(item.pos == len(item.rhs) for item in s)], True)
+
+    def _gvgraph_(self):
+        if self.G: return self.G
+        sep = '\n' if self.large_labels else None
+        G = gvDigraph(
+                graph_attr = {
+                    'rankdir': 'LR',
+                    'size': '8'
+                },
+                node_attr = {'margin': '.05'} if self.large_labels else {},
+                engine = 'dot'
+            )
+        if self.S is not None:
+            self.edge(G, 
+                self.node(G, '#START#', '#START#', sep = sep, gv_args = {'shape': 'none'}), 
+                self.node(G, self.S, sep = sep, gv_args = {'peripheries': '2' if self.S in self.F else '1'})
+            )
+        for X, x, Y in self.transitions:
+            self.edge(G, 
+                self.node(G, X, sep = sep, gv_args = {'peripheries': '2' if X in self.F else '1'}), 
+                self.node(G, Y, sep = sep, gv_args = {'peripheries': '2' if Y in self.F else '1'}), 
+                x, self.large_labels
+            )
+        self.G = G
+        return G
+
+
+class ProductionGraph(BaseGraph):
+
+    def __init__(self, derivation):
+        self.derivation = derivation.copy()
+
+    def __repr__(self):
+        return 'ProductionGraph({})'.format(self.derivation)
+
+    def _gvgraph_(self):
+        derivation = self.derivation
+        G = gvDigraph(
+            graph_attr = {
+                'nodesep': '.25',
+                'ranksep': '.25'    
+            },
+            node_attr = {
+                'size': '8',
+                'shape': 'box',
+                'margin': '.05',
+                'width': '0',
+                'height': '0',
+                'style': 'rounded, setlinewidth(.25)'
+            },
+            edge_attr = {
+                'dir': 'none',
+                'penwidth': '.5',
+                'arrowsize': '.5'
+            }
+        )
+
+        sentence = [(derivation.G.S, 0)]
+        for step, (rule, pos) in enumerate(derivation.steps(), 1):
+
+            lhs, rhs = derivation.G.P[rule]
+            rhsn = [(X, step, p) for p, X in enumerate(rhs)]
+                    
+            if len(lhs) == 1:                
+                frm = sentence[pos]
+                self.node(G, frm[0], hash(frm))
+                for to in rhsn:
+                    self.node(G, to[0], hash(to))
+                    self.edge(G, hash(frm), hash(to))
+            else:
+                id_dot = self.node(G, (step, rule), gv_args = {'shape': 'point', 'width': '.07', 'height': '.07'})
+
+                for frm in sentence[pos:pos + len(lhs)]:
+                    self.node(G, frm[0], hash(frm))
+                    self.edge(G, hash(frm), id_dot)
+                    #G.edge(frm, f's{step}r{rule}', arrowsize = '0')
+
+                for to in rhsn:
+                    self.node(G, to[0], hash(to))
+                    self.edge(G, id_dot, hash(to))
+            
+            with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
+                for f, t in zip(rhsn, rhsn[1:]): self.edge(S, hash(f), hash(t))
+
+            sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
+
+        return G
