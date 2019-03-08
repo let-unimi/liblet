@@ -9,7 +9,7 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual('test', letstr('test'))
 
     def test_emptyset(self):
-        self.assertEqual('{}', letstr(set()))
+        self.assertEqual('{x}', letstr(set()))
 
     def test_emptyfrozenset(self):
         self.assertEqual('{}', letstr(frozenset()))
