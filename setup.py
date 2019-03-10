@@ -38,7 +38,7 @@ setup(
     python_requires='>=3.7',
     install_requires = ['antlr4-python3-runtime', 'jupyter', 'graphviz'],
     extras_require = {
-        'dev': ['bumpversion', 'sphinx', 'twine'],
+        'dev': ['bumpversion', 'sphinx', 'twine', 'Pallets-Sphinx-Themes'],
         'test': ['coverage'],
     },
     entry_points={  # Optional

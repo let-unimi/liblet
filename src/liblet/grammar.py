@@ -10,6 +10,15 @@ def _letlrhstostr(s):
     return ''.join(map(str, s)) if isinstance(s, tuple) else str(s)
 
 class Production:
+    """A grammar production.
+
+    This class represents a grammar production, it has a left and a right hand
+    side that can be strings, or tuples of strings.
+
+    Args:
+        lhs: The left hand side of the production.
+        rhs: The right hand side of the production.
+    """
     __slots__ = ('lhs', 'rhs')
     def __init__(self, lhs, rhs):
         if isinstance(lhs, str):

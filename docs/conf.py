@@ -6,8 +6,10 @@ from os import path
 from io import open
 import re
 
+from pallets_sphinx_themes import ProjectLink
+
 here = path.abspath(path.dirname(__file__))
-print(here)
+
 def read(*parts):
     with open(path.join(here, *parts), 'r', encoding = 'utf-8') as fp:
         return fp.read()
@@ -34,6 +36,8 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+    'pallets_sphinx_themes'
 ]
 
 templates_path = ['_templates']
@@ -43,11 +47,40 @@ language = 'en'
 exclude_patterns = ['_build', '.DS_Store']
 pygments_style = None
 
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
+    # "werkzeug": ("http://werkzeug.pocoo.org/docs/", None),
+    # "click": ("https://click.palletsprojects.com/", None),
+    # "jinja": ("http://jinja.pocoo.org/docs/", None),
+    # "itsdangerous": ("https://itsdangerous.palletsprojects.com/", None),
+    # "sqlalchemy": ("https://docs.sqlalchemy.org/", None),
+    # "wtforms": ("https://wtforms.readthedocs.io/en/stable/", None),
+    # "blinker": ("https://pythonhosted.org/blinker/", None),
+}
+
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = 'alabaster'
-html_static_path = ['_static']
-# html_sidebars = {}
+html_theme = "flask"
+#html_theme_options = {"index_sidebar_logo": False}
+html_context = {
+    "project_links": [
+        ProjectLink("PyPI releases", "https://pypi.org/project/liblet/"),
+        ProjectLink("Source Code", "https://github.com/let-unimi/liblet"),
+        ProjectLink("Issue Tracker", "https://github.com/let-unimi/liblet/issues"),
+        ProjectLink("Let@UniMI Website", "https://let.di.unimi.it/"),
+    ]
+}
+html_sidebars = {
+    "index": ["project.html", "localtoc.html", "versions.html", "searchbox.html"],
+    "**": ["localtoc.html", "relations.html", "versions.html", "searchbox.html"],
+}
+singlehtml_sidebars = {"index": ["project.html", "versions.html", "localtoc.html"]}
+html_static_path = ["_static"]
+#html_favicon = "_static/flask-icon.png"
+html_logo = "_static/logo.png"
+html_title = "Flask Documentation ({})".format(version)
+html_show_sourcelink = False
+html_domain_indices = False
 
 # -- Options for todo extension ----------------------------------------------
 
