@@ -32,7 +32,7 @@ class Production:
     def __repr__(self):
         return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
     @classmethod 
-    def from_string(cls, prods, context_free = False):
+    def from_string(cls, prods, context_free = True):
         P = []
         for p in prods.splitlines():
             if not p.strip(): continue
