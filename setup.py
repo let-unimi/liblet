@@ -17,7 +17,7 @@ def find_version(*file_paths):
 
 setup(
     name = 'liblet',
-    #version = find_version('src', 'liblet', '__init__.py'),
+    version = find_version('src', 'liblet', '__init__.py'),
     description = 'A teaching aid library for formal languages and compiler courses.',
     long_description = read('README.md'),
     long_description_content_type = 'text/markdown',
