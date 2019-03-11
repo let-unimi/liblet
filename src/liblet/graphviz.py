@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from graphviz import Digraph as gvDigraph
 
 from .utils import letstr
+from .grammar import _ensure_tuple
 
 class BaseGraph(ABC):
 
@@ -171,6 +172,7 @@ class ProductionGraph(BaseGraph):
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
 
             lhs, rhs = derivation.G.P[rule]
+            lhs = _ensure_tuple(lhs)
             rhsn = [(X, step, p) for p, X in enumerate(rhs)]
                     
             if len(lhs) == 1:                

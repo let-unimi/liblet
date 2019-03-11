@@ -5,9 +5,10 @@ from operator import attrgetter
 from . import ε
 from .utils import letstr
 
+HAIR_SPACE = '\u200a'
 
 def _letlrhstostr(s):
-    return ''.join(map(str, s)) if isinstance(s, tuple) else str(s)
+    return HAIR_SPACE.join(map(str, s)) if isinstance(s, tuple) else str(s)
 
 class Production:
     """A grammar production.
@@ -48,7 +49,7 @@ class Production:
             lh, rha = p.split('->')
             lhs = tuple(lh.split())
             if context_free:
-                if len(lhs) != 1: raise ValueError('Production "{}" as more than one symbol as left-hand side'.format(p))
+                if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as left-hand side'.format(p))
                 lhs = lhs[0]
             for rh in rha.split('|'):
                 P.append(cls(lhs, tuple(rh.split())))
@@ -124,6 +125,8 @@ class Grammar:
     def __repr__ (self):
         return 'Grammar(N={}, T={}, P={}, S={})'.format(letstr(self.N), letstr(self.T), self.P, letstr(self.S))
 
+def _ensure_tuple(lhs):
+    return lhs if isinstance(lhs, tuple) else (lhs, )    
 
 class Derivation:
 
@@ -136,27 +139,29 @@ class Derivation:
     def step(self, prod, pos): # consider adding rightmost/leftmost (with no pos)
         sf = self._sf
         P = self.G.P[prod]
-        if tuple(sf[pos: pos + len(P.lhs)]) != P.lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, ''.join(sf)))
+        lhs = _ensure_tuple(P.lhs)
+        if tuple(sf[pos: pos + len(lhs)]) != lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, HAIR_SPACE.join(sf)))
         copy = Derivation(self.G)
         copy._sf = list(self._sf)
         copy._repr = self._repr
         copy._steps = list(self._steps)
-        copy._sf = list(_ for _ in sf[:pos] + list(P.rhs) + sf[pos + len(P.lhs):] if _ != 'ε')
+        copy._sf = list(_ for _ in sf[:pos] + list(P.rhs) + sf[pos + len(lhs):] if _ != 'ε')
         copy._steps = self._steps + [(prod, pos)]
-        copy._repr = self._repr + ' -> ' + ''.join(copy._sf)
+        copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
         return copy
 
     def matches(self):
         for nprod, prod in enumerate(self.G.P):
-            for pos in range(len(self._sf) - len(prod.lhs) + 1):
-                if tuple(self._sf[pos: pos + len(prod.lhs)]) == prod.lhs:
+            lhs = _ensure_tuple(prod.lhs)
+            for pos in range(len(self._sf) - len(lhs) + 1):
+                if tuple(self._sf[pos: pos + len(lhs)]) == lhs:
                     yield nprod, pos
     
     def steps(self):
         return list(self._steps)
         
     def sentential_form(self):
-        return ''.join(self._sf)
+        return list(self._sf)
     
     def __repr__(self):
         return self._repr
