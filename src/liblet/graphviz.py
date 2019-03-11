@@ -23,8 +23,10 @@ class BaseGraph(ABC):
         return node_id
 
     # src and dst as str()-ed and used as ids
-    def edge(self, G, src, dst, label = None, large_label = False):
+    def edge(self, G, src, dst, label = None, large_label = False, gv_args = None):
+        if gv_args is None: gv_args = {}
         label_param = {} if label is None else {'xlabel' if large_label else 'label': label}
+        label_param.update(gv_args)
         G.edge(str(src), str(dst), **label_param)
 
     def _repr_svg_(self):
@@ -142,11 +144,13 @@ class ProductionGraph(BaseGraph):
 
     def __init__(self, derivation):
         self.derivation = derivation
+        self.G = None
 
     def __repr__(self):
         return 'ProductionGraph({})'.format(self.derivation)
 
     def _gvgraph_(self):
+        if self.G is not None: return self.G
         derivation = self.derivation
         G = gvDigraph(
             graph_attr = {
@@ -168,35 +172,44 @@ class ProductionGraph(BaseGraph):
             }
         )
 
-        sentence = [(derivation.G.S, 0)]
+        sentence = [(derivation.G.S, 0, 0)]
+        for step, (rule, pos) in enumerate(derivation.steps(), 1):
+            lhs, rhs = derivation.G.P[rule]
+            lhs = _ensure_tuple(lhs)
+            rhsn = [(X, step, p) for p, X in enumerate(rhs)]
+            sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
+        last_sentence = set(sentence)
+
+        sentence = [(derivation.G.S, 0, 0)]
+        with G.subgraph(graph_attr = {'rank': 'same'}) as S:
+            prev_level = self.node(S, ('LevelNode', 0), gv_args = {'style': 'invis'})
+            self.node(S, sentence[0][0], hash(sentence[0]))
+
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
 
             lhs, rhs = derivation.G.P[rule]
             lhs = _ensure_tuple(lhs)
-            rhsn = [(X, step, p) for p, X in enumerate(rhs)]
-                    
+
+            rhsn = [(X, step, p) for p, X in enumerate(rhs)]            
+            with G.subgraph(graph_attr = {'rank': 'same'}) as S:
+                new_level = self.node(S, ('LevelNode', step), gv_args = {'style': 'invis'})
+                for node in rhsn: self.node(S, node[0], hash(node), gv_args = {'style': 'rounded, setlinewidth(1.25)' if node in last_sentence else 'rounded, setlinewidth(.25)'})
+            self.edge(G, prev_level, new_level, gv_args = {'style': 'invis'})
+            prev_level = new_level 
+            
             if len(lhs) == 1:                
                 frm = sentence[pos]
-                self.node(G, frm[0], hash(frm))
-                for to in rhsn:
-                    self.node(G, to[0], hash(to))
-                    self.edge(G, hash(frm), hash(to))
+                for to in rhsn: self.edge(G, hash(frm), hash(to))
             else:
                 id_dot = self.node(G, (step, rule), gv_args = {'shape': 'point', 'width': '.07', 'height': '.07'})
-
-                for frm in sentence[pos:pos + len(lhs)]:
-                    self.node(G, frm[0], hash(frm))
-                    self.edge(G, hash(frm), id_dot)
-                    #G.edge(frm, f's{step}r{rule}', arrowsize = '0')
-
-                for to in rhsn:
-                    self.node(G, to[0], hash(to))
-                    self.edge(G, id_dot, hash(to))
+                for frm in sentence[pos:pos + len(lhs)]: self.edge(G, hash(frm), id_dot)
+                for to in rhsn: self.edge(G, id_dot, hash(to))
             
             if len(rhs) > 1:
                 with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
                     for f, t in zip(rhsn, rhsn[1:]): self.edge(S, hash(f), hash(t))
 
             sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
-
+        
+        self.G = G
         return G
