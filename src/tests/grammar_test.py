@@ -31,7 +31,7 @@ class TestGrammar(unittest.TestCase):
             E -> T | E + T
             T -> i | ( E )
         """)
-        s = "Grammar(N={E, T, Z}, T={$, (, ), +, i}, P=(Z -> E$, E -> T, E -> E+T, T -> i, T -> (E)), S=Z)"
+        s = "Grammar(N={E, T, Z}, T={$, (, ), +, i}, P=(Z -> E $, E -> T, E -> E + T, T -> i, T -> ( E )), S=Z)"
         self.assertEqual(s, str(G))
 
     def test_rhs(self):
@@ -59,7 +59,7 @@ class TestGrammar(unittest.TestCase):
         """, False)
         d = Derivation(G)
         for prod, pos in [(0, 0), (1, 0), (2, 1)]: d = d.step(prod, pos)
-        self.assertEqual('S -> AB -> aB -> ab', str(d))
+        self.assertEqual('S -> A B -> a B -> a b', str(d))
 
     def test_derivation_steps(self):
         G = Grammar.from_string("""
