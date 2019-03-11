@@ -3,7 +3,7 @@ from urllib import request, parse
 from urllib.error import URLError
 from uuid import getnode
 
-__version__ = '0.3.0-alpha'
+__version__ = '0.4.0-alpha'
 
 ε = 'ε'
 DIAMOND = '◇'
