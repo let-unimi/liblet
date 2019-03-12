@@ -27,8 +27,8 @@ class Production:
         ('B', 'C')
 
     Args: 
-        lhs: The left hand side of the production. 
-        rhs: The right hand side of the production.
+        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left hand side of the production. 
+        rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right hand side of the production.
 
     Raises:
 
@@ -191,19 +191,44 @@ class Grammar:
             T = symbols - N - {ε}
         return cls(N, T, P, S)
 
-    def rhs(self, N): 
+    def rhs(self, N):
+        """Yields al the righthand sides alternatives matching the given nonterminal.
+
+        Args:
+            N (:obj:`str` or :obj:`tuple` of :obj:`str`): the righthand to match.
+        Yields:
+            the righthand sides of all productions having ``N`` as the lefthand side.
+        """
         return (P.rhs for P in self.P if P.lhs == N)
 
-    def all_terminal(self, word):
-        return all(_ in self.T for _ in word)
+    def all_terminals(self, sentential_form):
+        """Checks that the given *sentential form* is made of terminals.
+        
+        Args:
+            word (:term:`iterable` of :obj:`str`): the sentential form to check.
+        Return:
+            ``True`` if the sentential form is made just of terminals.
+        
+        """
+        return all(_ in self.T for _ in sentential_form)
 
-    def __repr__ (self):
+    def __repr__(self):
         return 'Grammar(N={}, T={}, P={}, S={})'.format(letstr(self.N), letstr(self.T), self.P, letstr(self.S))
 
 def _ensure_tuple(lhs):
     return lhs if isinstance(lhs, tuple) else (lhs, )    
 
 class Derivation:
+    """A derivation.
+
+    This class is *immutable*, derivations can be built invoking
+    :func:`~Derivation.step`, :func:`~Derivation.leftmost`, and 
+    :func:`~Derivation.rightmost`
+
+    Args:
+        G (:class:`~liblet.grammar.Grammar`): the grammar to which the derivations refers to.
+
+    """
 
     def __init__(self, G):
         self.G = G
@@ -217,7 +242,7 @@ class Derivation:
     def rightmost(self, prod):
         return self.step(prod, max(self.matches(prod))[1])
 
-    def step(self, prod, pos): # consider adding rightmost/leftmost (with no pos)
+    def step(self, prod, pos): 
         sf = self._sf
         P = self.G.P[prod]
         lhs = _ensure_tuple(P.lhs)

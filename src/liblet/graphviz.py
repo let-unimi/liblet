@@ -96,50 +96,6 @@ class Graph(BaseGraph):
         return self.G
 
 
-class StateTransitionGraph(BaseGraph):
-
-    def __init__(self, transitions, S = None, F = None, large_labels = False):
-        self.transitions = transitions
-        self.S = S
-        self.F = set() if F is None else F
-        self.large_labels = large_labels
-        self.G = None
-
-    @classmethod
-    def from_automaton(cls, A):
-        return cls(A.transitions, A.q0, A.F)
-
-    @classmethod
-    def from_lr(cls, STATES, GOTO):
-        transitions = [(STATES[s], X, STATES[t]) for s in GOTO for X, t in GOTO[s].items() if t]
-        return cls(transitions, STATES[0], [s for s in STATES if any(item.pos == len(item.rhs) for item in s)], True)
-
-    def _gvgraph_(self):
-        if self.G: return self.G
-        sep = '\n' if self.large_labels else None
-        G = gvDigraph(
-                graph_attr = {
-                    'rankdir': 'LR',
-                    'size': '8'
-                },
-                node_attr = {'margin': '.05'} if self.large_labels else {},
-                engine = 'dot'
-            )
-        if self.S is not None:
-            self.edge(G, 
-                self.node(G, '#START#', '#START#', sep = sep, gv_args = {'shape': 'none'}), 
-                self.node(G, self.S, sep = sep, gv_args = {'peripheries': '2' if self.S in self.F else '1'})
-            )
-        for X, x, Y in self.transitions:
-            self.edge(G, 
-                self.node(G, X, sep = sep, gv_args = {'peripheries': '2' if X in self.F else '1'}), 
-                self.node(G, Y, sep = sep, gv_args = {'peripheries': '2' if Y in self.F else '1'}), 
-                x, self.large_labels
-            )
-        self.G = G
-        return G
-
-
 class ProductionGraph(BaseGraph):
 
     def __init__(self, derivation):
@@ -213,3 +169,48 @@ class ProductionGraph(BaseGraph):
         
         self.G = G
         return G
+
+
+class StateTransitionGraph(BaseGraph):
+
+    def __init__(self, transitions, S = None, F = None, large_labels = False):
+        self.transitions = transitions
+        self.S = S
+        self.F = set() if F is None else F
+        self.large_labels = large_labels
+        self.G = None
+
+    @classmethod
+    def from_automaton(cls, A):
+        return cls(A.transitions, A.q0, A.F)
+
+    @classmethod
+    def from_lr(cls, STATES, GOTO):
+        transitions = [(STATES[s], X, STATES[t]) for s in GOTO for X, t in GOTO[s].items() if t]
+        return cls(transitions, STATES[0], [s for s in STATES if any(item.pos == len(item.rhs) for item in s)], True)
+
+    def _gvgraph_(self):
+        if self.G: return self.G
+        sep = '\n' if self.large_labels else None
+        G = gvDigraph(
+                graph_attr = {
+                    'rankdir': 'LR',
+                    'size': '8'
+                },
+                node_attr = {'margin': '.05'} if self.large_labels else {},
+                engine = 'dot'
+            )
+        if self.S is not None:
+            self.edge(G, 
+                self.node(G, '#START#', '#START#', sep = sep, gv_args = {'shape': 'none'}), 
+                self.node(G, self.S, sep = sep, gv_args = {'peripheries': '2' if self.S in self.F else '1'})
+            )
+        for X, x, Y in self.transitions:
+            self.edge(G, 
+                self.node(G, X, sep = sep, gv_args = {'peripheries': '2' if X in self.F else '1'}), 
+                self.node(G, Y, sep = sep, gv_args = {'peripheries': '2' if Y in self.F else '1'}), 
+                x, self.large_labels
+            )
+        self.G = G
+        return G
+
