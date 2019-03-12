@@ -43,13 +43,13 @@ class TestGrammar(unittest.TestCase):
         expected = set([('T',), ('E', '+', 'T')])
         self.assertEqual(expected, actual)
 
-    def test_all_terminal(self):
+    def test_all_terminals(self):
         G = Grammar.from_string("""
             S -> A B
             A -> a 
             B -> b
         """, False)
-        self.assertTrue(G.all_terminal('babba'))
+        self.assertTrue(G.all_terminals('babba'))
 
     def test_derivation_repr(self):
         G = Grammar.from_string("""
@@ -92,34 +92,34 @@ class TestGrammar(unittest.TestCase):
         steps = ((0, 0), (2, 1), (1, 0))
         self.assertEqual(steps, d.steps())
 
-    def test_derivation_matches(self):
+    def test_derivation_possible_steps(self):
         G = Grammar.from_string("""
             S -> A B
             A -> a 
             B -> b
         """, False)
         expected = [(1, 0), (2, 1)]
-        actual = list(Derivation(G).step(0,0).matches())
+        actual = list(Derivation(G).step(0,0).possible_steps())
         self.assertEqual(expected, actual)
 
-    def test_derivation_matches_prod(self):
+    def test_derivation_possible_steps_prod(self):
         G = Grammar.from_string("""
             S -> A B
             A -> a 
             B -> b
         """, False)
         expected = [(1, 0)]
-        actual = list(Derivation(G).step(0,0).matches(prod = 1))
+        actual = list(Derivation(G).step(0,0).possible_steps(prod = 1))
         self.assertEqual(expected, actual)
 
-    def test_derivation_matches_pos(self):
+    def test_derivation_possible_steps_pos(self):
         G = Grammar.from_string("""
             S -> A B
             A -> a 
             B -> b
         """, False)
         expected = [(2, 1)]
-        actual = list(Derivation(G).step(0,0).matches(pos = 1))
+        actual = list(Derivation(G).step(0,0).possible_steps(pos = 1))
         self.assertEqual(expected, actual)
 
 if __name__ == '__main__': unittest.main()
