@@ -11,10 +11,11 @@ from antlr4.tree.Tree import ParseTreeVisitor
 
 from .graphviz import Tree
 
-if 'ANTLR4_JAR' not in environ:
-    raise ImportError('Please define the ANTLR4_JAR environment variable')
-if not exists(environ['ANTLR4_JAR']):
-    raise ImportError('The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR']))
+if not 'READ_THE_DOCS' in environ:
+    if 'ANTLR4_JAR' not in environ:
+        raise ImportError('Please define the ANTLR4_JAR environment variable')
+    if not exists(environ['ANTLR4_JAR']):
+        raise ImportError('The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR']))
 
 def generate_and_load(name, grammar):
     with TemporaryDirectory() as tmpdir:
