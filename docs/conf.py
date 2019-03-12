@@ -45,7 +45,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 language = 'en'
-exclude_patterns = ['_build', '.DS_Store']
+exclude_patterns = ['_build', '.DS_Store', '*.ipynb', '**/.ipynb_checkpoints']
 pygments_style = None
 add_module_names = False
 

@@ -53,7 +53,7 @@ following class.
 
    .. automethod:: leftmost
 
-   .. automethod:: matches
+   .. automethod:: possible_steps
 
 Rich dislpay
 ------------

@@ -237,10 +237,10 @@ class Derivation:
         self._steps = tuple()
 
     def leftmost(self, prod):
-        return self.step(prod, min(self.matches(prod))[1])
+        return self.step(prod, min(self.possible_steps(prod))[1])
 
     def rightmost(self, prod):
-        return self.step(prod, max(self.matches(prod))[1])
+        return self.step(prod, max(self.possible_steps(prod))[1])
 
     def step(self, prod, pos): 
         sf = self._sf
@@ -255,7 +255,7 @@ class Derivation:
         copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
         return copy
 
-    def matches(self, prod = None, pos = None):
+    def possible_steps(self, prod = None, pos = None):
         for n, P in enumerate(self.G.P) if prod is None else ((prod, self.G.P[prod]), ):
             lhs = _ensure_tuple(P.lhs)
             for p in range(len(self._sf) - len(lhs) + 1) if pos is None else (pos, ):
