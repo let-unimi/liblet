@@ -16,17 +16,6 @@ LibLET:
 .. _antlr4-python3-runtime: https://pypi.org/project/antlr4-python3-runtime/
 .. _jupyter: https://pypi.org/project/jupyter/
 
-To use LibLET you also need to manually install:
-
-* the `Graphviz`_ visualization software, and
-* the **ANTLR Tool**, that is `antlr-4.7.2-complete.jar <https://www.antlr.org/download/antlr-4.7.2-complete.jar>`_.
-
-Follow the installation instruction on the `Graphviz`_ site according to your
-operating system and package manager. To install the **ANTLR Tool** just
-download it and set the :envvar:`ANTLR4_JAR` *environment variable* to the full
-path of the downloaded jar. 
-
-
 Virtual environments
 --------------------
 
@@ -77,3 +66,17 @@ library:
 .. code-block:: sh
 
     $ pip install liblet
+
+Install the external dependencies
+---------------------------------
+
+To use LibLET you also need to manually install:
+
+* the `Graphviz`_ visualization software, and
+* the **ANTLR Tool**, that is `antlr-4.7.2-complete.jar <https://www.antlr.org/download/antlr-4.7.2-complete.jar>`_.
+
+Follow the installation instruction on the `Graphviz`_ site according to your
+operating system and package manager. To install the **ANTLR Tool** just
+download it and set the :envvar:`ANTLR4_JAR` *environment variable* to the full
+path of the downloaded jar. 
+

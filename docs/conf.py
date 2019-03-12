@@ -28,9 +28,10 @@ author = 'Massimo Santini'
 version = find_version('..', 'src', 'liblet', '__init__.py')
 release = '0.0.1'
 
-# -- General configuration ---------------------------------------------------
+# -- General configuration
 
 extensions = [
+    'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -46,6 +47,10 @@ master_doc = 'index'
 language = 'en'
 exclude_patterns = ['_build', '.DS_Store']
 pygments_style = None
+add_module_names = False
+
+
+# -- Options for intersphinx extension 
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
@@ -58,7 +63,7 @@ intersphinx_mapping = {
     # "blinker": ("https://pythonhosted.org/blinker/", None),
 }
 
-# -- Options for HTML output -------------------------------------------------
+# -- Options for HTML output
 
 html_theme = "flask"
 #html_theme_options = {"index_sidebar_logo": False}
@@ -82,7 +87,7 @@ html_title = "Flask Documentation ({})".format(version)
 html_show_sourcelink = False
 html_domain_indices = False
 
-# -- Options for todo extension ----------------------------------------------
+# -- Options for todo extension
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True

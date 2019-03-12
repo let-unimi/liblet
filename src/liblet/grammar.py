@@ -13,14 +13,30 @@ def _letlrhstostr(s):
 class Production:
     """A grammar production.
 
-    This class represents a grammar production, it has a left and a right hand
-    side that can be strings, or tuples of strings.
+    This class represents a grammar production, it has a *lefthand* and a
+    *righthand* side that can be :obj:`strings <str>`, or :obj:`tuples <tuple>`
+    of strings; a production is :term:`iterable` and unpackig can be used to
+    obain its sides, so for example
+    
+    .. doctest::
 
-    Args:
-        lhs: The left hand side of the production.
+        >>> lhs, rhs = Production('A', ('B', 'C'))
+        >>> lhs
+        'A'
+        >>> rhs 
+        ('B', 'C')
+
+    Args: 
+        lhs: The left hand side of the production. 
         rhs: The right hand side of the production.
+
+    Raises:
+
+        ValueError: in case the lefthand or righthand side are not string, or tuples of strings.
     """
+
     __slots__ = ('lhs', 'rhs')
+
     def __init__(self, lhs, rhs):
         if isinstance(lhs, str):
             self.lhs = lhs
@@ -32,17 +48,44 @@ class Production:
             self.rhs = tuple(rhs)
         else:
             raise ValueError('The rhs must be a list/tuple of str')        
+
     def __eq__(self, other):
         if not isinstance(other, Production): return False
         return (self.lhs, self.rhs) == (other.lhs, other.rhs)
+
     def __hash__(self):
         return hash((self.lhs, self.rhs))
+
     def __iter__(self):
         return iter((self.lhs, self.rhs))
+
     def __repr__(self):
         return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
+
     @classmethod 
     def from_string(cls, prods, context_free = True):
+        """Builds a tuple of productions obtained from the given string.
+
+        Args:
+            prods (str): a string representing the set of productions.
+            context_free (bool): if ``True`` all the *lefthand* sides will be string (not tuples).
+
+        The string must be a sequence of lines of the form::
+
+            lhs -> alternatives
+
+        where ``alternatives`` is a list of ``rhs`` strings (possibly separated by ``|``)
+        and ``lhs`` and ``rhs`` are space separated strings that will be used as *lefthand* and 
+        *righthand* of the returned productions; for example::
+
+            S -> ( S ) | x T y
+            x T y -> t
+
+        Raises:
+
+            ValueError: in case the productions are declared as ``context_free`` but on of 
+                        them has more than one symbol on the righthand side.
+        """
         P = []
         for p in prods.splitlines():
             if not p.strip(): continue
@@ -93,7 +136,21 @@ class EarleyItem(Item):  # pragma: no cover
 
 
 class Grammar:
-    
+    """A grammar.
+
+    This class represents a formal grammar, that is a tuple :math:`(N, T, P, S)` where
+    :math:`N` is the finite set of *nonterminals* or *variables* symbols, :math:`T` is the 
+    finite set of *terminals*, :math:`P` are the grammar *productions* or *rules* and, 
+    :math:`S \in N` is the *start* symbol.
+
+    Args:
+        N (set): the grammar nonterminals.
+        T (set): the grammar terminals.
+        P (tuple): the grammar productions.
+        S (str): the grammar start symbol.
+
+    """
+
     __slots__ = ('N', 'T', 'P', 'S')
 
     def __init__(self, N, T, P, S):
@@ -104,6 +161,24 @@ class Grammar:
 
     @classmethod
     def from_string(cls, prods, context_free = True):
+        """Builds a grammar obtained from the given productions.
+
+        Args:
+            prods (str): a string describing the productions.
+            context_free (bool): if ``True`` the grammar is expected to be context free.
+
+        Once the *productions* are determined via a call to :func:`Production.from_string`, 
+        the remaining defining elements of the grammar are obtained as follows:
+        
+        * if the grammar is *not* context-free the *nonterminals* is the set of symbols,
+          appearing in (the lefthand, or righthand side of) any production, beginning with 
+          an uppercase letter, the *terminals* are the remaining symbols. The *start* symbol
+          is the lefthand of the first production;
+
+        * if the grammar is *context-free* the *nonterminals* is the set of symbols appearing
+          in a lefthand side of any production, the *terminals* are the remaining symbols. The
+          *start* symbol is the lefthand of the first production.           
+        """
         P = Production.from_string(prods, context_free)
         if context_free:
             S = P[0].lhs
