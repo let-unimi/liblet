@@ -26,7 +26,6 @@ project = 'LibLET'
 copyright = '2019, Massimo Santini'
 author = 'Massimo Santini'
 version = find_version('..', 'src', 'liblet', '__init__.py')
-release = '0.0.1'
 
 # -- General configuration
 
@@ -81,9 +80,8 @@ html_sidebars = {
 }
 singlehtml_sidebars = {"index": ["project.html", "versions.html", "localtoc.html"]}
 html_static_path = ["_static"]
-#html_favicon = "_static/flask-icon.png"
 html_logo = "_static/logo.png"
-html_title = "Flask Documentation ({})".format(version)
+html_title = "LibLET Documentation ({})".format(version)
 html_show_sourcelink = False
 html_domain_indices = False
 
