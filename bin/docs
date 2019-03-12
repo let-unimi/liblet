@@ -1,3 +1,6 @@
 #!/bin/bash
 
+if [ -n "$1" ]; then
+    python -m sphinx -b doctest -E docs build/docs
+fi
 python -m sphinx -E docs build/docs
