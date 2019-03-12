@@ -12,7 +12,7 @@ from .decorators import closure, show_calls
 from .graphviz import Tree, Graph, StateTransitionGraph, ProductionGraph
 from .grammar import Production, Item, EarleyItem, Grammar, Derivation
 from .automaton import Transition, Automaton
-from .utils import peek, dod2html, letstr, productions_table, StatesQueueMap, Stack, Queue
+from .utils import peek, dod2html, letstr, iter2table, StatesQueueMap, Stack, Queue
 from .antlr import generate_and_load, parse_tree, to_let_tree
 from .jupyter import side_by_side
 

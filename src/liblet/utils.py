@@ -29,8 +29,8 @@ def letstr(obj, sep = None, sort = True):
             return fs.format(sep.join(sorted(map(_ls, obj)) if sorted else list(map(_ls, obj))))
     return _ls(obj)
     
-def productions_table(G):
-    return HTML('<table>' + '\n'.join(f'<tr><th>{n}<td style="text-align:left"><pre>{P}</pre>' for n, P in enumerate(G.P)) + '</table>')
+def iter2table(it):
+    return HTML('<table>' + '\n'.join(f'<tr><th>{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
 
 def dod2html(dod):
     def fmt(r, c):
