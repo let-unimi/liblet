@@ -132,21 +132,20 @@ class Derivation:
 
     def __init__(self, G):
         self.G = G
-        self._sf = [G.S]
+        self._sf = (G.S, )
         self._repr = G.S
-        self._steps = []
+        self._steps = tuple()
 
     def step(self, prod, pos): # consider adding rightmost/leftmost (with no pos)
         sf = self._sf
         P = self.G.P[prod]
         lhs = _ensure_tuple(P.lhs)
-        if tuple(sf[pos: pos + len(lhs)]) != lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, HAIR_SPACE.join(sf)))
+        if sf[pos: pos + len(lhs)] != lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, HAIR_SPACE.join(sf)))
         copy = Derivation(self.G)
-        copy._sf = list(self._sf)
         copy._repr = self._repr
-        copy._steps = list(self._steps)
-        copy._sf = list(_ for _ in sf[:pos] + list(P.rhs) + sf[pos + len(lhs):] if _ != 'ε')
-        copy._steps = self._steps + [(prod, pos)]
+        copy._steps = self.steps()
+        copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(lhs):] if _ != 'ε')
+        copy._steps = self._steps + ((prod, pos), )
         copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
         return copy
 
@@ -154,14 +153,14 @@ class Derivation:
         for nprod, prod in enumerate(self.G.P):
             lhs = _ensure_tuple(prod.lhs)
             for pos in range(len(self._sf) - len(lhs) + 1):
-                if tuple(self._sf[pos: pos + len(lhs)]) == lhs:
+                if self._sf[pos: pos + len(lhs)] == lhs:
                     yield nprod, pos
     
     def steps(self):
-        return list(self._steps)
+        return tuple(self._steps)
         
     def sentential_form(self):
-        return list(self._sf)
+        return tuple(self._sf)
     
     def __repr__(self):
         return self._repr
