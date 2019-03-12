@@ -205,7 +205,7 @@ class Grammar:
         """Checks that the given *sentential form* is made of terminals.
         
         Args:
-            word (:term:`iterable` of :obj:`str`): the sentential form to check.
+            sentential_form (:term:`iterable` of :obj:`str`): the sentential form to check.
         Return:
             ``True`` if the sentential form is made just of terminals.
         
