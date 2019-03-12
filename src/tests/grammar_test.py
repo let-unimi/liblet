@@ -68,8 +68,28 @@ class TestGrammar(unittest.TestCase):
             B -> b
         """, False)
         d = Derivation(G)
-        steps = [(0, 0), (1, 0), (2, 1)]
+        steps = ((0, 0), (1, 0), (2, 1))
         for prod, pos in steps: d = d.step(prod, pos)
+        self.assertEqual(steps, d.steps())
+
+    def test_derivation_leftmost(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        d = Derivation(G).leftmost(0).leftmost(1).leftmost(2)
+        steps = ((0, 0), (1, 0), (2, 1))
+        self.assertEqual(steps, d.steps())
+
+    def test_derivation_rightmost(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        d = Derivation(G).rightmost(0).rightmost(2).rightmost(1)
+        steps = ((0, 0), (2, 1), (1, 0))
         self.assertEqual(steps, d.steps())
 
     def test_derivation_matches(self):
@@ -82,5 +102,24 @@ class TestGrammar(unittest.TestCase):
         actual = list(Derivation(G).step(0,0).matches())
         self.assertEqual(expected, actual)
 
+    def test_derivation_matches_prod(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        expected = [(1, 0)]
+        actual = list(Derivation(G).step(0,0).matches(prod = 1))
+        self.assertEqual(expected, actual)
+
+    def test_derivation_matches_pos(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        expected = [(2, 1)]
+        actual = list(Derivation(G).step(0,0).matches(pos = 1))
+        self.assertEqual(expected, actual)
 
 if __name__ == '__main__': unittest.main()

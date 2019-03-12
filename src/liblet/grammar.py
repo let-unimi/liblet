@@ -1,6 +1,6 @@
 from collections import namedtuple
 from itertools import chain
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 
 from . import ε
 from .utils import letstr
@@ -136,6 +136,12 @@ class Derivation:
         self._repr = G.S
         self._steps = tuple()
 
+    def leftmost(self, prod):
+        return self.step(prod, min(self.matches(prod))[1])
+
+    def rightmost(self, prod):
+        return self.step(prod, max(self.matches(prod))[1])
+
     def step(self, prod, pos): # consider adding rightmost/leftmost (with no pos)
         sf = self._sf
         P = self.G.P[prod]
@@ -149,12 +155,12 @@ class Derivation:
         copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
         return copy
 
-    def matches(self):
-        for nprod, prod in enumerate(self.G.P):
-            lhs = _ensure_tuple(prod.lhs)
-            for pos in range(len(self._sf) - len(lhs) + 1):
-                if self._sf[pos: pos + len(lhs)] == lhs:
-                    yield nprod, pos
+    def matches(self, prod = None, pos = None):
+        for n, P in enumerate(self.G.P) if prod is None else ((prod, self.G.P[prod]), ):
+            lhs = _ensure_tuple(P.lhs)
+            for p in range(len(self._sf) - len(lhs) + 1) if pos is None else (pos, ):
+                if self._sf[p: p + len(lhs)] == lhs:
+                    yield n, p
     
     def steps(self):
         return tuple(self._steps)
