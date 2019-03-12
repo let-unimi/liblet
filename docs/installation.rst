@@ -3,6 +3,12 @@
 Installation
 ============
 
+.. warning::
+
+   This library uses a *beaconing* mechanism based on the `Google Analytics Measurement Protocol <https://developers.google.com/analytics/devguides/collection/protocol/v1/>`__
+   that has the only purpose of traking what versions are used and in what environment. To completely **disable** the
+   reporting just set the :envvar:`LIBLET_NOBEACON` in your environment before importing the library.
+
 We recommend using the latest version of Python 3, LibLET supports Python 3.7
 and newer. These packages will be installed automatically when installing
 LibLET:
