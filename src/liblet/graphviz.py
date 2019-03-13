@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from graphviz import Digraph as gvDigraph
 
 from .utils import letstr
-from .grammar import _ensure_tuple
+
 
 class BaseGraph(ABC):
 
@@ -130,8 +130,7 @@ class ProductionGraph(BaseGraph):
 
         sentence = [(derivation.G.S, 0, 0)]
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
-            lhs, rhs = derivation.G.P[rule]
-            lhs = _ensure_tuple(lhs)
+            lhs, rhs = derivation.G.P[rule].as_type0()
             rhsn = [(X, step, p) for p, X in enumerate(rhs)]
             sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
         last_sentence = set(sentence)
@@ -143,9 +142,7 @@ class ProductionGraph(BaseGraph):
 
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
 
-            lhs, rhs = derivation.G.P[rule]
-            lhs = _ensure_tuple(lhs)
-
+            lhs, rhs = derivation.G.P[rule].as_type0()
             rhsn = [(X, step, p) for p, X in enumerate(rhs)]            
             with G.subgraph(graph_attr = {'rank': 'same'}) as S:
                 new_level = self.node(S, ('LevelNode', step), gv_args = {'style': 'invis'})

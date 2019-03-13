@@ -1,4 +1,5 @@
 from collections import namedtuple
+from functools import total_ordering
 from itertools import chain
 from operator import attrgetter, itemgetter
 
@@ -10,13 +11,14 @@ HAIR_SPACE = '\u200a'
 def _letlrhstostr(s):
     return HAIR_SPACE.join(map(str, s)) if isinstance(s, tuple) else str(s)
 
+@total_ordering
 class Production:
     """A grammar production.
 
     This class represents a grammar production, it has a *lefthand* and a
     *righthand* side that can be :obj:`strings <str>`, or :obj:`tuples <tuple>`
-    of strings; a production is :term:`iterable` and unpackig can be used to
-    obain its sides, so for example
+    of strings; a production is :term:`iterable` and unpacking can be used to
+    obtain its sides, so for example
     
     .. doctest::
 
@@ -32,7 +34,7 @@ class Production:
 
     Raises:
 
-        ValueError: in case the lefthand or righthand side are not string, or tuples of strings.
+        ValueError: in case the lefthand or righthand side are not strings, or tuples of strings.
     """
 
     __slots__ = ('lhs', 'rhs')
@@ -43,12 +45,16 @@ class Production:
         elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str), lhs)): 
             self.lhs = tuple(lhs)
         else:
-            raise ValueError('The lhs is not a str, nor a list/tuple of str')
+            raise ValueError('The lhs is not a str, nor a tuple (or list) of str')
         if isinstance(rhs, (list, tuple)) and all(map(lambda _: isinstance(_, str), rhs)): 
             self.rhs = tuple(rhs)
         else:
-            raise ValueError('The rhs must be a list/tuple of str')        
+            raise ValueError('The rhs must be a tuple (or list) of str')        
 
+    def __lt__(self, other):
+        if not isinstance(other, Production): return NotImplemented
+        return (self.lhs, self.rhs) < (other.lhs, other.rhs)
+        
     def __eq__(self, other):
         if not isinstance(other, Production): return False
         return (self.lhs, self.rhs) == (other.lhs, other.rhs)
@@ -61,6 +67,10 @@ class Production:
 
     def __repr__(self):
         return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
+
+    def as_type0(self):
+        if isinstance(self.lhs, tuple): return self
+        return Production((self.lhs, ), self.rhs)
 
     @classmethod 
     def from_string(cls, prods, context_free = True):
@@ -159,6 +169,13 @@ class Grammar:
         self.P = tuple(P)
         self.S = S
 
+    def __eq__(self, other):
+        if not isinstance(other, Grammar): return False
+        return (self.N, self.T, tuple(sorted(self.P)), self.S) == (other.N, other.T, tuple(sorted(other.P)), other.S)
+
+    def __hash__(self):
+        return hash((self.N, self.T, tuple(sorted(self.P)), self.S))
+
     @classmethod
     def from_string(cls, prods, context_free = True):
         """Builds a grammar obtained from the given productions.
@@ -215,8 +232,6 @@ class Grammar:
     def __repr__(self):
         return 'Grammar(N={}, T={}, P={}, S={})'.format(letstr(self.N), letstr(self.T), self.P, letstr(self.S))
 
-def _ensure_tuple(lhs):
-    return lhs if isinstance(lhs, tuple) else (lhs, )    
 
 class Derivation:
     """A derivation.
@@ -244,22 +259,21 @@ class Derivation:
 
     def step(self, prod, pos): 
         sf = self._sf
-        P = self.G.P[prod]
-        lhs = _ensure_tuple(P.lhs)
-        if sf[pos: pos + len(lhs)] != lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, HAIR_SPACE.join(sf)))
+        P = self.G.P[prod].as_type0()
+        if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, HAIR_SPACE.join(sf)))
         copy = Derivation(self.G)
         copy._repr = self._repr
         copy._steps = self.steps()
-        copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(lhs):] if _ != 'ε')
+        copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != 'ε')
         copy._steps = self._steps + ((prod, pos), )
         copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
         return copy
 
     def possible_steps(self, prod = None, pos = None):
-        for n, P in enumerate(self.G.P) if prod is None else ((prod, self.G.P[prod]), ):
-            lhs = _ensure_tuple(P.lhs)
-            for p in range(len(self._sf) - len(lhs) + 1) if pos is None else (pos, ):
-                if self._sf[p: p + len(lhs)] == lhs:
+        type0_prods = tuple(map(lambda _: _.as_type0(), self.G.P))
+        for n, P in enumerate(type0_prods) if prod is None else ((prod, type0_prods[prod]), ):
+            for p in range(len(self._sf) - len(P.lhs) + 1) if pos is None else (pos, ):
+                if self._sf[p: p + len(P.lhs)] == P.lhs:
                     yield n, p
     
     def steps(self):
