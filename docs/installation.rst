@@ -6,16 +6,19 @@ Installation
 .. warning::
 
    This library uses a *beaconing* mechanism based on the `Google Analytics Measurement Protocol <https://developers.google.com/analytics/devguides/collection/protocol/v1/>`__
-   that has the only purpose of traking what versions are used and in what environment. To completely **disable** the
-   reporting just set the :envvar:`LIBLET_NOBEACON` in your environment before importing the library.
+   that has the only purpose of tracking what versions are used and in what
+   environment. To completely **disable** the reporting just set the
+   :envvar:`LIBLET_NOBEACON` in your environment before importing the library.
 
 We recommend using the latest version of Python 3, LibLET supports Python 3.7
 and newer. These packages will be installed automatically when installing
 LibLET:
 
 * `antlr4-python3-runtime`_ the runtime of `ANTLR 4`_ for Python 3;
-* `jupyter`_ a web application to create documents that contain live code, math, visualizations and narrative text;
-* `graphviz <https://pypi.org/project/graphviz/>`__ the Python binding for the `Graphviz`_ graph visualization software.
+* `jupyter`_ a web application to create documents that contain live
+   code, math, visualizations and narrative text;
+* `graphviz <https://pypi.org/project/graphviz/>`__ the Python binding for the
+  `Graphviz`_ graph visualization software.
 
 .. _ANTLR 4: https://www.antlr.org/
 .. _Graphviz: https://www.graphviz.org/
@@ -84,5 +87,5 @@ To use LibLET you also need to manually install:
 Follow the installation instruction on the `Graphviz`_ site according to your
 operating system and package manager. To install the **ANTLR Tool** just
 download it and set the :envvar:`ANTLR4_JAR` *environment variable* to the full
-path of the downloaded jar. 
+path of the downloaded jar.
 

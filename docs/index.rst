@@ -7,10 +7,10 @@ LibLET is a library developed as a teaching aid for the `Linguaggi e traduttori
 <https://www.unimi.it/>`_ by `Massimo Santini <https://santini.di.unimi.it/>`_.
 
 The main aim of the library is to provide a set of convenient data types
-representing the usual objects of study of *formal languages* and *parsing* such
-as, for example: *grammars*, *productions*, *trees*, *derivations*… so that one
-can implement algorithms dealing with such objects in a straighforward way.
-Moreover, for most of such types, a `rich display
+representing the usual objects of study of *formal languages* and *parsing*
+such as, for example: *grammars*, *productions*, *trees*, *derivations*… so
+that one can implement algorithms dealing with such objects in a
+straightforward way. Moreover, for most of such types, a `rich display
 <https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display>`_
 is provided so that `Jupyter <https://jupyter.org/>`_ can be fruitfully used to
 explore and teach such algorithms.
@@ -21,7 +21,9 @@ detail, with a full reference in the :ref:`API` section.
 
 .. note::
 
-    Please observe that this library uses a **beaconing** mechanism based on the `Google Analytics Measurement Protocol <https://developers.google.com/analytics/devguides/collection/protocol/v1/>`__, 
+    Please observe that this library uses a **beaconing** mechanism based on the
+    `Google Analytics Measurement Protocol
+    <https://developers.google.com/analytics/devguides/collection/protocol/v1/>`__,
     see the :ref:`installation` on how to **disable** it.
 
 
