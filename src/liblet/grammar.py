@@ -68,10 +68,6 @@ class Production:
     def __repr__(self):
         return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
 
-    def as_type0(self):
-        if isinstance(self.lhs, tuple): return self
-        return Production((self.lhs, ), self.rhs)
-
     @classmethod 
     def from_string(cls, prods, context_free = True):
         """Builds a tuple of productions obtained from the given string.
@@ -107,6 +103,10 @@ class Production:
             for rh in rha.split('|'):
                 P.append(cls(lhs, tuple(rh.split())))
         return tuple(P)
+
+    def as_type0(self):
+        if isinstance(self.lhs, tuple): return self
+        return Production((self.lhs, ), self.rhs)
 
 
 class Item(Production): # pragma: no cover
@@ -176,6 +176,9 @@ class Grammar:
     def __hash__(self):
         return hash((self.N, self.T, tuple(sorted(self.P)), self.S))
 
+    def __repr__(self):
+        return 'Grammar(N={}, T={}, P={}, S={})'.format(letstr(self.N), letstr(self.T), self.P, letstr(self.S))
+
     @classmethod
     def from_string(cls, prods, context_free = True):
         """Builds a grammar obtained from the given productions.
@@ -229,9 +232,6 @@ class Grammar:
         """
         return all(_ in self.T for _ in sentential_form)
 
-    def __repr__(self):
-        return 'Grammar(N={}, T={}, P={}, S={})'.format(letstr(self.N), letstr(self.T), self.P, letstr(self.S))
-
 
 class Derivation:
     """A derivation.
@@ -247,9 +247,20 @@ class Derivation:
 
     def __init__(self, G):
         self.G = G
+        self._steps = tuple()
+        # the following attrs are computed
         self._sf = (G.S, )
         self._repr = G.S
-        self._steps = tuple()
+
+    def __eq__(self, other):
+        if not isinstance(other, Derivation): return False
+        return (self.G, self._steps) == (other.G, other._steps)
+
+    def __hash__(self):
+        return hash((self.G, self._steps))
+    
+    def __repr__(self):
+        return self._repr
 
     def leftmost(self, prod):
         return self.step(prod, min(self.possible_steps(prod))[1])
@@ -281,6 +292,3 @@ class Derivation:
         
     def sentential_form(self):
         return tuple(self._sf)
-    
-    def __repr__(self):
-        return self._repr
