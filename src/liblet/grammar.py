@@ -161,13 +161,21 @@ class Grammar:
 
     """
 
-    __slots__ = ('N', 'T', 'P', 'S')
+    __slots__ = ('N', 'T', 'P', 'S', 'context_free')
 
     def __init__(self, N, T, P, S):
         self.N = frozenset(N)
         self.T = frozenset(T)
         self.P = tuple(P)
         self.S = S
+        self.context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
+        if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common'.format(set(self.N & self.T)))
+        if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')    
+        if self.context_free:
+            bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
+            if bad_prods: raise ValueError('The following productions have a lhs that is not a nonterminal: {}.'.format(bad_prods))
+        bad_prods = tuple(P for P in self.P if not (set(P.as_type0().lhs) | set(P.rhs)).issubset(self.N | self.T | {ε}))
+        if bad_prods: raise ValueError('The following productions contain symbols that are neither terminals or nonterminals: {}.'.format(bad_prods))        
 
     def __eq__(self, other):
         if not isinstance(other, Grammar): return False

@@ -25,6 +25,31 @@ class TestGrammar(unittest.TestCase):
         lhs, rhs = Production('a',['b'])
         self.assertEqual(('a', ('b',)), (lhs, rhs))
 
+    def test_grammar_nondisjoint(self):
+        with self.assertRaisesRegex(ValueError, "not disjoint.*\{'A'\}"):
+            Grammar({'S', 'A'},{'A', 'a'}, (), 'S')
+
+    def test_grammar_wrongstart(self):
+        with self.assertRaisesRegex(ValueError, 'start symbol.*not a nonterminal'):
+            Grammar({'T', 'A'},{'a'}, (), 'S')
+
+    def test_grammar_cf(self):
+        G = Grammar.from_string('S -> T U\nT -> t\nU -> u')
+        self.assertTrue(G.context_free)
+
+    def test_grammar_not_cf(self):
+        G = Grammar.from_string('S -> T U\nT x -> t\nT U -> u', False)
+        self.assertFalse(G.context_free)
+
+    def test_grammar_wrong_cf(self):
+        with self.assertRaisesRegex(ValueError, 'not a nonterminal.*\(T -> s,\)'):
+            Grammar(
+                {'S'}, {'s'}, (
+                    Production('S', ('s', )),
+                    Production('T', ('s', ))
+                ), 'S'
+            )
+
     def test_grammar_from_to_string(self):
         G = Grammar.from_string("""
             Z -> E $
