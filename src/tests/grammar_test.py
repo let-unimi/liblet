@@ -50,6 +50,15 @@ class TestGrammar(unittest.TestCase):
                 ), 'S'
             )
 
+    def test_grammar_extrasymbol(self):
+        with self.assertRaisesRegex(ValueError, 'neither terminals or nonterminals.*\(S -> s t,\)'):
+            Grammar(
+                {'S'}, {'s'}, (
+                    Production('S', ('s', )),
+                    Production(('S',), ('s', 't' ))
+                ), 'S'
+            )
+
     def test_grammar_from_to_string(self):
         G = Grammar.from_string("""
             Z -> E $
