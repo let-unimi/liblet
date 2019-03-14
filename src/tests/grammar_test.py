@@ -25,6 +25,21 @@ class TestGrammar(unittest.TestCase):
         lhs, rhs = Production('a',['b'])
         self.assertEqual(('a', ('b',)), (lhs, rhs))
 
+    def test_production_totalorder(self):
+        self.assertTrue(Production('a', ('b', )) > Production('a', ('a', )))
+
+    def test_grammar_eq(self):
+        G0 = Grammar.from_string('S -> A B | B\nA -> a\nB -> b')
+        G1 = Grammar.from_string('S -> B | A B\nB -> b\nA -> a')
+        self.assertEqual(G0, G1)
+
+    def test_grammar_hash(self):
+        S = {
+            Grammar.from_string('S -> A B | B\nA -> a\nB -> b'): 1,
+            Grammar.from_string('S -> B | A B\nB -> b\nA -> a'): 2
+        }
+        self.assertEqual(1, len(S))
+
     def test_grammar_nondisjoint(self):
         with self.assertRaisesRegex(ValueError, "not disjoint.*\{'A'\}"):
             Grammar({'S', 'A'},{'A', 'a'}, (), 'S')
@@ -95,6 +110,41 @@ class TestGrammar(unittest.TestCase):
         for prod, pos in [(0, 0), (1, 0), (2, 1)]: d = d.step(prod, pos)
         self.assertEqual('S -> A B -> a B -> a b', str(d))
 
+    def test_derivation_sf(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        d = Derivation(G)
+        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d = d.step(prod, pos)
+        self.assertEqual(('a', 'b'), d.sentential_form())
+
+    def test_derivation_eq(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        d0 = Derivation(G)
+        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d0 = d0.step(prod, pos)
+        d1 = Derivation(G)
+        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d1 = d1.step(prod, pos)
+        self.assertEqual(d0, d1)
+        
+    def test_derivation_hash(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a 
+            B -> b
+        """, False)
+        d0 = Derivation(G)
+        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d0 = d0.step(prod, pos)
+        d1 = Derivation(G)
+        for prod, pos in [(0, 0), (1, 0), (2, 1)]: d1 = d1.step(prod, pos)
+        S = {d0: 1, d1: 2}
+        self.assertEqual(1, len(S))
+        
     def test_derivation_steps(self):
         G = Grammar.from_string("""
             S -> A B
