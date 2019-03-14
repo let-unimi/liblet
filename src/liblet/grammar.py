@@ -45,11 +45,11 @@ class Production:
         elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str), lhs)): 
             self.lhs = tuple(lhs)
         else:
-            raise ValueError('The lhs is not a str, nor a tuple (or list) of str')
+            raise ValueError('The lhs is not a str, nor a tuple (or list) of str.')
         if isinstance(rhs, (list, tuple)) and all(map(lambda _: isinstance(_, str), rhs)): 
             self.rhs = tuple(rhs)
         else:
-            raise ValueError('The rhs must be a tuple (or list) of str')        
+            raise ValueError('The rhs must be a tuple (or list) of str.')        
 
     def __lt__(self, other):
         if not isinstance(other, Production): return NotImplemented
@@ -113,7 +113,7 @@ class Item(Production): # pragma: no cover
     __slots__ = ('pos',)
     def __init__(self, lhs, pos, rhs):
         if isinstance(lhs, (list, tuple)):
-            raise ValueError('The lhs must be a str')
+            raise ValueError('The lhs must be a str.')
         super().__init__(lhs, rhs)
         self.pos = pos
     def __eq__(self, other):
@@ -131,7 +131,7 @@ class EarleyItem(Item):  # pragma: no cover
     __slots__ = ('orig', )
     def __init__(self, lhs, pos, rhs, orig):
         if isinstance(lhs, (list, tuple)):
-            raise ValueError('The lhs must be a str')
+            raise ValueError('The lhs must be a str.')
         super().__init__(lhs, pos, rhs)
         self.orig = orig
     def __eq__(self, other):
@@ -169,7 +169,7 @@ class Grammar:
         self.P = tuple(P)
         self.S = S
         self.context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
-        if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common'.format(set(self.N & self.T)))
+        if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common.'.format(set(self.N & self.T)))
         if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')    
         if self.context_free:
             bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
@@ -217,7 +217,9 @@ class Grammar:
             symbols = set(chain.from_iterable(map(attrgetter('lhs'), P))) | set(chain.from_iterable(map(attrgetter('rhs'), P)))
             N = set(_ for _ in symbols if _[0].isupper())
             T = symbols - N - {ε}
-        return cls(N, T, P, S)
+        G = cls(N, T, P, S)
+        if G.context_free != context_free: raise ValueError('The resulting grammar is not context free, even if so requested.')
+        return G
 
     def rhs(self, N):
         """Yields al the righthand sides alternatives matching the given nonterminal.
@@ -279,7 +281,7 @@ class Derivation:
     def step(self, prod, pos): 
         sf = self._sf
         P = self.G.P[prod].as_type0()
-        if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}'.format(P, pos, HAIR_SPACE.join(sf)))
+        if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
         copy = Derivation(self.G)
         copy._repr = self._repr
         copy._steps = self.steps()
