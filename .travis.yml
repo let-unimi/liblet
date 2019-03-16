@@ -7,5 +7,6 @@ install:
 # command to run tests
 script:
   - export ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.7.2-complete.jar" && ./bin/tests
-
+after_success:
+  - codecov
   
