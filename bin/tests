@@ -1,4 +1,3 @@
 #!/bin/bash
 
-cd src
-coverage run --include 'liblet/*' -m unittest discover -s tests -p '*_test.py' && coverage html -d ../build/coverage
+coverage run --include 'src/liblet/*' -m unittest discover -s tests -p '*_test.py' && coverage html -d ./build/coverage
