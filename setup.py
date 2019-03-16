@@ -33,7 +33,7 @@ setup(
     ],
     keywords = 'automata grammar formal language graph tree',
     package_dir = {'': 'src'},
-    packages = find_packages('src'),
+    packages = find_packages('src', exclude = ['tests']),
     py_modules = ['scripts'],
     python_requires='>=3.7',
     install_requires = ['antlr4-python3-runtime', 'jupyter', 'graphviz'],
