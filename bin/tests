@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd src
-coverage run --include 'liblet/*' -m unittest discover -s tests -p '*_test.py' && coverage html -d ../build/coverage 
+export PYTHONPATH=src
+coverage run --source src --include 'liblet/*' -m unittest discover -s tests -p '*_test.py' && coverage html -d ./build/coverage 
