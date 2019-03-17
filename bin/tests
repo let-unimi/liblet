@@ -1,3 +1,3 @@
 #!/bin/bash
 
-coverage run --branch --source src/liblet -m unittest discover -s tests -p '*_test.py' && coverage html -d ./build/coverage 
+coverage run --source liblet --omit '*/__init__.py','*/display.py' -m unittest discover -s tests -p '*_test.py' && coverage html -d ./build/coverage

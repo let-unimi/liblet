@@ -14,7 +14,6 @@ from .grammar import Production, Item, EarleyItem, Grammar, Derivation
 from .automaton import Transition, Automaton
 from .utils import peek, union_of, letstr, StatesQueueMap, Stack, Queue
 from .antlr import generate_and_load, parse_tree, to_let_tree
-from .jupyter import 
 
 if 'LIBLET_NOBEACON' not in environ:
     try:

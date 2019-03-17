@@ -9,7 +9,7 @@ from antlr4.CommonTokenStream import CommonTokenStream
 from antlr4.InputStream import InputStream
 from antlr4.tree.Tree import ParseTreeVisitor
 
-from .graphviz import Tree
+from .display import Tree
 
 if not 'READ_THE_DOCS' in environ:
     if 'ANTLR4_JAR' not in environ:
