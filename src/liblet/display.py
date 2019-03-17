@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+
+from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
 
 from .utils import letstr

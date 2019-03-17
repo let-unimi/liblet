@@ -58,7 +58,7 @@ following class.
 Rich dislpay
 ------------
 
-.. module:: liblet.graphviz
+.. module:: liblet.display
 
 .. autoclass:: Tree
 
