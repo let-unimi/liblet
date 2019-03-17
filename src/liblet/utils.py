@@ -30,7 +30,7 @@ def letstr(obj, sep = None, sort = True):
     return _ls(obj)
     
 
-class StatesQueueMap(object):
+class StatesQueueMap(object): # pragma: nocover
 
     def __init__(self, S0):
         self.queue = [S0]

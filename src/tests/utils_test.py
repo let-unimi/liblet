@@ -1,12 +1,24 @@
 import unittest
 
-from liblet.utils import letstr, Stack, Queue
+from liblet.utils import peek, union_of, letstr, Stack, Queue
 
 
 class UtilsTest(unittest.TestCase):
 
+    def test_peek(self):
+        self.assertEqual('a', peek({'a'}))
+
+    def test_unionof(self):
+        self.assertEqual({'a', 'b'}, union_of([{'a'},{'b'}]))
+
     def test_str(self):
         self.assertEqual('test', letstr('test'))
+
+    def test_obj(self):
+        class AClass:
+            def __repr__(self):
+                return 'AClass'
+        self.assertEqual('AClass', letstr(AClass()))
 
     def test_emptyset(self):
         self.assertEqual('{}', letstr(set()))
@@ -16,6 +28,12 @@ class UtilsTest(unittest.TestCase):
 
     def test_sefofstr(self):
         self.assertEqual('{a, b, c}', letstr({'a', 'b', 'c'}))
+    
+    def test_tupleofesefofstr(self):
+        self.assertEqual('(d, {a, b, c})', letstr(({'a', 'b', 'c'}, 'd')))
+
+    def test_listofesefofstr(self):
+        self.assertEqual('[(d), e, {a, b, c}]', letstr([{'a', 'b', 'c'}, ('d',), 'e']))
 
     def test_sefofsetofstr(self):
         self.assertEqual(
