@@ -6,7 +6,7 @@ from os import path
 from io import open
 import re
 
-from pallets_sphinx_themes import ProjectLink
+from pallets_sphinx_themes import ProjectLink, get_version
 
 here = path.abspath(path.dirname(__file__))
 
@@ -14,18 +14,12 @@ def read(*parts):
     with open(path.join(here, *parts), 'r', encoding = 'utf-8') as fp:
         return fp.read()
 
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
-    if version_match: return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
-
 # -- Project information
 
 project = 'LibLET'
 copyright = '2019, Massimo Santini'
 author = 'Massimo Santini'
-version = find_version('..', 'src', 'liblet', '__init__.py')
+relase, version = get_version('liblet')
 
 # -- General configuration
 
@@ -53,13 +47,6 @@ add_module_names = False
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
-    # "werkzeug": ("http://werkzeug.pocoo.org/docs/", None),
-    # "click": ("https://click.palletsprojects.com/", None),
-    # "jinja": ("http://jinja.pocoo.org/docs/", None),
-    # "itsdangerous": ("https://itsdangerous.palletsprojects.com/", None),
-    # "sqlalchemy": ("https://docs.sqlalchemy.org/", None),
-    # "wtforms": ("https://wtforms.readthedocs.io/en/stable/", None),
-    # "blinker": ("https://pythonhosted.org/blinker/", None),
 }
 
 # -- Options for HTML output
