@@ -49,11 +49,16 @@ following class.
 
    .. automethod:: step
    
-   .. automethod:: rightmost
-
    .. automethod:: leftmost
 
+   .. automethod:: rightmost
+
    .. automethod:: possible_steps
+
+   .. automethod:: steps
+
+   .. automethod:: sentential_form
+
 
 Rich dislpay
 ------------

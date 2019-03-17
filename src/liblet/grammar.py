@@ -33,7 +33,6 @@ class Production:
         rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right hand side of the production.
 
     Raises:
-
         ValueError: in case the lefthand or righthand side are not strings, or tuples of strings.
     """
 
@@ -237,7 +236,7 @@ class Grammar:
         Args:
             sentential_form (:term:`iterable` of :obj:`str`): the sentential form to check.
         Return:
-            ``True`` if the sentential form is made just of terminals.
+            boolean:: ``True`` if the sentential form is made just of terminals.
         
         """
         return all(_ in self.T for _ in sentential_form)
@@ -273,12 +272,53 @@ class Derivation:
         return self._repr
 
     def leftmost(self, prod):
+        """Performs a *leftmost* derivation step.
+
+        Applies the specified production to the current leftmost nonterminal in the sentential form.
+
+        Args:
+            prod (int): the production to apply, that is ``G.P[prod]``.
+
+        Returns:
+            :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
+
+        Raises:
+            ValueError: in case the leftmost nonterminal isn't the lefthand side of the given production.
+        """
         return self.step(prod, min(self.possible_steps(prod))[1])
 
     def rightmost(self, prod):
+        """Performs a *rightmost* derivation step.
+
+        Applies the specified production to the current rightmost nonterminal in the sentential form.
+
+        Args:
+            prod (int): the production to apply, that is ``G.P[prod]``.
+
+        Returns:
+            :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
+
+        Raises:
+            ValueError: in case the rightmost nonterminal isn't the lefthand side of the given production.
+        """
         return self.step(prod, max(self.possible_steps(prod))[1])
 
     def step(self, prod, pos): 
+        """Performs a derivation step, returning a new derivation.
+
+        Applies the specified production to the given position in the sentential form.
+
+        Args:
+            prod (int): the production to apply, that is ``G.P[prod]``.
+            pos (int): the position (in the current *sentential form*) where to apply the production.
+
+        Returns:
+            :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
+
+        Raises:
+            ValueError: in case the production can't be applied at the specified position.
+        """
+
         sf = self._sf
         P = self.G.P[prod].as_type0()
         if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
@@ -291,6 +331,20 @@ class Derivation:
         return copy
 
     def possible_steps(self, prod = None, pos = None):
+        """Yields all the possible steps that can be performed given the grammar and current *sentential form*.
+
+        Determines all the position of the *sentential form* that correspond to the lefthand side of 
+        one of the production in the grammar, returning the position and production number. If a 
+        production is specified, it yields only the pairs referring to it; similarly, if a position
+        is specified, it yields only the pairs referring to it.
+
+        Args:
+            prod (int): the production whose lefthand is to be searched (that is `G.P[prod].lhs``) in the *sentential form*.
+            pos (int): the position where to look for grammar productions that have a matching lefthand side.
+
+        Yields:
+            Pairs of ``(pord, pos)`` that can be used as :func:`step` argument.
+        """
         type0_prods = tuple(map(lambda _: _.as_type0(), self.G.P))
         for n, P in enumerate(type0_prods) if prod is None else ((prod, type0_prods[prod]), ):
             for p in range(len(self._sf) - len(P.lhs) + 1) if pos is None else (pos, ):
@@ -298,7 +352,15 @@ class Derivation:
                     yield n, p
     
     def steps(self):
+        """Returns the steps of the derivation.
+
+        Returns: a :obj:`tuple` of ``(pord, pos)`` pairs corresponding to this derivation steps.
+        """
         return tuple(self._steps)
         
     def sentential_form(self):
+        """Returns the *sentential form* of the derivation.
+
+        Returns: a :obj:`tuple` of grammar symbols corresponding to the *sentential form* of this derivation steps.
+        """
         return tuple(self._sf)
