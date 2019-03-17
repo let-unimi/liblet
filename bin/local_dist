@@ -6,7 +6,7 @@ python -m compileall src/liblet
 base="$(pwd)/build/dist/"
 dest="liblet-${VERSION}.zip"
 (cd src && zip -i \*.pyc -9Xr "${base}${dest}" liblet)
-sed -i -e "s|/liblet.*|/$dest|" "./bin/lecture"
+sed -i -e "s|/liblet.*|/$dest|" "../drafts/bin/lecture"
 for p in handouts playground; do
     echo "Updating ${p}..."
     git -C "../$p" rm -f ".${p}/libs/"liblet*
