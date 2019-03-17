@@ -2,6 +2,7 @@
 
 if [ -n "$1" ]; then
     python -m sphinx -b doctest -E docs build/docs
+    python -m sphinx -b coverage -E docs build/docs
 fi
 if [ 'docs/quickstart.ipynb' -nt 'docs/quickstart.rst' ]; then
     jupyter nbconvert --execute --to rst docs/quickstart.ipynb
