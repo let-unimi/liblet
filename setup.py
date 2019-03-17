@@ -39,7 +39,7 @@ setup(
     install_requires = ['antlr4-python3-runtime', 'jupyter', 'graphviz'],
     extras_require = {
         'dev': ['bumpversion', 'sphinx', 'twine', 'Pallets-Sphinx-Themes'],
-        'test': ['coverage'],
+        'test': ['coverage', 'codecov'],
     },
     entry_points={  # Optional
         'console_scripts': [

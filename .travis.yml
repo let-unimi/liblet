@@ -2,8 +2,7 @@ dist: xenial
 language: python
 python: 3.7
 install:
-  - pip install .[test]
-  - pip install codecov
+  - pip install -e .[test]
   - install_antlrjar
 script:
   - export ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.7.2-complete.jar" && ./bin/tests
