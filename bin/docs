@@ -3,5 +3,7 @@
 if [ -n "$1" ]; then
     python -m sphinx -b doctest -E docs build/docs
 fi
-jupyter nbconvert --execute --to rst docs/quickstart.ipynb
+if [ 'docs/quickstart.ipynb' -nt 'docs/quickstart.rst' ]; then
+    jupyter nbconvert --execute --to rst docs/quickstart.ipynb
+fi
 python -m sphinx -E docs build/docs
