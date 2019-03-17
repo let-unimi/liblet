@@ -9,12 +9,12 @@ __version__ = '0.6.0-alpha'
 DIAMOND = '◇'
 
 from .decorators import closure, show_calls
-from .graphviz import Tree, Graph, StateTransitionGraph, ProductionGraph
+from .display import Tree, Graph, StateTransitionGraph, ProductionGraph, side_by_side, dod2html, iter2table
 from .grammar import Production, Item, EarleyItem, Grammar, Derivation
 from .automaton import Transition, Automaton
-from .utils import peek, dod2html, letstr, iter2table, StatesQueueMap, Stack, Queue
+from .utils import peek, union_of, letstr, StatesQueueMap, Stack, Queue
 from .antlr import generate_and_load, parse_tree, to_let_tree
-from .jupyter import side_by_side
+from .jupyter import 
 
 if 'LIBLET_NOBEACON' not in environ:
     try:

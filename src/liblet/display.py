@@ -3,6 +3,7 @@ from graphviz import Digraph as gvDigraph
 
 from .utils import letstr
 
+# graphviz stuff
 
 class BaseGraph(ABC):
 
@@ -211,3 +212,26 @@ class StateTransitionGraph(BaseGraph):
         self.G = G
         return G
 
+
+# HTML stuff
+
+def side_by_side(*iterable):
+    return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
+
+def iter2table(it):
+    return HTML('<table>' + '\n'.join(f'<tr><th>{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
+
+def dod2html(dod):
+    def fmt(r, c):
+        if not c in dod[r]: return '&nbsp;'
+        elem = dod[r][c]
+        if elem is None: return '&nbsp;'
+        if isinstance(elem, list) or isinstance(elem, tuple) or isinstance(elem, set):
+            return ', '.join(map(str, elem))
+        else:
+            return str(elem)
+    rows = sorted(dod.keys())
+    cols = sorted(set(chain.from_iterable(dod[x].keys() for x in dod)))
+    head = '<tr><td>&nbsp;<th>' + '<th>'.join(cols)
+    body = '\n'.join('<tr><th>{}<td>{}'.format(r, '<td>'.join(fmt(r, c) for c in cols))for r in rows)
+    return HTML('<table class="table table-bordered">\n{}\n{}\n</table>'.format(head, body))
