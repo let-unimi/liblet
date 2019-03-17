@@ -8,34 +8,34 @@ Productions and Grammars
 
 .. testsetup:: *
 
-   from liblet import Production
+   from liblet import Production, closure, show_calls
 
-.. module:: liblet.grammar
+.. currentmodule:: liblet.grammar
 
 The basic building block of a *grammar* is a *production* represented by the following class.
 
 .. autoclass:: Production
 
-A convenience method is provided to obtain productions from a suitable string
-representation of them.
-
-.. automethod:: Production.from_string
-
-A grammar can be represented by the following class, that can be instantiated
-given the usual formal definition of a grammar as a tuple.
+   A convenience method is provided to obtain productions from a suitable string
+   representation of them.
+   
+   .. automethod:: from_string
+   
+   A grammar can be represented by the following class, that can be instantiated
+   given the usual formal definition of a grammar as a tuple.
 
 .. autoclass:: Grammar
 
-Even in the case of grammars, a convenience method is provided to build a
-grammar from a suitable string representation. Once the productions are obtained
-with :func:`Production.from_grammar`, the remaining parameters are
-conventionally inferred as detailed below.
-
-.. automethod:: Grammar.from_string
-
-An utility method is provided to enumerate alternatives for a given *lefthand* side:
-
-.. automethod:: Grammar.alternatives
+   Even in the case of grammars, a convenience method is provided to build a
+   grammar from a suitable string representation. Once the productions are obtained
+   with :func:`Production.from_grammar`, the remaining parameters are
+   conventionally inferred as detailed below.
+   
+   .. automethod:: from_string
+   
+   An utility method is provided to enumerate alternatives for a given *lefthand* side:
+   
+   .. automethod:: alternatives
 
 Derivations
 -----------
@@ -61,7 +61,7 @@ following class.
 Rich dislpay
 ------------
 
-.. module:: liblet.display
+.. currentmodule:: liblet.display
 
 .. autoclass:: Tree
 
@@ -75,6 +75,10 @@ Rich dislpay
 Utilities and decorators
 ------------------------
 
-.. module:: liblet.utils
+.. currentmodule:: liblet.utils
 
-.. module:: liblet.decorators
+.. currentmodule:: liblet.decorators
+
+.. autofunction:: closure 
+
+.. autofunction:: show_calls

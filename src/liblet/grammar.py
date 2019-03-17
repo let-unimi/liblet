@@ -19,7 +19,7 @@ class Production:
     *righthand* side that can be :obj:`strings <str>`, or :obj:`tuples <tuple>`
     of strings; a production is :term:`iterable` and unpacking can be used to
     obtain its sides, so for example
-    
+
     .. doctest::
 
         >>> lhs, rhs = Production('A', ('B', 'C'))
