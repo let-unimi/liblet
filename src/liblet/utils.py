@@ -8,7 +8,7 @@ from IPython.display import HTML
 def peek(s):
     return next(iter(s)) if s else None
 
-def union(s):
+def union_of(s):
     return set().union(*s)
 
 def letstr(obj, sep = None, sort = True):
@@ -29,23 +29,6 @@ def letstr(obj, sep = None, sort = True):
             return fs.format(sep.join(sorted(map(_ls, obj)) if sorted else list(map(_ls, obj))))
     return _ls(obj)
     
-def iter2table(it):
-    return HTML('<table>' + '\n'.join(f'<tr><th>{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
-
-def dod2html(dod):
-    def fmt(r, c):
-        if not c in dod[r]: return '&nbsp;'
-        elem = dod[r][c]
-        if elem is None: return '&nbsp;'
-        if isinstance(elem, list) or isinstance(elem, tuple) or isinstance(elem, set):
-            return ', '.join(map(str, elem))
-        else:
-            return str(elem)
-    rows = sorted(dod.keys())
-    cols = sorted(set(chain.from_iterable(dod[x].keys() for x in dod)))
-    head = '<tr><td>&nbsp;<th>' + '<th>'.join(cols)
-    body = '\n'.join('<tr><th>{}<td>{}'.format(r, '<td>'.join(fmt(r, c) for c in cols))for r in rows)
-    return HTML('<table class="table table-bordered">\n{}\n{}\n</table>'.format(head, body))
 
 class StatesQueueMap(object):
 
