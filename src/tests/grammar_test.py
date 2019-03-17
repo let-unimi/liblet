@@ -83,22 +83,14 @@ class TestGrammar(unittest.TestCase):
         s = "Grammar(N={E, T, Z}, T={$, (, ), +, i}, P=(Z -> E $, E -> T, E -> E + T, T -> i, T -> ( E )), S=Z)"
         self.assertEqual(s, str(G))
 
-    def test_rhs(self):
+    def test_alternatives(self):
         actual = set(Grammar.from_string("""
             Z -> E $
             E -> T | E + T
             T -> i | ( E )
-        """).rhs('E'))
+        """).alternatives('E'))
         expected = set([('T',), ('E', '+', 'T')])
         self.assertEqual(expected, actual)
-
-    def test_all_terminals(self):
-        G = Grammar.from_string("""
-            S -> A B
-            A -> a 
-            B -> b
-        """, False)
-        self.assertTrue(G.all_terminals('babba'))
 
     def test_derivation_repr(self):
         G = Grammar.from_string("""

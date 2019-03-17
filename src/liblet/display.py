@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from itertools import chain
 
 from IPython.display import HTML
 from graphviz import Digraph as gvDigraph

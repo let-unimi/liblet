@@ -220,7 +220,7 @@ class Grammar:
         if G.context_free != context_free: raise ValueError('The resulting grammar is not context free, even if so requested.')
         return G
 
-    def rhs(self, N):
+    def alternatives(self, N):
         """Yields al the righthand sides alternatives matching the given nonterminal.
 
         Args:
@@ -229,17 +229,6 @@ class Grammar:
             the righthand sides of all productions having ``N`` as the lefthand side.
         """
         return (P.rhs for P in self.P if P.lhs == N)
-
-    def all_terminals(self, sentential_form):
-        """Checks that the given *sentential form* is made of terminals.
-        
-        Args:
-            sentential_form (:term:`iterable` of :obj:`str`): the sentential form to check.
-        Return:
-            boolean:: ``True`` if the sentential form is made just of terminals.
-        
-        """
-        return all(_ in self.T for _ in sentential_form)
 
 
 class Derivation:

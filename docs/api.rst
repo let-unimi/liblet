@@ -33,11 +33,9 @@ conventionally inferred as detailed below.
 
 .. automethod:: Grammar.from_string
 
-A couple of utility methods are provided:
+An utility method is provided to enumerate alternatives for a given *lefthand* side:
 
-.. automethod:: Grammar.rhs
-
-.. automethod:: Grammar.all_terminals
+.. automethod:: Grammar.alternatives
 
 Derivations
 -----------
@@ -74,3 +72,9 @@ Rich dislpay
 .. autoclass:: StateTransitionGraph
 
 
+Utilities and decorators
+------------------------
+
+.. module:: liblet.utils
+
+.. module:: liblet.decorators
