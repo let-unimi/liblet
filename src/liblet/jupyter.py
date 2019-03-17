@@ -25,7 +25,3 @@ def set_tuple_formatter():
     plain = get_ipython().display_formatter.formatters['text/plain']
     _tuple_fmt = plain.for_type(tuple)
     plain.for_type(tuple, _let_tuple_fmt)
-
-def side_by_side(*iterable):
-    return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
-
