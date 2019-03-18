@@ -73,7 +73,7 @@ class Production:
 
         Args:
             prods (str): a string representing the set of productions.
-            context_free (bool): if ``True`` all the *lefthand* sides will be string (not tuples).
+            context_free (bool): if ``True`` all the *lefthand* sides will be strings (not tuples).
 
         The string must be a sequence of lines of the form::
 
@@ -97,7 +97,7 @@ class Production:
             lh, rha = p.split('->')
             lhs = tuple(lh.split())
             if context_free:
-                if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as left-hand side'.format(p))
+                if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as lefthand side, that is forbidden in a context-free grammar.'.format(p))
                 lhs = lhs[0]
             for rh in rha.split('|'):
                 P.append(cls(lhs, tuple(rh.split())))
@@ -217,7 +217,8 @@ class Grammar:
             N = set(_ for _ in symbols if _[0].isupper())
             T = symbols - N - {ε}
         G = cls(N, T, P, S)
-        if G.context_free != context_free: raise ValueError('The resulting grammar is not context free, even if so requested.')
+        if context_free:
+            if not G.context_free: raise ValueError('The resulting grammar is not context free, even if so requested.')
         return G
 
     def alternatives(self, N):
@@ -274,7 +275,15 @@ class Derivation:
         Raises:
             ValueError: in case the leftmost nonterminal isn't the lefthand side of the given production.
         """
-        return self.step(prod, min(self.possible_steps(prod))[1])
+        if not self.G.context_free: raise ValueError('Cannot perform a leftmost derivation on a non context free grammar')
+        for pos, symbol in enumerate(self._sf):
+            if symbol in self.G.N:
+                if self.G.P[prod].lhs == symbol:
+                    return self.step(prod, pos)
+                else:
+                    raise ValueError('Cannot apply {}: the leftmost nonterminal of {} is {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf), symbol))
+        else:
+            raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf,)))
 
     def rightmost(self, prod):
         """Performs a *rightmost* derivation step.
@@ -290,7 +299,15 @@ class Derivation:
         Raises:
             ValueError: in case the rightmost nonterminal isn't the lefthand side of the given production.
         """
-        return self.step(prod, max(self.possible_steps(prod))[1])
+        if not self.G.context_free: raise ValueError('Cannot perform a rightmost derivation on a non context free grammar')
+        for pos, symbol in list(enumerate(self._sf))[::-1]:
+            if symbol in self.G.N:
+                if self.G.P[prod].lhs == symbol:
+                    return self.step(prod, pos)
+                else:
+                    raise ValueError('Cannot apply {}: the rightmost nonterminal of {} is {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf), symbol))
+        else:
+            raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf,)))
 
     def step(self, prod, pos): 
         """Performs a derivation step, returning a new derivation.

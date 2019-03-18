@@ -153,20 +153,60 @@ class TestGrammar(unittest.TestCase):
             S -> A B
             A -> a 
             B -> b
-        """, False)
+        """)
         d = Derivation(G).leftmost(0).leftmost(1).leftmost(2)
         steps = ((0, 0), (1, 0), (2, 1))
         self.assertEqual(steps, d.steps())
+
+    def test_derivation_leftmost_allterminals(self):
+        G = Grammar.from_string("""
+        E -> M | A | n
+        M -> E * E
+        A -> E + E
+        """)
+        d = Derivation(G).leftmost(1).leftmost(4).leftmost(0).leftmost(3).leftmost(2).leftmost(2).leftmost(2)
+        with self.assertRaisesRegex(ValueError, 'there are no nonterminals'):
+            d.leftmost(2)
+
+    def test_derivation_leftmost_wrongsymbol(self):
+        G = Grammar.from_string("""
+        E -> M | A | n
+        M -> E * E
+        A -> E + E
+        """)
+        d = Derivation(G).leftmost(1).leftmost(4).leftmost(0).leftmost(3).leftmost(2)
+        with self.assertRaisesRegex(ValueError, 'Cannot apply M'):
+            d.leftmost(3)
 
     def test_derivation_rightmost(self):
         G = Grammar.from_string("""
             S -> A B
             A -> a 
             B -> b
-        """, False)
+        """)
         d = Derivation(G).rightmost(0).rightmost(2).rightmost(1)
         steps = ((0, 0), (2, 1), (1, 0))
         self.assertEqual(steps, d.steps())
+
+    def test_derivation_rightmost_allterminals(self):
+        G = Grammar.from_string("""
+        E -> M | A | n
+        M -> E * E
+        A -> E + E
+        """)
+        d = d = Derivation(G).rightmost(0).rightmost(3).rightmost(2).rightmost(2)
+        with self.assertRaisesRegex(ValueError, 'there are no nonterminals'):
+            d.rightmost(2)
+
+    def test_derivation_rightmost_wrongsymbol(self):
+        G = Grammar.from_string("""
+        E -> M | A | n
+        M -> E * E
+        A -> E + E
+        """)
+        d = Derivation(G).rightmost(0).rightmost(3)
+        with self.assertRaisesRegex(ValueError, 'Cannot apply M'):
+            d.rightmost(3)
 
     def test_derivation_possible_steps(self):
         G = Grammar.from_string("""
