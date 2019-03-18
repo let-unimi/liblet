@@ -132,22 +132,26 @@ class ProductionGraph(BaseGraph):
             }
         )
 
-        sentence = [(derivation.G.S, 0, 0)]
+        def remove_ε(sentence):
+            return tuple(_ for _ in sentence if _[0] != 'ε')
+
+        sentence = ((derivation.G.S, 0, 0), )
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
             lhs, rhs = derivation.G.P[rule].as_type0()
-            rhsn = [(X, step, p) for p, X in enumerate(rhs)]
-            sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
+            rhsn = tuple((X, step, p) for p, X in enumerate(rhs))
+            sentence = remove_ε(sentence[:pos] + rhsn + sentence[pos + len(lhs):])
         last_sentence = set(sentence)
 
-        sentence = [(derivation.G.S, 0, 0)]
+        sentence = ((derivation.G.S, 0, 0), )
         with G.subgraph(graph_attr = {'rank': 'same'}) as S:
             prev_level = self.node(S, ('LevelNode', 0), gv_args = {'style': 'invis'})
             self.node(S, sentence[0][0], hash(sentence[0]))
 
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
-
+            
             lhs, rhs = derivation.G.P[rule].as_type0()
-            rhsn = [(X, step, p) for p, X in enumerate(rhs)]            
+            rhsn = tuple((X, step, p) for p, X in enumerate(rhs))
+            
             with G.subgraph(graph_attr = {'rank': 'same'}) as S:
                 new_level = self.node(S, ('LevelNode', step), gv_args = {'style': 'invis'})
                 for node in rhsn: self.node(S, node[0], hash(node), gv_args = {'style': 'rounded, setlinewidth(1.25)' if node in last_sentence else 'rounded, setlinewidth(.25)'})
@@ -166,7 +170,7 @@ class ProductionGraph(BaseGraph):
                 with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
                     for f, t in zip(rhsn, rhsn[1:]): self.edge(S, hash(f), hash(t))
 
-            sentence = sentence[:pos] + rhsn + sentence[pos + len(lhs):]
+            sentence = remove_ε(sentence[:pos] + rhsn + sentence[pos + len(lhs):])
         
         self.G = G
         return G
