@@ -329,8 +329,6 @@ class Derivation:
         P = self.G.P[prod].as_type0()
         if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
         copy = Derivation(self.G)
-        copy._repr = self._repr
-        copy._steps = self.steps()
         copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != 'ε')
         copy._steps = self._steps + ((prod, pos), )
         copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
@@ -360,13 +358,13 @@ class Derivation:
     def steps(self):
         """Returns the steps of the derivation.
 
-        Returns: a :obj:`tuple` of ``(pord, pos)`` pairs corresponding to this derivation steps.
+        Returns: a :obj:`tuple` of ``(prod, pos)`` pairs corresponding to this derivation steps.
         """
         return tuple(self._steps)
         
     def sentential_form(self):
         """Returns the *sentential form* of the derivation.
 
-        Returns: a :obj:`tuple` of grammar symbols corresponding to the *sentential form* of this derivation steps.
+        Returns: a :obj:`tuple` of (strings representing) grammar symbols corresponding to the *sentential form* of this derivation steps.
         """
         return tuple(self._sf)
