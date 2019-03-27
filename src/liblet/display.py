@@ -5,6 +5,7 @@ from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
 
 from .utils import letstr
+from .grammar import _letlrhstostr
 
 # graphviz stuff
 
@@ -246,3 +247,8 @@ def cyk2table(TABLE):
                 letstr(TABLE[(i, l)], sep = '\n') if (i, l) in TABLE else '&nbsp;' for i in range(1, N - l + 2)
             ) for l in range(N, 0, -1))
         ))
+
+def prods2table(G):
+    to_row = lambda N: '<th>{}<td style="text-align:left">{}'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
+    rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
+    return HTML('<table><tr>' + '<tr>'.join(rows) + '</table>')
