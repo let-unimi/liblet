@@ -103,6 +103,15 @@ class Production:
                 P.append(cls(lhs, tuple(rh.split())))
         return tuple(P)
 
+    @classmethod
+    def such_that(cls, **kwargs):
+        conditions = []
+        if 'lhs' in kwargs:
+            conditions.append(lambda P: P.lhs == kwargs['lhs'])
+        if 'rhs_len' in kwargs:
+            conditions.append(lambda P: len(P.rhs) == kwargs['rhs_len'])
+        return lambda P: all(cond(P) for cond in conditions)
+
     def as_type0(self):
         if isinstance(self.lhs, tuple): return self
         return Production((self.lhs, ), self.rhs)
