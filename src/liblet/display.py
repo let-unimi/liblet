@@ -241,11 +241,12 @@ def dod2table(dod):
     return HTML('<table class="table table-bordered">\n{}\n{}\n</table>'.format(head, body))
 
 def cyk2table(TABLE):
+    start = sorted(TABLE.keys())[0][0]
     N = sorted(TABLE.keys())[-1][0]
     return HTML('<table class="table table-bordered"><tr>{}</table>'.format(
         '<tr>'.join('<td style="text-align:left">' + '<td style="text-align:left">'.join(
                 letstr(TABLE[(i, l)], sep = '\n') if (i, l) in TABLE else '&nbsp;' for i in range(1, N - l + 2)
-            ) for l in range(N, 0, -1))
+            ) for l in range(N, start - 1, -1))
         ))
 
 def prods2table(G):
