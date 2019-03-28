@@ -240,6 +240,10 @@ class Grammar:
         """
         return (P.rhs for P in self.P if P.lhs == N)
 
+    def restrict_to(self, symbols):
+        return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if (({P.lhs} | set(P.rhs)) & self.N) <= symbols), self.S)
+
+
 
 class Derivation:
     """A derivation.
