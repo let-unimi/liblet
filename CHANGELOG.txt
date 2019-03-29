@@ -2,10 +2,13 @@ Changelog
 =========
 
 
-[yet to be released]
---------------------
+v0.8.5-alpha (2019-03-28)
+-------------------------
 
-- Fixed display.cyk2table for the case with a nullable row.
+- Added tests to take coverage of the grammar module to 100%.
+- Added this CHANGELOG.txt file (and some tools to handle it).
+- Fixed display.cyk2table function for the case with a nullable 
+  row.
 
 
 v0.8.4-alpha (2019-03-28)
