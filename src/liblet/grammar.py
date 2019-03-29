@@ -16,9 +16,11 @@ class Production:
     """A grammar production.
 
     This class represents a grammar production, it has a *lefthand* and a
-    *righthand* side that can be :obj:`strings <str>`, or :obj:`tuples <tuple>`
-    of strings; a production is :term:`iterable` and unpacking can be used to
-    obtain its sides, so for example
+    *righthand* side that can be *nonempty* :obj:`strings <str>`, or 
+    :obj:`tuples <tuple>` of *nonempty* strings; the righthand side can 
+    contain ε only if is the only symbol it comprises. A production is 
+    :term:`iterable` and unpacking can be used to obtain its sides, so 
+    for example
 
     .. doctest::
 
@@ -39,16 +41,19 @@ class Production:
     __slots__ = ('lhs', 'rhs')
 
     def __init__(self, lhs, rhs):
-        if isinstance(lhs, str):
+        if isinstance(lhs, str) and lhs:
             self.lhs = lhs
-        elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str), lhs)): 
+        elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str) and _, lhs)): 
             self.lhs = tuple(lhs)
         else:
-            raise ValueError('The lhs is not a str, nor a tuple (or list) of str.')
-        if isinstance(rhs, (list, tuple)) and all(map(lambda _: isinstance(_, str), rhs)): 
+            raise ValueError('The lhs is not a nonempty str, nor a tuple (or list) of nonempty str.')
+        if isinstance(rhs, (list, tuple)) and rhs and all(map(lambda _: isinstance(_, str) and _, rhs)): 
             self.rhs = tuple(rhs)
         else:
-            raise ValueError('The rhs must be a tuple (or list) of str.')        
+            raise ValueError('The rhs is not a tuple (or list) of nonempty str.')        
+        if ε in self.rhs and len(self.rhs) != 1:
+            raise ValueError('The righthand side contains ε but has more than one symbol')
+
 
     def __lt__(self, other):
         if not isinstance(other, Production): return NotImplemented
@@ -201,7 +206,7 @@ class Grammar:
 
         Args:
             prods (str): a string describing the productions.
-            context_free (bool): if ``True`` the grammar is expected to be context free.
+            context_free (bool): if ``True`` the grammar is expected to be context-free.
 
         Once the *productions* are determined via a call to :func:`Production.from_string`, 
         the remaining defining elements of the grammar are obtained as follows:
@@ -226,8 +231,8 @@ class Grammar:
             N = set(_ for _ in symbols if _[0].isupper())
             T = symbols - N - {ε}
         G = cls(N, T, P, S)
-        if context_free:
-            if not G.context_free: raise ValueError('The resulting grammar is not context free, even if so requested.')
+        if context_free: # pragma: no cover
+            if not G.context_free: raise ValueError('The resulting grammar is not context-free, even if so requested.')
         return G
 
     def alternatives(self, N):
@@ -288,7 +293,7 @@ class Derivation:
         Raises:
             ValueError: in case the leftmost nonterminal isn't the lefthand side of the given production.
         """
-        if not self.G.context_free: raise ValueError('Cannot perform a leftmost derivation on a non context free grammar')
+        if not self.G.context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
         for pos, symbol in enumerate(self._sf):
             if symbol in self.G.N:
                 if self.G.P[prod].lhs == symbol:
@@ -312,7 +317,7 @@ class Derivation:
         Raises:
             ValueError: in case the rightmost nonterminal isn't the lefthand side of the given production.
         """
-        if not self.G.context_free: raise ValueError('Cannot perform a rightmost derivation on a non context free grammar')
+        if not self.G.context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
         for pos, symbol in list(enumerate(self._sf))[::-1]:
             if symbol in self.G.N:
                 if self.G.P[prod].lhs == symbol:
