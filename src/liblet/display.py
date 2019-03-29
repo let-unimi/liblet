@@ -241,12 +241,14 @@ def dod2table(dod):
     return HTML('<table class="table table-bordered">\n{}\n{}\n</table>'.format(head, body))
 
 def cyk2table(TABLE):
-    start = sorted(TABLE.keys())[0][0]
-    N = sorted(TABLE.keys())[-1][0]
+    I, L = max(TABLE.keys())
+    # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
+    # (otherwise i <= N); in any case the lengths range in [N, L - 1)
+    N = I - 1 if L == 0 else I
     return HTML('<table class="table table-bordered"><tr>{}</table>'.format(
         '<tr>'.join('<td style="text-align:left">' + '<td style="text-align:left">'.join(
                 letstr(TABLE[(i, l)], sep = '\n') if (i, l) in TABLE else '&nbsp;' for i in range(1, N - l + 2)
-            ) for l in range(N, start - 1, -1))
+            ) for l in range(N, L - 1, -1))
         ))
 
 def prods2table(G):
