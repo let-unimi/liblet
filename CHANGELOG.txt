@@ -1,0 +1,101 @@
+Changelog
+=========
+
+
+[yet to be released]
+--------------------
+
+- Fixed display.cyk2table for the case with a nullable row.
+
+
+v0.8.4-alpha (2019-03-28)
+-------------------------
+
+- First (wrong) implementation of nullable row in display.cyk2table.
+
+
+v0.8.3-alpha (2019-03-28)
+-------------------------
+
+- Added methods Grammar.restrict_to, Production.such_that, and
+  function display.prods2table.
+  
+
+v0.8.2-alpha (2019-03-25)
+-------------------------
+
+- Added display.cyk2table function and renamed display.dod2html 
+  function to display.dod2table.
+
+
+v0.8.1-alpha (2019-03-18)
+-------------------------
+
+- Fixed a very wrong implementation of left/rightmost derivation steps.
+- Fixed ProductionGraph to handle nullable symbols.
+- Added LIBLET_NOBEACON to disable Google Analytics beconing.
+- Added decorator module docs.
+
+
+v0.8.0-alpha (2019-03-17)
+-------------------------
+
+- Removed Grammar.all_terminals method and and renamed Grammar.rhs 
+  method to Grammar.alternatives.
+- Filled the docs of Derivation.
+- Added a reference to the jar installation script.
+- Cleaned up and added some tests.
+
+
+v0.7.1-alpha (2019-03-17)
+-------------------------
+
+- Fixing errors due to methods refactoring among modules.
+
+
+v0.7.0-alpha (2019-03-17)
+-------------------------
+
+- Moved difficult to test (god forbids) code for rich display 
+  in a single (non tested) module.
+- Removed jupyter repr tricks.
+- Added codecov integration.
+
+
+v0.6.0-alpha (2019-03-14)
+-------------------------
+
+- Added __eq__ and __hash__ where needed.
+- Got rid of _ensure_tuple in favor of Production.as_type0.
+
+
+v0.5.2-alpha (2019-03-12)
+-------------------------
+
+- Fixing test method names after refactoring.
+
+
+v0.5.1-alpha (2019-03-12)
+-------------------------
+
+- Adding a quickstart generated via Jupyter.
+
+
+v0.5.0-alpha (2019-03-12)
+-------------------------
+
+- Working on documentation.
+- Now matches can be restricted to prod or pos, used to implement 
+  left/rightmost steps.
+- Made Derivation immutable.
+- Repurposed display.productions_table in the more general display.iter2table.
+
+
+v0.4.0-alpha (2019-03-11)
+-------------------------
+
+- Now left/righthand side are separated with HAIR_SPACE.
+- ProductionGraph now works by level (every step goes down one level).
+- Checking that travis gets a failure.
+- Added Travis integration.
+- Added code to test if ANTLR4_JAR is defined and points to an existing file.
