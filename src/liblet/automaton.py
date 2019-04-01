@@ -4,7 +4,6 @@ from operator import attrgetter
 from . import DIAMOND, ε
 from .utils import letstr
 
-
 Transition = namedtuple('Transition', 'frm label to')
 Transition.__repr__ = lambda self: '{}-{}->{}'.format(letstr(self.frm), self.label, letstr(self.to))
 
@@ -23,15 +22,6 @@ class Automaton(object):
     def __repr__(self):
         return 'Automaton(N={}, T={}, transitions={}, F={}, q0={})'.format(letstr(self.N), letstr(self.T), self.transitions, letstr(self.F), letstr(self.q0))
    
-    def coalesce(self):
-        return Automaton(
-            {''.join(sorted(_)) for _ in self.N}, 
-            self.T, 
-            tuple(Transition(''.join(sorted(frm)), label, ''.join(sorted(to))) for frm, label, to in self.transitions), 
-            {''.join(sorted(_)) for _ in self.F}, 
-            ''.join(sorted(self.q0))
-        )
-
     @classmethod
     def from_transitions(cls, transitions, F = None, q0 = None):
         transitions = tuple(map(lambda _: Transition(*_), transitions))

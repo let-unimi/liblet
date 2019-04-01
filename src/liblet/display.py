@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from collections.abc import Set
 from itertools import chain
 
 from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
 
 from .utils import letstr
-from .grammar import _letlrhstostr
+from .grammar import _letlrhstostr, HAIR_SPACE
 
 # graphviz stuff
 
@@ -183,8 +184,15 @@ class StateTransitionGraph(BaseGraph):
         self.G = None
 
     @classmethod
-    def from_automaton(cls, A):
-        return cls(A.transitions, A.q0, A.F)
+    def from_automaton(cls, A, coalesce_sets = True):
+        def tostr(N):
+            if coalesce_sets and isinstance(N, Set): 
+                return HAIR_SPACE.join(sorted(N))
+            return N
+        transitions = tuple((tostr(frm), label, tostr(to)) for frm, label, to in A.transitions)
+        F = set(map(tostr, A.F))
+        q0 = tostr(A.q0)
+        return cls(transitions, q0, F)
 
     @classmethod
     def from_lr(cls, STATES, GOTO):
@@ -204,7 +212,7 @@ class StateTransitionGraph(BaseGraph):
             )
         if self.S is not None:
             self.edge(G, 
-                self.node(G, '#START#', '#START#', sep = sep, gv_args = {'shape': 'none'}), 
+                self.node(G, '', id(self.S), gv_args = {'shape': 'none'}), 
                 self.node(G, self.S, sep = sep, gv_args = {'peripheries': '2' if self.S in self.F else '1'})
             )
         for X, x, Y in self.transitions:
