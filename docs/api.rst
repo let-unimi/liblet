@@ -22,14 +22,14 @@ The basic building block of a *grammar* is a *production* represented by the fol
    
    .. automethod:: from_string
    
-   A grammar can be represented by the following class, that can be instantiated
-   given the usual formal definition of a grammar as a tuple.
+A grammar can be represented by the following class, that can be instantiated
+given the usual formal definition of a grammar as a tuple.
 
 .. autoclass:: Grammar
 
    Even in the case of grammars, a convenience method is provided to build a
    grammar from a suitable string representation. Once the productions are obtained
-   with :func:`Production.from_grammar`, the remaining parameters are
+   with :func:`Production.from_string`, the remaining parameters are
    conventionally inferred as detailed below.
    
    .. automethod:: from_string
@@ -71,6 +71,7 @@ provided.
 
 .. autoclass:: Automaton
 
+   .. automethod:: δ
 
 
 Rich dislpay
@@ -78,14 +79,21 @@ Rich dislpay
 
 .. currentmodule:: liblet.display
 
+.. autoclass:: Graph
+
+   .. automethod:: from_adjdict
+
 .. autoclass:: Tree
 
-.. autoclass:: Graph
+   .. automethod:: from_lol
 
 .. autoclass:: ProductionGraph
 
 .. autoclass:: StateTransitionGraph
 
+   .. automethod:: from_automaton
+
+   .. automethod:: from_lr
 
 Utilities and decorators
 ------------------------
