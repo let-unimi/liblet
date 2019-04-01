@@ -54,13 +54,12 @@ class Production:
         if ε in self.rhs and len(self.rhs) != 1:
             raise ValueError('The righthand side contains ε but has more than one symbol')
 
-
     def __lt__(self, other):
         if not isinstance(other, Production): return NotImplemented
         return (self.lhs, self.rhs) < (other.lhs, other.rhs)
         
     def __eq__(self, other):
-        if not isinstance(other, Production): return False
+        if not isinstance(other, Production): return NotImplemented
         return (self.lhs, self.rhs) == (other.lhs, other.rhs)
 
     def __hash__(self):
@@ -92,7 +91,6 @@ class Production:
             x T y -> t
 
         Raises:
-
             ValueError: in case the productions are declared as ``context_free`` but on of 
                         them has more than one symbol on the righthand side.
         """
@@ -130,7 +128,7 @@ class Item(Production): # pragma: no cover
         super().__init__(lhs, rhs)
         self.pos = pos
     def __eq__(self, other):
-        if not isinstance(other, Item): return False
+        if not isinstance(other, Item): return NotImplemented
         return (self.lhs, self.pos, self.rhs) == (other.lhs, other.pos, other.rhs)
     def __hash__(self):
         return hash((self.lhs, self.pos, self.rhs))
@@ -148,7 +146,7 @@ class EarleyItem(Item):  # pragma: no cover
         super().__init__(lhs, pos, rhs)
         self.orig = orig
     def __eq__(self, other):
-        if not isinstance(other, EarleyItem): return False
+        if not isinstance(other, EarleyItem): return NotImplemented
         return (self.lhs, self.pos, self.rhs, self.orig) == (other.lhs, other.pos, other.rhs, other.orig)
     def __hash__(self):
         return hash((self.lhs, self.pos, self.rhs, self.orig))
@@ -169,7 +167,7 @@ class Grammar:
     Args:
         N (set): the grammar nonterminals.
         T (set): the grammar terminals.
-        P (tuple): the grammar productions.
+        P (tuple): the grammar :obj:`productions <Production>`.
         S (str): the grammar start symbol.
 
     """
@@ -191,7 +189,7 @@ class Grammar:
         if bad_prods: raise ValueError('The following productions contain symbols that are neither terminals or nonterminals: {}.'.format(bad_prods))        
 
     def __eq__(self, other):
-        if not isinstance(other, Grammar): return False
+        if not isinstance(other, Grammar): return NotImplemented
         return (self.N, self.T, tuple(sorted(self.P)), self.S) == (other.N, other.T, tuple(sorted(other.P)), other.S)
 
     def __hash__(self):
