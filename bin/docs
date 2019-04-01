@@ -4,7 +4,7 @@ if [ -n "$1" ]; then
     python -m sphinx -b doctest -E docs build/docs
     python -m sphinx -b coverage -E docs build/docs
 fi
-if [ 'docs/quickstart.ipynb' -nt 'docs/quickstart.rst' ]; then
-    jupyter nbconvert --execute --to rst docs/quickstart.ipynb
+if [ 'docs/examples.ipynb' -nt 'docs/examples.rst' ]; then
+    jupyter nbconvert --execute --to rst docs/examples.ipynb
 fi
 python -m sphinx -E docs build/docs

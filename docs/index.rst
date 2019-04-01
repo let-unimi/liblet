@@ -16,7 +16,7 @@ is provided so that `Jupyter <https://jupyter.org/>`_ can be fruitfully used to
 explore and teach such algorithms.
 
 Get started with :ref:`installation` and then get an overview with the
-:ref:`quickstart`. The rest of the docs describe each component of LibLET in
+:ref:`examples`. The rest of the docs describe each component of LibLET in
 detail, with a full reference in the :ref:`API` section.
 
 .. note::
@@ -30,21 +30,20 @@ detail, with a full reference in the :ref:`API` section.
 User's Guide
 ------------
 
-This part of the documentation, which is mostly prose, begins with some
-background information, then focuses on step-by-step instructions to use the
-library for some common tasks.
+This part of the documentation, which is mostly prose, focuses on step-by-step
+instructions to install the library and use if for some common tasks.
 
 .. toctree::
    :maxdepth: 2
 
    installation
-   quickstart
+   examples
 
 API Reference
 -------------
 
-If you are looking for information on a specific function, class or
-method, this part of the documentation is for you.
+If you are looking for information on a specific function, class or method, this
+part of the documentation is for you.
 
 .. toctree::
    :maxdepth: 2

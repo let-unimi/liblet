@@ -3,12 +3,13 @@
 API
 ===
 
-Productions and Grammars
-------------------------
-
 .. testsetup:: *
 
    from liblet import Production, closure, show_calls
+
+
+Productions, Grammars and Derivations
+-------------------------------------
 
 .. currentmodule:: liblet.grammar
 
@@ -37,9 +38,6 @@ The basic building block of a *grammar* is a *production* represented by the fol
    
    .. automethod:: alternatives
 
-Derivations
------------
-
 Once a grammar has been defined, one can build derivations with the help of the
 following class.
 
@@ -56,6 +54,23 @@ following class.
    .. automethod:: steps
 
    .. automethod:: sentential_form
+
+
+Transitions and Automata
+------------------------
+
+.. currentmodule:: liblet.automaton
+
+If one wants to restrict the attention to *regular grammars* the library
+provides a basic class to represent a *transition*
+
+.. autoclass:: Transition
+
+Moreover a class to describe (*nondeterministic*) *finite state automata* is
+provided.
+
+.. autoclass:: Automaton
+
 
 
 Rich dislpay
