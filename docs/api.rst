@@ -5,7 +5,7 @@ API
 
 .. testsetup:: *
 
-   from liblet import Production, closure, show_calls
+   from liblet import Production, closure, show_calls, Transition
 
 
 Productions, Grammars and Derivations

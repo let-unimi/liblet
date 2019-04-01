@@ -5,9 +5,46 @@ from . import DIAMOND, ε
 from .utils import letstr
 
 Transition = namedtuple('Transition', 'frm label to')
+"""An automaton transition.
+
+    This class represents an automaton transition; it has a `frm` starting
+    *state* and a `to` destination *state* and a `label`, the states can be
+    *nonempty* :obj:`strings <str>` or *nonempty* :obj:`sets <set>` of
+    *nonempty* strings, whereas the label is usually a string.  A transition is
+    :term:`iterable` and unpacking can be used to obtain its components, so for
+    example
+
+    .. doctest::
+
+        >>> frm, label, to = Transition({'A', 'B'}, 'c', {'D'})
+        >>> frm
+        {'B', 'A'}
+        >>> label
+        'c'
+        >>> to
+        {'D'}
+
+    Args: 
+        frm (:obj:`str` or :obj:`set` of :obj:`str`): The starting state(s) of the transition. 
+        label (:obj:`str`): The label of the transition.
+        to (:obj:`str` or :obj:`set` of :obj:`str`): The destination state(s) of the transition.
+
+"""
+
 Transition.__repr__ = lambda self: '{}-{}->{}'.format(letstr(self.frm), self.label, letstr(self.to))
 
 class Automaton(object):
+    """An automaton.
+
+        This class represents a (*nondeterministic*) *finite automaton*.
+
+        Args: 
+            N (:obj:`set`): The states of the automaton. 
+            T (:obj:`set`): The transition labels.
+            transitions (:obj:`set` of :obj:`Transition`): The transition of the automata.
+            F (:obj:`set`): The set of *final* states.
+            q0: The starting state of the automaton.
+    """
     
     def __init__(self, N, T, transitions, F, q0):
         self.N = set(N)
