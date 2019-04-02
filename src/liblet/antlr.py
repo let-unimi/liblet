@@ -11,7 +11,7 @@ from antlr4.tree.Tree import ParseTreeVisitor
 
 from .display import Tree
 
-if not 'READ_THE_DOCS' in environ:
+if not 'READTHEDOCS' in environ:
     if 'ANTLR4_JAR' not in environ:
         raise ImportError('Please define the ANTLR4_JAR environment variable')
     if not exists(environ['ANTLR4_JAR']):
