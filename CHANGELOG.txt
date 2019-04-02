@@ -1,6 +1,19 @@
 Changelog
 =========
 
+v0.9.0-alpha (2019-04-02)
+-------------------------
+
+- Added test to take the coverage of the automaton module to 100%.
+- Added some type checking to the automaton constructors and static factories.
+- Fixed custom comparison method __lt__ against a different type to return NotImplemented.
+- Renamed the Quickstart documentation section to Examples.
+- Moved the method Automata.coalesce to StateTransitionGraph (as a parameter of from_automata static method).
+
+v0.8.6-alpha (2019-04-01)
+-------------------------
+
+- Maintenance release. 
 
 v0.8.5-alpha (2019-03-28)
 -------------------------
