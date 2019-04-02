@@ -81,12 +81,23 @@ class Transition:
 
     @classmethod
     def from_string(cls, transitions):
+        """Builds a tuple of *transitions* obtained from the given string.
+
+        Args:
+            trasitions (str): a string representing transitions.
+
+        The string must be a sequence of lines of the form::
+
+            frm, label, to
+    
+        where the parts are strings not containing spaces.s
+        """
         res = []
         for t in transitions.splitlines():
             if not t.strip(): continue
             frm, label, to = t.split(',')
             res.append(Transition(frm.strip(), label.strip(), to.strip()))
-        return res
+        return tuple(res)
 
 
 class Automaton(object):
@@ -134,6 +145,16 @@ class Automaton(object):
    
     @classmethod
     def from_string(cls, transitions, F = None, q0 = None):
+        """Builds an automaton obtained from the given transitions.
+
+        Args:
+            transitions (str): a string describing the productions.
+            F (set): The set of *final* states.
+            q0 (str): The starting state of the automaton (inferred from transitions if ``None``).
+
+        Once the *transitions* are determined via a call to :func:`Transition.from_string`, 
+        the starting state (if not specified) is defined as the ``frm`` state of the first transition.
+        """
         transitions = Transition.from_string(transitions)
         if F is None: F = set()
         if q0 is None: q0 = transitions[0].frm
@@ -143,6 +164,15 @@ class Automaton(object):
 
     @classmethod
     def from_grammar(cls, G):
+        r"""Builds the automaton corresponding to the given *regular grammar*.
+
+        Args:
+            G (:obj:`~liblet.Grammar`): the *regular grammar* to derive the automata from.
+
+        The method works under the assumption that the only rules of the 
+        grammar are of the form :math:`A\to aB`, :math:`A\to B`, :math:`A\to a`,
+        and :math:`A\to ε`.
+        """
         res = []
         for P in G.P:
             if len(P.rhs) > 2: raise ValueError('Production {} has more than two symbols on the lefthand side'.format(P))

@@ -73,7 +73,7 @@ class Production:
 
     @classmethod 
     def from_string(cls, prods, context_free = True):
-        """Builds a tuple of productions obtained from the given string.
+        """Builds a tuple of *productions* obtained from the given string.
 
         Args:
             prods (str): a string representing the set of productions.

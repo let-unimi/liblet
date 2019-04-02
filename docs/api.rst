@@ -55,24 +55,46 @@ following class.
 
    .. automethod:: sentential_form
 
+Derivations can be displayed using a :obj:`~liblet.display.ProductionGraph`.
 
 Transitions and Automata
 ------------------------
 
 .. currentmodule:: liblet.automaton
 
-If one wants to restrict the attention to *regular grammars* the library
-provides a basic class to represent a *transition*
+Albeit in the context of parsing (that is the main focus of this library), the
+role of *finite state automata* and *regular grammars* is not the main focus, a
+couple of classes to handle them is provided.
+
+First of all, a basic implementation of a *transition* is provided; as in the
+case of grammars, the symbols and terminals are simply :obj:`strings <str>`.
 
 .. autoclass:: Transition
 
-Moreover a class to describe (*nondeterministic*) *finite state automata* is
-provided.
+   A convenience method is provided to obtain transtions from a suitable string
+   representation of them.
+
+   .. automethod:: from_string
+
+
+From transitions one can obtain a representation of a (*nondeterministic*)
+*finite state automata* using the following class.
 
 .. autoclass:: Automaton
 
+   Even for the automata there are a couple of convenience methods to obtain
+   automata from a string representation of the transitions, or from a *regular
+   grammar*.
+
+   .. automethod:: from_string
+
+   .. automethod:: from_grammar
+
+    An utility method is provided to represent the *transition function* of the automata.
+
    .. automethod:: δ
 
+Automata can be displayed using :obj:`StateTransitionGraph.from_automaton <liblet.display.StateTransitionGraph.from_automaton>`.
 
 Rich dislpay
 ------------
