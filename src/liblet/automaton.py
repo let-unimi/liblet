@@ -22,8 +22,8 @@ class Transition:
         .. doctest::
 
             >>> frm, label, to = Transition({'A', 'B'}, 'c', {'D'})
-            >>> frm
-            {'B', 'A'}
+            >>> sorted(frm)
+            ['A', 'B']
             >>> label
             'c'
             >>> to
