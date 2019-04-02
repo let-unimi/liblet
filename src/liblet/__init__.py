@@ -15,7 +15,7 @@ from .automaton import Transition, Automaton
 from .utils import peek, union_of, letstr, StatesQueueMap, Stack, Queue
 from .antlr import generate_and_load, parse_tree, to_let_tree
 
-if 'LIBLET_NOBEACON' not in environ:
+if 'LIBLET_NOBEACON' not in environ and 'READTHEDOCS' not in environ:
     try:
         if 'playground' in environ.get('PYTHONPATH', ''):
             ea = 'playground'
