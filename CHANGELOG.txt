@@ -1,7 +1,7 @@
 Changelog
 =========
 
-v0.9.1-alpha (unreleased)
+v0.9.1-alpha (2019-04-04)
 -------------------------
 
 - Added Stack.copy and Queue.copy methods.
