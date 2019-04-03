@@ -4,7 +4,9 @@
 [![Coverage Status](https://codecov.io/gh/let-unimi/liblet/branch/master/graph/badge.svg)](https://codecov.io/gh/let-unimi/liblet)
 [![DocumentationStatus](https://readthedocs.org/projects/liblet/badge/?version=latest)](https://liblet.readthedocs.io/en/latest/?badge=latest)
 [![PyPI](https://img.shields.io/pypi/v/liblet.svg)](https://pypi.org/project/liblet/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2619589.svg)](https://doi.org/10.5281/zenodo.2619589)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2619588.svg)](https://doi.org/10.5281/zenodo.2619588)
+
+
 
 LibLET is a teaching aid for formal languages and compiler courses developed as part of the support material of [Linguaggi e Traduttori](https://let.di.unimi.it) class.
 
