@@ -63,6 +63,11 @@ class UtilsTest(unittest.TestCase):
         expected = 'Stack(1, 2, 3, 4 ↔) Stack(1, 2, 3, 5 ↔)'
         self.assertEqual(expected, actual)
 
+    def test_stack_iter(self):
+        actual = list(Stack([1, 2, 3]))
+        expected = [1, 2, 3]
+        self.assertEqual(expected, actual)
+
     def test_empty_stack(self):
         self.assertEqual('Stack()', str(Stack()))
 
@@ -95,6 +100,11 @@ class UtilsTest(unittest.TestCase):
         c.enqueue(5)
         actual = '{} {}'.format(q, c)
         expected = 'Queue(← 1, 2, 3, 4 ←) Queue(← 1, 2, 3, 5 ←)'
+        self.assertEqual(expected, actual)
+
+    def test_queue_iter(self):
+        actual = list(Queue([1, 2, 3]))
+        expected = [1, 2, 3]
         self.assertEqual(expected, actual)
 
     def test_empty_queue(self):
