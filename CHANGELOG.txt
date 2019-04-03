@@ -1,11 +1,14 @@
 Changelog
 =========
 
+v0.9.1-alpha (unreleased)
+-------------------------
+
 - Added Stack.copy and Queue.copy methods.
 - Made Stack and Queue iterable.
 - Changed the __repr__ method of Stack: the representation of Stack([1, 2, 3]) is Stack(1, 2, 3 ↔).
 - Changed the __repr__ method of representation: the repr of Queue([1, 2, 3]) is Queue(← 1, 2, 3 ←).
-
+- Added the Zenodo https://doi.org/10.5281/zenodo.2619589 DOI.
 
 v0.9.0-alpha (2019-04-02)
 -------------------------
