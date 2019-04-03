@@ -1,6 +1,11 @@
 Changelog
 =========
 
+- Added Stack.copy and Queue.copy methods.
+- Changed the repr method of Stack: the repr of Stack([1, 2, 3]) is Stack(1, 2, 3 ↔).
+- Changed the repr method of Queue: the repr of Queue([1, 2, 3]) is Queue(← 1, 2, 3 ←).
+
+
 v0.9.0-alpha (2019-04-02)
 -------------------------
 

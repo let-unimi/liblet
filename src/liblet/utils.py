@@ -62,24 +62,32 @@ class StatesQueueMap(object): # pragma: nocover
 class Queue(object):
     def __init__(self, iterable = None, maxlen = None):
         self.Q = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
+        self.maxlen = maxlen
     def enqueue(self, item):
         self.Q.append(item)
     def dequeue(self):
         return self.Q.popleft()
+    def copy(self):
+        return Queue(self.Q, self.maxlen)
     def __repr__(self):
-        return 'Queue({})'.format(', '.join(map(repr, self.Q)))
+        el = ', '.join(map(repr, self.Q))
+        return 'Queue({})'.format('← {} ←'.format(el) if el else '')
     def __len__(self):
         return len(self.Q)
 
 class Stack(object):
     def __init__(self, iterable = None, maxlen = None):
         self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
+        self.maxlen = maxlen
     def push(self, item):
         self.S.append(item)
     def pop(self):
         return self.S.pop()
+    def copy(self):
+        return Stack(self.S, self.maxlen)
     def __repr__(self):
-        return 'Stack({})'.format(', '.join(map(repr, self.S)))
+        el = ', '.join(map(repr, self.S))
+        return 'Stack({})'.format('{} ↔'.format(el) if el else '')
     def __len__(self):
         return len(self.S)
 

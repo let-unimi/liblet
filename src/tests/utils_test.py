@@ -51,7 +51,30 @@ class UtilsTest(unittest.TestCase):
         n = len(s)
         out = s.pop()
         actual = '{} {} {}'.format(n, out, s)
-        expected = '3 3 Stack(1, 2)'
+        expected = '3 3 Stack(1, 2 ↔)'
+        self.assertEqual(expected, actual)
+
+    def test_stack_copy(self):
+        s = Stack([1, 2, 3])
+        c = s.copy()
+        s.push(4)
+        c.push(5)
+        actual = '{} {}'.format(s, c)
+        expected = 'Stack(1, 2, 3, 4 ↔) Stack(1, 2, 3, 5 ↔)'
+        self.assertEqual(expected, actual)
+
+    def test_empty_stack(self):
+        self.assertEqual('Stack()', str(Stack()))
+
+    def test_bounded_stack(self):
+        s = Stack(maxlen = 2)
+        s.push(1)
+        s.push(2)
+        s.push(3)
+        n = len(s)
+        out = s.pop()
+        actual = '{} {} {}'.format(n, out, s)
+        expected = '2 3 Stack(2 ↔)'
         self.assertEqual(expected, actual)
 
     def test_queue(self):
@@ -62,19 +85,20 @@ class UtilsTest(unittest.TestCase):
         n = len(q)
         out = q.dequeue()
         actual = '{} {} {}'.format(n, out, q)
-        expected = '3 1 Queue(2, 3)'
+        expected = '3 1 Queue(← 2, 3 ←)'
         self.assertEqual(expected, actual)
 
-    def test_bounded_stack(self):
-        s = Stack(maxlen = 2)
-        s.push(1)
-        s.push(2)
-        s.push(3)
-        n = len(s)
-        out = s.pop()
-        actual = '{} {} {}'.format(n, out, s)
-        expected = '2 3 Stack(2)'
+    def test_queue_copy(self):
+        q = Queue([1, 2, 3])
+        c = q.copy()
+        q.enqueue(4)
+        c.enqueue(5)
+        actual = '{} {}'.format(q, c)
+        expected = 'Queue(← 1, 2, 3, 4 ←) Queue(← 1, 2, 3, 5 ←)'
         self.assertEqual(expected, actual)
+
+    def test_empty_queue(self):
+        self.assertEqual('Queue()', str(Queue()))
 
     def test_bounded_queue(self):
         q = Queue(maxlen = 2)
@@ -84,7 +108,7 @@ class UtilsTest(unittest.TestCase):
         n = len(q)
         out = q.dequeue()
         actual = '{} {} {}'.format(n, out, q)
-        expected = '2 2 Queue(3)'
+        expected = '2 2 Queue(← 3 ←)'
         self.assertEqual(expected, actual)
 
 
