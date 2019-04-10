@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export JUPYTER_CONFIG_DIR=$HOME/binder/jupyter
+export ANTLR4_JAR=$HOME/jars/antlr-4.7.2-complete.jar
+
+exec "$@"
