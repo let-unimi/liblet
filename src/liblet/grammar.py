@@ -113,9 +113,10 @@ class Production:
         This method returns a predicate that can be conveniently used with :func:`filter` to 
 
         Args:
-            lhs: returns a predicate that is ``True`` weather the production *lefthand* side is equal to the argument value.
+            lhs: returns a predicate that is ``True`` weather the production *lefthand* side is equal to the argument value.            
             rhs: returns a predicate that is ``True`` weather the production *righthand* side is equal to the argument value.
             rhs_len: returns a predicate that is ``True`` weather the length of the production *lefthand* side is equal to the argument value.
+            rhs_is_suffix_of: returns a predicate that is ``True`` weather the the argument value ends with the production.
         
         Returns:
             A predicate (that is a one-argument function that retuns ``True`` or ``False``) that is ``True`` weather the production
@@ -130,21 +131,25 @@ class Production:
                 >>> prods = Production.from_string("A -> B C\\nB -> b\\nC -> D")
                 >>> list(filter(Production.such_that(lhs = 'B'), prods))
                 [B -> b]
-                >>> list(filter(Production.such_that(rhs = ('B', 'C')), prods))
+                >>> list(filter(Production.such_that(rhs = ['B', 'C']), prods))
                 [A -> B C]
                 >>> list(filter(Production.such_that(rhs_len = 1), prods))
                 [B -> b, C -> D]
+                >>> list(filter(Production.such_that(rhs_is_suffix_of = ('a', 'B', 'C')), prods))
+                [A -> B C]
                 >>> list(filter(Production.such_that(lhs = 'B', rhs_len = 1), prods))
                 [B -> b]
 
         """
         conditions = []
         if 'lhs' in kwargs:
-            conditions.append(lambda P: P.lhs == kwargs['lhs'])
+            conditions.append(lambda P: P.lhs == kwargs['lhs'] if isinstance(kwargs['lhs'], str) else tuple(kwargs['lhs']))
         if 'rhs' in kwargs:
-            conditions.append(lambda P: P.rhs == kwargs['rhs'])
+            conditions.append(lambda P: P.rhs == tuple(kwargs['rhs']))
         if 'rhs_len' in kwargs:
             conditions.append(lambda P: len(P.rhs) == kwargs['rhs_len'])
+        if 'rhs_is_suffix_of' in kwargs:
+            conditions.append(lambda P: tuple(kwargs['rhs_is_suffix_of'][-len(P.rhs):]) == P.rhs)
         return lambda P: all(cond(P) for cond in conditions)
 
     def as_type0(self):

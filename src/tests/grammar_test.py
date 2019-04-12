@@ -57,8 +57,14 @@ class TestGrammar(unittest.TestCase):
     def test_production_such_that_lhs(self):
         self.assertTrue(Production.such_that(lhs = 'X')(Production('X', ('x', ))))
 
+    def test_production_such_that_rhs(self):
+        self.assertTrue(Production.such_that(rhs = 'x')(Production('X', ('x', ))))
+
     def test_production_such_that_rhs_len(self):
         self.assertTrue(Production.such_that(rhs_len = 2)(Production('X', ('x', 'y'))))
+
+    def test_production_such_that_rhs_is_suffix_of(self):
+        self.assertTrue(Production.such_that(rhs_is_suffix_of = ('a', 'x'))(Production('X', ('x', ))))
 
     def test_grammar_eq(self):
         G0 = Grammar.from_string('S -> A B | B\nA -> a\nB -> b')
