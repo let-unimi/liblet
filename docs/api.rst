@@ -22,6 +22,11 @@ The basic building block of a *grammar* is a *production* represented by the fol
    
    .. automethod:: from_string
    
+   In order to find productions satisfying a set of properties, a convenience method 
+   to build a predicate from a set of keyword arguments is provided.  
+
+   .. automethod:: such_that
+
 A grammar can be represented by the following class, that can be instantiated
 given the usual formal definition of a grammar as a tuple.
 
