@@ -71,6 +71,7 @@ html_logo = "_static/logo.png"
 html_title = "LibLET Documentation ({})".format(version)
 html_show_sourcelink = False
 html_domain_indices = False
+html_css_files = ['custom.css']
 
 # -- Options for todo extension
 
