@@ -281,6 +281,15 @@ class Grammar:
         return (P.rhs for P in self.P if P.lhs == N)
 
     def restrict_to(self, symbols):
+        """Returns a grammar using only the given symbols.
+
+        Args:
+            symbols: the only allowed symbols.
+        Returns:
+             :obj:`Grammar`: a new grammar containing only the given symbols (and hence 
+             no production of the original grammar that uses a symbol not in the given 
+             set.) 
+        """
         return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if (({P.lhs} | set(P.rhs)) & self.N) <= symbols), self.S)
 
 

@@ -43,6 +43,11 @@ given the usual formal definition of a grammar as a tuple.
    
    .. automethod:: alternatives
 
+   To implement grammar "cleanup strategies" a method to eliminate unwanted symbols (and productions)
+   from a grammar is also provided.
+
+   .. automethod:: restrict_to
+
 Once a grammar has been defined, one can build derivations with the help of the
 following class.
 
