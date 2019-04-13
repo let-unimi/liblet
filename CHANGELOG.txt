@@ -4,10 +4,11 @@ Changelog
 (unreleased)
 ------------
 
-- Added a custom css for tables in docs.
-- Added CYK to docs/examples.
+- Added a custom CSS for tables in docs.
+- Added grammar hygiene and CYK to docs/examples.
 - Added rhs_is_suffix_of to Production.such_that and tested the new kwargs.
 - Added documentation for Production.such_that.
+- Added documentation for Grammar.restrict_to.
 - Added Creative Commons license file (for docs).
 - Moving the playground here and added a mybinder button.
 
