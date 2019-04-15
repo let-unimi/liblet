@@ -62,7 +62,7 @@ def to_let_tree(tree, symbolic = False):
     class TreeVisitor(ParseTreeVisitor):
         def visitTerminal(self, t):
             if symbolic:
-                name = '{} ({})'.format(tokenName(t.symbol.type), r'\\n' if t.symbol.text == '\n' else t.symbol.text)
+                name = '{} [{}]'.format(tokenName(t.symbol.type), r'\\n' if t.symbol.text == '\n' else t.symbol.text)
             else:
                 name = r'\\n' if t.symbol.text == '\n' else t.symbol.text
             return Tree(name)

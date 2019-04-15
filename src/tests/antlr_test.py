@@ -17,7 +17,7 @@ class TestGenerationAndParsing(unittest.TestCase):
         """)
         tree = parse_tree('z-a+a', 'start', Bad)
         T = to_let_tree(tree)
-        self.assertEqual(str(T), '(start: (expr: (expr: (expr: z), -, a), +, a))')
+        self.assertEqual(str(T), '(start: (expr: (expr: (expr: (z)), (-), (a)), (+), (a)))')
 
     def test_to_let_tree_symbolic(self):
         Bad = generate_and_load('Bad', r"""
@@ -31,7 +31,7 @@ class TestGenerationAndParsing(unittest.TestCase):
         """)
         tree = parse_tree('z-a+a', 'start', Bad)
         T = to_let_tree(tree, True)
-        self.assertEqual(str(T), '(start: (expr: (expr: (expr: ID (z)), OP (-), ID (a)), OP (+), ID (a)))')
+        self.assertEqual(str(T), '(start: (expr: (expr: (expr: (ID [z])), (OP [-]), (ID [a])), (OP [+]), (ID [a])))')
 
     def test_alltogether(self):
         Expr = generate_and_load('Expr', r"""

@@ -52,7 +52,7 @@ class Tree(BaseGraph):
 
     def __repr__(self):
         def walk(T):
-            return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else T.root
+            return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else '({})'.format(T.root)
         return walk(self)
 
     def _gvgraph_(self):

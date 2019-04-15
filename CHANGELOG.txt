@@ -4,6 +4,7 @@ Changelog
 (unreleased)
 ------------
 
+- The display.Tree.__repr__ method now puts parentheses around all subtrees (leaf included).
 - Added a custom CSS for tables in docs.
 - Added grammar hygiene and CYK to docs/examples.
 - Added rhs_is_suffix_of to Production.such_that and tested the new kwargs.
