@@ -1,17 +1,18 @@
 Changelog
 =========
 
-(unreleased)
-------------
+v0.9.2-alpha (2019-04-16)
+-------------------------
 
 - The display.Tree.__repr__ method now puts parentheses around all subtrees (leaf included).
-- Added a custom CSS for tables in docs.
-- Added grammar hygiene and CYK to docs/examples.
 - Added rhs_is_suffix_of to Production.such_that and tested the new kwargs.
 - Added documentation for Production.such_that.
 - Added documentation for Grammar.restrict_to.
+- Added documentation for StateTransitionGraph
+- Added grammar hygiene and CYK to docs/examples.
 - Added Creative Commons license file (for docs).
 - Moving the playground here and added a mybinder button.
+- Added a custom CSS for tables in docs.
 
 v0.9.1-alpha (2019-04-04)
 -------------------------
