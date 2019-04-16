@@ -56,13 +56,16 @@ class Tree(BaseGraph):
         return walk(self)
 
     def _gvgraph_(self):
-        def walk(T, parent):
-            if parent: 
-                self.node(G, T.root, id(T))
-                self.edge(G, id(parent), id(T))
+        def walk(T):
+            curr = self.node(G, T.root, id(T))
+            if T.children:
+                for child in T.children: 
+                    self.node(G, child.root, id(child))
+                    self.edge(G, curr, id(child ))
             with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
-                for f, t in zip(T.children, T.children[1:]): self.edge(S, id(f), id(t))
-            for child in T.children: walk(child, T)
+                    for f, t in zip(T.children, T.children[1:]): 
+                        self.edge(S, id(f), id(t))
+                for child in T.children: walk(child)
         G = gvDigraph(
             graph_attr = {
                 'nodesep': '.25',
@@ -79,8 +82,8 @@ class Tree(BaseGraph):
                 'dir': 'none'
              }
         )
-        G.node(str(id(self)), self.root)
-        walk(self, None)
+        self._nodes = set()
+        walk(self)
         return G
 
 
