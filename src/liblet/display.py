@@ -62,7 +62,7 @@ class Tree(BaseGraph):
                 for child in T.children: 
                     self.node(G, child.root, id(child))
                     self.edge(G, curr, id(child ))
-            with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
+                with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
                     for f, t in zip(T.children, T.children[1:]): 
                         self.edge(S, id(f), id(t))
                 for child in T.children: walk(child)
@@ -178,9 +178,35 @@ class ProductionGraph(BaseGraph):
 
 
 class StateTransitionGraph(BaseGraph):
+    """A directed graph with labelled nodes and arcs.
+
+    Args:
+      transitions: an :term:`iterable` of triples :math:`(f, l, t)` of three strings representing the :math:`(f, t)` edge of the graph with label :math:`l`.
+      S (str): the *starting node*.
+      F (set): the set of *final nodes*.
+      large_labels (bool): whether the string labelling nodes are long and require pre-formatting before being drawn or not.
+
+    Examples:
+      The following code 
+
+      .. code:: ipython3
+
+        StateTransitionGraph([
+              ('node a','arc (a,b)','node b'), 
+              ('node a', 'arc (a,c)', 'node c'), 
+              ('node b', 'arc (b, c)', 'node c')], 
+          'node a', {'node b'})
+
+      gives the following graph
+
+      .. image:: stg.svg
+
+      where nodes and edges are labeled as implied by the first parameter, the *staring* node has an (unlabelled)
+      edge entering into it, whereas the *final nodes* are doubly circled.
+    """
 
     def __init__(self, transitions, S = None, F = None, large_labels = False):
-        self.transitions = transitions
+        self.transitions = tuple(transitions)
         self.S = S
         self.F = set() if F is None else F
         self.large_labels = large_labels
@@ -188,6 +214,12 @@ class StateTransitionGraph(BaseGraph):
 
     @classmethod
     def from_automaton(cls, A, coalesce_sets = True):
+        """A factory method to build a :obj:`StateTransitionGraph` starting from an :obj:`~liblet.automaton.Automaton`.
+
+        Args:
+            A (:obj:`~liblet.automaton.Automaton`): the automaton.
+            coalesce_sets (bool): whether the automata states are sets and the corresponding labels must be obtained joining the strings in the sets.
+        """
         def tostr(N):
             if coalesce_sets and isinstance(N, Set): 
                 return HAIR_SPACE.join(sorted(N))
