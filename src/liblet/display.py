@@ -104,8 +104,12 @@ class Graph(BaseGraph):
 
 class ProductionGraph(BaseGraph):
 
-    def __init__(self, derivation):
+    def __init__(self, derivation, compact = None):
         self.derivation = derivation
+        if compact is None:
+            self.compact = True if derivation.G.context_free else False
+        else:
+            self.compact = compact
         self.G = None
 
     def __repr__(self):
@@ -144,9 +148,11 @@ class ProductionGraph(BaseGraph):
             sentence = remove_ε(sentence[:pos] + rhsn + sentence[pos + len(lhs):])
         last_sentence = set(sentence)
 
+        use_levels = not self.compact
+
         sentence = ((derivation.G.S, 0, 0), )
         with G.subgraph(graph_attr = {'rank': 'same'}) as S:
-            prev_level = self.node(S, ('LevelNode', 0), gv_args = {'style': 'invis'})
+            if use_levels: prev_level = self.node(S, ('LevelNode', 0), gv_args = {'style': 'invis'})
             self.node(S, sentence[0][0], hash(sentence[0]))
 
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
@@ -155,10 +161,11 @@ class ProductionGraph(BaseGraph):
             rhsn = tuple((X, step, p) for p, X in enumerate(rhs))
             
             with G.subgraph(graph_attr = {'rank': 'same'}) as S:
-                new_level = self.node(S, ('LevelNode', step), gv_args = {'style': 'invis'})
+                if use_levels: new_level = self.node(S, ('LevelNode', step), gv_args = {'style': 'invis'})
                 for node in rhsn: self.node(S, node[0], hash(node), gv_args = {'style': 'rounded, setlinewidth(1.25)' if node in last_sentence else 'rounded, setlinewidth(.25)'})
-            self.edge(G, prev_level, new_level, gv_args = {'style': 'invis'})
-            prev_level = new_level 
+            if use_levels: 
+                self.edge(G, prev_level, new_level, gv_args = {'style': 'invis'})
+                prev_level = new_level 
             
             if len(lhs) == 1:                
                 frm = sentence[pos]
