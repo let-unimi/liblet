@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Set
 from itertools import chain
+from sys import stderr
 
 from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
@@ -298,3 +299,8 @@ def prods2table(G):
     to_row = lambda N: '<th>{}<td style="text-align:left">{}'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
     rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
     return HTML('<table><tr>' + '<tr>'.join(rows) + '</table>')
+
+# MISC
+
+def warn(msg):
+    stderr.write(msg + '\n')
