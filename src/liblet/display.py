@@ -268,6 +268,9 @@ def side_by_side(*iterable):
 def iter2table(it):
     return HTML('<table>' + '\n'.join(f'<tr><th>{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
 
+def dict2table(it):
+    return HTML('<table>' + '\n'.join(f'<tr><th>{k}<td style="text-align:left"><pre>{v}</pre>' for k, v in it.items()) + '</table>')
+
 def dod2table(dod):
     def fmt(r, c):
         if not c in dod[r]: return '&nbsp;'
