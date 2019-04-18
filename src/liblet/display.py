@@ -266,24 +266,21 @@ def side_by_side(*iterable):
     return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
 
 def iter2table(it):
-    return HTML('<table>' + '\n'.join(f'<tr><th>{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
+    return HTML('<table>' + '\n'.join(f'<tr><th style="text-align:left">{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
 
 def dict2table(it):
-    return HTML('<table>' + '\n'.join(f'<tr><th>{k}<td style="text-align:left"><pre>{v}</pre>' for k, v in it.items()) + '</table>')
+    return HTML('<table>' + '\n'.join(f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{v}</pre>' for k, v in it.items()) + '</table>')
 
 def dod2table(dod):
     def fmt(r, c):
         if not c in dod[r]: return '&nbsp;'
         elem = dod[r][c]
         if elem is None: return '&nbsp;'
-        if isinstance(elem, list) or isinstance(elem, tuple) or isinstance(elem, set):
-            return ', '.join(map(str, elem))
-        else:
-            return str(elem)
+        return '<pre>{}</pre>'.format(letstr(elem))
     rows = sorted(dod.keys())
     cols = sorted(set(chain.from_iterable(dod[x].keys() for x in dod)))
-    head = '<tr><td>&nbsp;<th>' + '<th>'.join(cols)
-    body = '\n'.join('<tr><th>{}<td>{}'.format(r, '<td>'.join(fmt(r, c) for c in cols))for r in rows)
+    head = '<tr><td>&nbsp;<th style="text-align:left">' + '<th style="text-align:left">'.join(cols)
+    body = '\n'.join('<tr><th style="text-align:left">{}<td style="text-align:left">{}'.format(r, '<td style="text-align:left">'.join(fmt(r, c) for c in cols)) for r in rows)
     return HTML('<table class="table table-bordered">\n{}\n{}\n</table>'.format(head, body))
 
 def cyk2table(TABLE):
