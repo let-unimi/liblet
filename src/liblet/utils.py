@@ -26,7 +26,7 @@ def letstr(obj, sep = None, sort = True):
             return str(obj)
         else:
             if sep == '\n': fs = '{}'
-            return fs.format(sep.join(sorted(map(_ls, obj)) if sorted else list(map(_ls, obj))))
+            return fs.format(sep.join(sorted(map(_ls, obj)) if sort else list(map(_ls, obj))))
     return _ls(obj)
     
 
