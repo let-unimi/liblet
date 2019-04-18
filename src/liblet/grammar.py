@@ -216,10 +216,10 @@ class Grammar:
         self.T = frozenset(T)
         self.P = tuple(P)
         self.S = S
-        self.context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
+        self.is_context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
         if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common.'.format(set(self.N & self.T)))
         if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')    
-        if self.context_free:
+        if self.is_context_free:
             bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
             if bad_prods: raise ValueError('The following productions have a lhs that is not a nonterminal: {}.'.format(bad_prods))
         bad_prods = tuple(P for P in self.P if not (set(P.as_type0().lhs) | set(P.rhs)).issubset(self.N | self.T | {ε}))
@@ -267,7 +267,7 @@ class Grammar:
             T = symbols - N - {ε}
         G = cls(N, T, P, S)
         if context_free: # pragma: no cover
-            if not G.context_free: raise ValueError('The resulting grammar is not context-free, even if so requested.')
+            if not G.is_context_free: raise ValueError('The resulting grammar is not context-free, even if so requested.')
         return G
 
     def alternatives(self, N):
@@ -337,7 +337,7 @@ class Derivation:
         Raises:
             ValueError: in case the leftmost nonterminal isn't the lefthand side of the given production.
         """
-        if not self.G.context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
+        if not self.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
         for pos, symbol in enumerate(self._sf):
             if symbol in self.G.N:
                 if self.G.P[prod].lhs == symbol:
@@ -361,7 +361,7 @@ class Derivation:
         Raises:
             ValueError: in case the rightmost nonterminal isn't the lefthand side of the given production.
         """
-        if not self.G.context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
+        if not self.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
         for pos, symbol in list(enumerate(self._sf))[::-1]:
             if symbol in self.G.N:
                 if self.G.P[prod].lhs == symbol:

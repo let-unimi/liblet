@@ -95,11 +95,11 @@ class TestGrammar(unittest.TestCase):
 
     def test_grammar_cf(self):
         G = Grammar.from_string('S -> T U\nT -> t\nU -> u')
-        self.assertTrue(G.context_free)
+        self.assertTrue(G.is_context_free)
 
     def test_grammar_not_cf(self):
         G = Grammar.from_string('S -> T U\nT x -> t\nT U -> u', False)
-        self.assertFalse(G.context_free)
+        self.assertFalse(G.is_context_free)
 
     def test_grammar_wrong_cf(self):
         with self.assertRaisesRegex(ValueError, 'not a nonterminal.*\(T -> s,\)'):

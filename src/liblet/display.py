@@ -107,7 +107,7 @@ class ProductionGraph(BaseGraph):
     def __init__(self, derivation, compact = None):
         self.derivation = derivation
         if compact is None:
-            self.compact = True if derivation.G.context_free else False
+            self.compact = True if derivation.G.is_context_free else False
         else:
             self.compact = compact
         self.G = None
