@@ -209,7 +209,7 @@ class Grammar:
 
     """
 
-    __slots__ = ('N', 'T', 'P', 'S', 'context_free')
+    __slots__ = ('N', 'T', 'P', 'S', 'is_context_free')
 
     def __init__(self, N, T, P, S):
         self.N = frozenset(N)
