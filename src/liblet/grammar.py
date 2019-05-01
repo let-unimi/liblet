@@ -1,7 +1,9 @@
 from collections import namedtuple
+from dataclasses import dataclass
 from functools import total_ordering
 from itertools import chain
 from operator import attrgetter, itemgetter
+from typing import Tuple, Union
 
 from . import ε
 from .utils import letstr
@@ -11,7 +13,7 @@ HAIR_SPACE = '\u200a'
 def _letlrhstostr(s):
     return HAIR_SPACE.join(map(str, s)) if isinstance(s, tuple) else str(s)
 
-@total_ordering
+@dataclass(init = False, repr = False, eq = True, order = True, frozen = True)
 class Production:
     """A grammar production.
 
@@ -38,32 +40,23 @@ class Production:
         ValueError: in case the lefthand or righthand side are not strings, or tuples of strings.
     """
 
-    __slots__ = ('lhs', 'rhs')
+    lhs: Union[str, Tuple[str, ...]]
+    rhs: Tuple[str, ...]
+    #__slots__ = ('lhs', 'rhs')
 
     def __init__(self, lhs, rhs):
         if isinstance(lhs, str) and lhs:
-            self.lhs = lhs
+            object.__setattr__(self, 'lhs', lhs)
         elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str) and _, lhs)): 
-            self.lhs = tuple(lhs)
+            object.__setattr__(self, 'lhs', tuple(lhs))
         else:
             raise ValueError('The lhs is not a nonempty str, nor a tuple (or list) of nonempty str.')
         if isinstance(rhs, (list, tuple)) and rhs and all(map(lambda _: isinstance(_, str) and _, rhs)): 
-            self.rhs = tuple(rhs)
+            object.__setattr__(self, 'rhs', tuple(rhs))
         else:
             raise ValueError('The rhs is not a tuple (or list) of nonempty str.')        
         if ε in self.rhs and len(self.rhs) != 1:
             raise ValueError('The righthand side contains ε but has more than one symbol')
-
-    def __lt__(self, other):
-        if not isinstance(other, Production): return NotImplemented
-        return (self.lhs, self.rhs) < (other.lhs, other.rhs)
-        
-    def __eq__(self, other):
-        if not isinstance(other, Production): return NotImplemented
-        return (self.lhs, self.rhs) == (other.lhs, other.rhs)
-
-    def __hash__(self):
-        return hash((self.lhs, self.rhs))
 
     def __iter__(self):
         return iter((self.lhs, self.rhs))
