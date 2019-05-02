@@ -12,9 +12,13 @@ class Transition:
     """An automaton transition.
 
         This class represents an automaton transition; it has a `frm` starting
-        *state* and a `to` destination *state* and a `label`, the states can be
-        *nonempty* :obj:`strings <str>`, or *nonempty* :obj:`sets <set>` of
-        *nonempty* strings or :obj:`items <liblet.grammar.Item>`, whereas the label is usually a string.  A transition is
+        *state* and a `to` destination *state* and a `label`, the states can be:
+
+        - *nonempty* :obj:`strings <str>`, or
+        - *nonempty* :obj:`sets <set>` of *nonempty* strings, or 
+        - *nonempty* :obj:`tuples <tuple>` of :obj:`items <liblet.grammar.Item>`, 
+        
+        whereas the label is a :obj:`str`.  A transition is
         :term:`iterable` and unpacking can be used to obtain its components, so for
         example
 
@@ -44,13 +48,14 @@ class Transition:
 
         def _cssos(s):
             if isinstance(s, str) and s: return True
-            if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _ or isinstance(_, Item), s)): return True
+            if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _, s)): return True
+            if isinstance(s, tuple) and s and all(map(lambda _: isinstance(_, Item), s)): return True
             return False
 
         if _cssos(frm):
             self.frm = frm
         else:
-            raise ValueError('The frm state is not a nonempty string, or a nonempty set of nonempty strings')
+            raise ValueError('The frm state is not a nonempty string, or a nonempty set of nonempty strings/items')
         if isinstance(label, str) and label:
             self.label = label
         else:
@@ -58,7 +63,7 @@ class Transition:
         if _cssos(to):
             self.to = to
         else:
-            raise ValueError('The to state is not a nonempty string, or a nonempty set of nonempty strings')
+            raise ValueError('The to state is not a nonempty string, or a nonempty set of nonempty strings/items')
         self.to = to
 
     def __lt__(self, other):
