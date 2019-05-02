@@ -300,9 +300,9 @@ def cyk2table(TABLE):
     # (otherwise i <= N); in any case the lengths range in [N, L - 1)
     N = I - 1 if L == 0 else I
     return HTML('<table class="table-bordered"><tr>{}</table>'.format(
-        '<tr>'.join('<td style="text-align:left">' + '<td style="text-align:left">'.join(
-                letstr(TABLE[(i, l)], sep = '\n') if (i, l) in TABLE else '&nbsp;' for i in range(1, N - l + 2)
-            ) for l in range(N, L - 1, -1))
+        '<tr>'.join('<td style="text-align:left"><pre>' + '</pre></td><td style="text-align:left"><pre>'.join(
+                (letstr(TABLE[(i, l)], sep = '\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
+            ) + '</pre></td>' for l in range(N, L - 1, -1))
         ))
 
 def prods2table(G):
