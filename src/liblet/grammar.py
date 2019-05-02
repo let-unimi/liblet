@@ -156,13 +156,38 @@ class Production:
         if isinstance(self.lhs, tuple): return self
         return Production((self.lhs, ), self.rhs)
 
-
 class Item(Production): # pragma: no cover
+    """A dotted production, also known as an *item*. 
+
+    .. doctest::
+
+        >>> item = Item('A', 1, ('B', 'C'))
+        >>> item
+        A -> B•C
+        >>> lhs, pos, rhs = item
+        >>> lhs
+        'A'
+        >>> pos
+        1
+        >>> rhs 
+        ('B', 'C')
+
+    Args: 
+        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left hand side of the production. 
+        pos (int): the position of the dot.
+        rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right hand side of the production.
+
+    Raises:
+        ValueError: in case the lefthand is not a string, or the righthand is not a tuple of strings, or the dot `pos` is invalid.
+
+    """
     __slots__ = ('pos',)
     def __init__(self, lhs, pos, rhs):
         if isinstance(lhs, (list, tuple)):
             raise ValueError('The lhs must be a str.')
         super().__init__(lhs, rhs)
+        if pos < 0 or pos > len(rhs):
+            raise ValueError('The dot position is invalid.')
         self.pos = pos
     def __eq__(self, other):
         if not isinstance(other, Item): return NotImplemented
