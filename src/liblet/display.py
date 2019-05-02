@@ -280,18 +280,18 @@ def iter2table(it):
 def dict2table(it):
     return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{v}</pre>' for k, v in it.items()) + '</table>')
 
-def dod2table(dod, sort = False):
+def dod2table(dod, sort = False, sep = None):
     def fmt(r, c):
         if not c in dod[r]: return '&nbsp;'
         elem = dod[r][c]
         if elem is None: return '&nbsp;'
-        return '<pre>{}</pre>'.format(letstr(elem))
+        return '<pre>{}</pre>'.format(letstr(elem, sep))
     rows = list(dod.keys())
     if sort: rows = sorted(rows)
     cols = list(OrderedDict.fromkeys(chain.from_iterable(dod[x].keys() for x in dod)))
     if sort: cols = sorted(cols)
     head = '<tr><td>&nbsp;<th style="text-align:left">' + '<th style="text-align:left">'.join(cols)
-    body = '\n'.join('<tr><th style="text-align:left">{}<td style="text-align:left">{}'.format(r, '<td style="text-align:left">'.join(fmt(r, c) for c in cols)) for r in rows)
+    body = '\n'.join('<tr><th style="text-align:left"><pre>{}</pre><td style="text-align:left">{}'.format(letstr(r, sep), '<td style="text-align:left">'.join(fmt(r, c) for c in cols)) for r in rows)
     return HTML('<table class="table-bordered">\n{}\n{}\n</table>'.format(head, body))
 
 def cyk2table(TABLE):
