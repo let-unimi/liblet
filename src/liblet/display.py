@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 from collections.abc import Set
 from itertools import chain
 from sys import stderr
@@ -287,7 +288,7 @@ def dod2table(dod, sort = False):
         return '<pre>{}</pre>'.format(letstr(elem))
     rows = list(dod.keys())
     if sort: rows = sorted(rows)
-    cols = list(set(chain.from_iterable(dod[x].keys() for x in dod)))
+    cols = list(OrderedDict.fromkeys(chain.from_iterable(dod[x].keys() for x in dod)))
     if sort: cols = sorted(cols)
     head = '<tr><td>&nbsp;<th style="text-align:left">' + '<th style="text-align:left">'.join(cols)
     body = '\n'.join('<tr><th style="text-align:left">{}<td style="text-align:left">{}'.format(r, '<td style="text-align:left">'.join(fmt(r, c) for c in cols)) for r in rows)
@@ -309,8 +310,8 @@ def prods2table(G):
     rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
     return HTML('<table><tr>' + '<tr>'.join(rows) + '</table>')
 
-def ff2table(FIRST, FOLLOW):
-    return dod2table({N: {'Frist': ' '.join(FIRST[(N, )]), 'Follow': ' '.join(FOLLOW[N])} for N in G.N})
+def ff2table(G, FIRST, FOLLOW):
+    return dod2table({N: {'First': ' '.join(FIRST[(N, )]), 'Follow': ' '.join(FOLLOW[N])} for N in G.N})
 
 # MISC
 
