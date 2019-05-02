@@ -5,8 +5,7 @@ from operator import attrgetter
 
 from . import DIAMOND, ε
 from .utils import letstr
-
-
+from .grammar import Item
 
 @total_ordering
 class Transition:
@@ -14,8 +13,8 @@ class Transition:
 
         This class represents an automaton transition; it has a `frm` starting
         *state* and a `to` destination *state* and a `label`, the states can be
-        *nonempty* :obj:`strings <str>` or *nonempty* :obj:`sets <set>` of
-        *nonempty* strings, whereas the label is usually a string.  A transition is
+        *nonempty* :obj:`strings <str>`, or *nonempty* :obj:`sets <set>` of
+        *nonempty* strings or :obj:`items <liblet.grammar.Item>`, whereas the label is usually a string.  A transition is
         :term:`iterable` and unpacking can be used to obtain its components, so for
         example
 
@@ -45,7 +44,7 @@ class Transition:
 
         def _cssos(s):
             if isinstance(s, str) and s: return True
-            if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _, s)): return True
+            if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _ or isinstance(_, Item), s)): return True
             return False
 
         if _cssos(frm):
