@@ -222,7 +222,7 @@ class StateTransitionGraph(BaseGraph):
         self.G = None
 
     @classmethod
-    def from_automaton(cls, A, coalesce_sets = True):
+    def from_automaton(cls, A, coalesce_sets = True, large_labels = False):
         """A factory method to build a :obj:`StateTransitionGraph` starting from an :obj:`~liblet.automaton.Automaton`.
 
         Args:
@@ -236,7 +236,7 @@ class StateTransitionGraph(BaseGraph):
         transitions = tuple((tostr(frm), label, tostr(to)) for frm, label, to in A.transitions)
         F = set(map(tostr, A.F))
         q0 = tostr(A.q0)
-        return cls(transitions, q0, F)
+        return cls(transitions, q0, F, large_labels = large_labels)
 
     @classmethod
     def from_lr(cls, STATES, GOTO):
