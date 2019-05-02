@@ -5,7 +5,7 @@ API
 
 .. testsetup:: *
 
-   from liblet import Production, closure, show_calls, Transition
+   from liblet import Production, Item, closure, show_calls, Transition
 
 
 Productions, Grammars and Derivations
@@ -26,6 +26,11 @@ The basic building block of a *grammar* is a *production* represented by the fol
    to build a predicate from a set of keyword arguments is provided.  
 
    .. automethod:: such_that
+
+For the purpose of presenting the `Knuth Automaton <https://en.wikipedia.org/wiki/LR_parser#Finite_state_machine>`__ 
+in the context of LR(0) parsing,  productions are extended to include a dot in the following class.
+
+.. autoclass:: Item
 
 A grammar can be represented by the following class, that can be instantiated
 given the usual formal definition of a grammar as a tuple.
