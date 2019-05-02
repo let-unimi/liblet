@@ -308,7 +308,7 @@ def cyk2table(TABLE):
 def prods2table(G):
     to_row = lambda N: '<th>{}<td style="text-align:left">{}'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
     rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
-    return HTML('<table><tr>' + '<tr>'.join(rows) + '</table>')
+    return HTML('<table class="table-bordered"><tr>' + '<tr>'.join(rows) + '</table>')
 
 def ff2table(G, FIRST, FOLLOW):
     return dod2table({N: {'First': ' '.join(FIRST[(N, )]), 'Follow': ' '.join(FOLLOW[N])} for N in G.N})
