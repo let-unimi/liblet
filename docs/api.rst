@@ -130,8 +130,6 @@ Rich dislpay
 
    .. automethod:: from_automaton
 
-   .. automethod:: from_lr
-
 Utilities and decorators
 ------------------------
 

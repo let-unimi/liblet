@@ -238,11 +238,6 @@ class StateTransitionGraph(BaseGraph):
         q0 = tostr(A.q0)
         return cls(transitions, q0, F, large_labels = large_labels)
 
-    @classmethod
-    def from_lr(cls, STATES, GOTO):
-        transitions = [(STATES[s], X, STATES[t]) for s in GOTO for X, t in GOTO[s].items() if t]
-        return cls(transitions, STATES[0], [s for s in STATES if any(item.pos == len(item.rhs) for item in s)], True)
-
     def _gvgraph_(self):
         if self.G: return self.G
         sep = '\n' if self.large_labels else None
