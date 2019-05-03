@@ -44,7 +44,7 @@ given the usual formal definition of a grammar as a tuple.
    
    .. automethod:: from_string
    
-   An utility method is provided to enumerate alternatives for a given *lefthand* side:
+   An utility method is provided to enumerate alternatives for a given left-hand side:
    
    .. automethod:: alternatives
 

@@ -512,7 +512,7 @@ particular we’ll be following the flow of Sections 2.9.1, 2.9.2 and
 We can use the ``@closure`` decorator to obtain the *productive* symbols
 by extending at every round the set ``prod`` of productive symbols as
 ``{A for A, α in G.P if set(α) <= prod}``, that is taking all the
-*lefthand* sides of productions whose *righthand* sides are in turn made
+left-hand sides of productions whose left-hand sides are in turn made
 of productive symbols.
 
 .. code:: ipython3
@@ -541,7 +541,7 @@ of productive symbols.
 Similarly, we can obtain the *reachable* symbols by extending at every
 round the set ``reach`` of reachable symbols as
 ``union_of(set(α) for A, α in G.P if A in reach)}``, that is taking the
-union all the *righthand* sides of productions whose *lefthand* sides
+union all the left-hand sides of productions whose left-hand sides
 are in turn reachable.
 
 .. code:: ipython3
@@ -591,7 +591,7 @@ can leave around non-reachable symbols after the first removal).
 
 
 To remove *undefined* nonterminals is easy, it’s enough to collect the
-ones appearing as *lefthand* side in some production and throw away the
+ones appearing as left-hand side in some production and throw away the
 others
 
 .. code:: ipython3
@@ -600,7 +600,7 @@ others
         return G.restrict_to({A for A, α in G.P} | G.T)
 
 Given that ``Grammar.from_string`` considers nonterminal just the
-symbols on the *lefthand* sides, to check that the last method works we
+symbols on the left-hand sides, to check that the last method works we
 need to build a grammar in another way:
 
 .. code:: ipython3
@@ -666,7 +666,7 @@ Given a rule :math:`A\to ε` we look for rules of the form
 :math:`B\to αA'β` and :math:`B\to αβ` where :math:`A'` is a new
 nonterminal; this of course need to be iterated (in a closure) to cope
 with productions where :math:`A` appears more than once in the
-*righthand* side.
+left-hand side.
 
 .. code:: ipython3
 
@@ -728,9 +728,9 @@ process can intruduce new ε-rules, a closure is again needed.
 
 
 
-The *lefthand* sides of the ε rules now are unreachable, but the new
+The left-hand sides of the ε rules now are unreachable, but the new
 “primed” nonterminals must now be defined, using the non-empty
-*righthand* sides of the one they inlined.
+left-hand sides of the one they inlined.
 
 .. code:: ipython3
 
@@ -854,7 +854,7 @@ The normal form
 
 Two last cases need to be taken care of to get to the CNF.
 
-First we want to eliminate non-solitary terminals in *lefthand* sides,
+First we want to eliminate non-solitary terminals in left-hand sides,
 that is if :math:`A\to αaβ` where :math:`a\in T` and
 :math:`α, β\in N^*`; this is easily solved by introducing a new
 nonterminal :math:`N_a` and a new rule :math:`N_a\to a`, replacing the
@@ -893,7 +893,7 @@ offending :math:`A\to αaβ` with :math:`A\to αN_aβ`.
 
 
 
-Finally we need to shorten *righthand* sides longer than 2 symbols.
+Finally we need to shorten left-hand sides longer than 2 symbols.
 Again that is easily accomplished by introducing new nonterminals and
 rules.
 
@@ -934,7 +934,7 @@ The Cocke, Younger, and Kasami algorithm
 Following the CYK description given in Section 4.2.2 of `Parsing
 Techniques <https://dickgrune.com//Books/PTAPG_2nd_Edition/>`__ we
 implement the algoritm by means of a dictionary ``R`` that, for the key
-:math:`(i, l)`, records the *lefthand* sides of productions deriving
+:math:`(i, l)`, records the left-hand sides of productions deriving
 :math:`s_{il}` that is the substring of the input starting at :math:`i`
 and having length :math:`l`.
 

@@ -179,10 +179,10 @@ class Automaton(object):
         """
         res = []
         for P in G.P:
-            if len(P.rhs) > 2: raise ValueError('Production {} has more than two symbols on the lefthand side'.format(P))
+            if len(P.rhs) > 2: raise ValueError('Production {} has more than two symbols on the left-hand side'.format(P))
             if len(P.rhs) == 2:
                 A, (a, B) = P
-                if not (a in G.T and B in G.N): raise ValueError('Production {} right hand side is not of the aB form'.format(P))
+                if not (a in G.T and B in G.N): raise ValueError('Production {} right-hand side is not of the aB form'.format(P))
                 res.append(Transition(A, a, B))
             elif P.rhs[0] in G.N:
                 res.append(Transition(*((P.lhs, ) + (ε, ) + P.rhs)))

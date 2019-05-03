@@ -15,9 +15,9 @@ def _letlrhstostr(s):
 class Production:
     """A grammar production.
 
-    This class represents a grammar production, it has a *lefthand* and a
-    *righthand* side that can be *nonempty* :obj:`strings <str>`, or 
-    :obj:`tuples <tuple>` of *nonempty* strings; the righthand side can 
+    This class represents a grammar production, it has a left-hand and
+    right-hand sides that can be *nonempty* :obj:`strings <str>`, or 
+    :obj:`tuples <tuple>` of *nonempty* strings; the right-hand side can 
     contain ε only if is the only symbol it comprises. A production is 
     :term:`iterable` and unpacking can be used to obtain its sides, so 
     for example
@@ -31,11 +31,11 @@ class Production:
         ('B', 'C')
 
     Args: 
-        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left hand side of the production. 
-        rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right hand side of the production.
+        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production. 
+        rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right-hand side of the production.
 
     Raises:
-        ValueError: in case the lefthand or righthand side are not strings, or tuples of strings.
+        ValueError: in case the left-hand or right-hand side is not a strings, or tuples of strings.
     """
 
     __slots__ = ('lhs', 'rhs')
@@ -46,13 +46,13 @@ class Production:
         elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str) and _, lhs)): 
             self.lhs = tuple(lhs)
         else:
-            raise ValueError('The lhs is not a nonempty str, nor a tuple (or list) of nonempty str.')
+            raise ValueError('The left-hand side is not a nonempty str, nor a tuple (or list) of nonempty str.')
         if isinstance(rhs, (list, tuple)) and rhs and all(map(lambda _: isinstance(_, str) and _, rhs)): 
             self.rhs = tuple(rhs)
         else:
-            raise ValueError('The rhs is not a tuple (or list) of nonempty str.')        
+            raise ValueError('The right-hand side is not a tuple (or list) of nonempty str.')        
         if ε in self.rhs and len(self.rhs) != 1:
-            raise ValueError('The righthand side contains ε but has more than one symbol')
+            raise ValueError('The right-hand side contains ε but has more than one symbol')
 
     def __lt__(self, other):
         if not isinstance(other, Production): return NotImplemented
@@ -77,22 +77,22 @@ class Production:
 
         Args:
             prods (str): a string representing the set of productions.
-            context_free (bool): if ``True`` all the *lefthand* sides will be strings (not tuples).
+            context_free (bool): if ``True`` all the left-hand sides will be strings (not tuples).
 
         The string must be a sequence of lines of the form::
 
             lhs -> alternatives
 
         where ``alternatives`` is a list of ``rhs`` strings (possibly separated by ``|``)
-        and ``lhs`` and ``rhs`` are space separated strings that will be used as *lefthand* and 
-        *righthand* of the returned productions; for example::
+        and ``lhs`` and ``rhs`` are space separated strings that will be used as left-hand and 
+        right-hand sides of the returned productions; for example::
 
             S -> ( S ) | x T y
             x T y -> t
 
         Raises:
             ValueError: in case the productions are declared as ``context_free`` but on of 
-                        them has more than one symbol on the righthand side.
+                        them has more than one symbol on the right-hand side.
         """
         P = []
         for p in prods.splitlines():
@@ -100,7 +100,7 @@ class Production:
             lh, rha = p.split('->')
             lhs = tuple(lh.split())
             if context_free:
-                if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as lefthand side, that is forbidden in a context-free grammar.'.format(p))
+                if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as left-hand side, that is forbidden in a context-free grammar.'.format(p))
                 lhs = lhs[0]
             for rh in rha.split('|'):
                 P.append(cls(lhs, tuple(rh.split())))
@@ -113,9 +113,9 @@ class Production:
         This method returns a predicate that can be conveniently used with :func:`filter` to 
 
         Args:
-            lhs: returns a predicate that is ``True`` weather the production *lefthand* side is equal to the argument value.            
-            rhs: returns a predicate that is ``True`` weather the production *righthand* side is equal to the argument value.
-            rhs_len: returns a predicate that is ``True`` weather the length of the production *lefthand* side is equal to the argument value.
+            lhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.            
+            rhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.
+            rhs_len: returns a predicate that is ``True`` weather the length of the production left-hand side is equal to the argument value.
             rhs_is_suffix_of: returns a predicate that is ``True`` weather the the argument value ends with the production.
         
         Returns:
@@ -173,16 +173,16 @@ class Item(Production): # pragma: no cover
         ('B', 'C')
 
     Args: 
-        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left hand side of the production. 
-        pos (int): the position of the dot.
-        rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right hand side of the production.
+        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production. 
+        rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right-hand side of the production.
+        pos (int): the position of the dot (optional, 0 if absent).
 
     Raises:
-        ValueError: in case the lefthand is not a string, or the righthand is not a tuple of strings, or the dot `pos` is invalid.
+        ValueError: in case the left-hand , or right-hand side is not a tuple of strings, or the dot `pos` is invalid.
 
     """
     __slots__ = ('pos',)
-    def __init__(self, lhs, pos, rhs):
+    def __init__(self, lhs, rhs, pos = 0):
         if isinstance(lhs, (list, tuple)):
             raise ValueError('The lhs must be a str.')
         super().__init__(lhs, rhs)
@@ -246,7 +246,7 @@ class Grammar:
         if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')    
         if self.is_context_free:
             bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
-            if bad_prods: raise ValueError('The following productions have a lhs that is not a nonterminal: {}.'.format(bad_prods))
+            if bad_prods: raise ValueError('The following productions have a left-hand side that is not a nonterminal: {}.'.format(bad_prods))
         bad_prods = tuple(P for P in self.P if not (set(P.as_type0().lhs) | set(P.rhs)).issubset(self.N | self.T | {ε}))
         if bad_prods: raise ValueError('The following productions contain symbols that are neither terminals or nonterminals: {}.'.format(bad_prods))        
 
@@ -272,13 +272,13 @@ class Grammar:
         the remaining defining elements of the grammar are obtained as follows:
         
         * if the grammar is *not* context-free the *nonterminals* is the set of symbols,
-          appearing in (the lefthand, or righthand side of) any production, beginning with 
+          appearing in (the left-hand, or right-hand side of) any production, beginning with 
           an uppercase letter, the *terminals* are the remaining symbols. The *start* symbol
-          is the lefthand of the first production;
+          is the left-hand side of the first production;
 
         * if the grammar is *context-free* the *nonterminals* is the set of symbols appearing
-          in a lefthand side of any production, the *terminals* are the remaining symbols. The
-          *start* symbol is the lefthand of the first production.           
+          in a left-hand side of any production, the *terminals* are the remaining symbols. The
+          *start* symbol is the left-hand side of the first production.           
         """
         P = Production.from_string(prods, context_free)
         if context_free:
@@ -296,12 +296,12 @@ class Grammar:
         return G
 
     def alternatives(self, N):
-        """Yields al the righthand sides alternatives matching the given nonterminal.
+        """Yields al the right-hand sides alternatives matching the given nonterminal.
 
         Args:
-            N (:obj:`str` or :obj:`tuple` of :obj:`str`): the righthand to match.
+            N (:obj:`str` or :obj:`tuple` of :obj:`str`): the right-hand side to match.
         Yields:
-            the righthand sides of all productions having ``N`` as the lefthand side.
+            the right-hand sides of all productions having ``N`` as the left-hand side.
         """
         return (P.rhs for P in self.P if P.lhs == N)
 
@@ -360,7 +360,7 @@ class Derivation:
             :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
 
         Raises:
-            ValueError: in case the leftmost nonterminal isn't the lefthand side of the given production.
+            ValueError: in case the leftmost nonterminal isn't the left-hand side of the given production.
         """
         if not self.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
         for pos, symbol in enumerate(self._sf):
@@ -384,7 +384,7 @@ class Derivation:
             :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
 
         Raises:
-            ValueError: in case the rightmost nonterminal isn't the lefthand side of the given production.
+            ValueError: in case the rightmost nonterminal isn't the left-hand side of the given production.
         """
         if not self.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
         for pos, symbol in list(enumerate(self._sf))[::-1]:
@@ -424,14 +424,14 @@ class Derivation:
     def possible_steps(self, prod = None, pos = None):
         """Yields all the possible steps that can be performed given the grammar and current *sentential form*.
 
-        Determines all the position of the *sentential form* that correspond to the lefthand side of 
+        Determines all the position of the *sentential form* that correspond to the left-hand side of 
         one of the production in the grammar, returning the position and production number. If a 
         production is specified, it yields only the pairs referring to it; similarly, if a position
         is specified, it yields only the pairs referring to it.
 
         Args:
-            prod (int): the production whose lefthand is to be searched (that is `G.P[prod].lhs``) in the *sentential form*.
-            pos (int): the position where to look for grammar productions that have a matching lefthand side.
+            prod (int): the production whose left-hand side is to be searched (that is `G.P[prod].lhs``) in the *sentential form*.
+            pos (int): the position where to look for grammar productions that have a matching left-hand side.
 
         Yields:
             Pairs of ``(pord, pos)`` that can be used as :func:`step` argument.

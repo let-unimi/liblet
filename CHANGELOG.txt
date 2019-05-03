@@ -132,7 +132,7 @@ v0.5.0-alpha (2019-03-12)
 v0.4.0-alpha (2019-03-11)
 -------------------------
 
-- Now left/righthand side are separated with HAIR_SPACE.
+- Now left/right-hand side are separated with HAIR_SPACE.
 - ProductionGraph now works by level (every step goes down one level).
 - Checking that travis gets a failure.
 - Added Travis integration.
