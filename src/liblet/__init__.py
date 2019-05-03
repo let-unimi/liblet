@@ -10,7 +10,7 @@ DIAMOND = '◇'
 
 from .decorators import closure, show_calls
 from .display import Tree, Graph, StateTransitionGraph, ProductionGraph, side_by_side, dod2table, iter2table, cyk2table, prods2table, dict2table, ff2table, warn
-from .grammar import Production, Item, EarleyItem, Grammar, Derivation
+from .grammar import Production, Item, Grammar, Derivation
 from .automaton import Transition, Automaton
 from .utils import peek, union_of, letstr, StatesQueueMap, Stack, Queue
 from .antlr import generate_and_load, parse_tree, to_let_tree

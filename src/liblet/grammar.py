@@ -200,24 +200,6 @@ class Item(Production): # pragma: no cover
         return '{} -> {}•{}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs[:self.pos]), _letlrhstostr(self.rhs[self.pos:]))
 
 
-class EarleyItem(Item):  # pragma: no cover
-    __slots__ = ('orig', )
-    def __init__(self, lhs, pos, rhs, orig):
-        if isinstance(lhs, (list, tuple)):
-            raise ValueError('The lhs must be a str.')
-        super().__init__(lhs, pos, rhs)
-        self.orig = orig
-    def __eq__(self, other):
-        if not isinstance(other, EarleyItem): return NotImplemented
-        return (self.lhs, self.pos, self.rhs, self.orig) == (other.lhs, other.pos, other.rhs, other.orig)
-    def __hash__(self):
-        return hash((self.lhs, self.pos, self.rhs, self.orig))
-    def __iter__(self):
-        return iter((self.lhs, self.pos, self.rhs, self.orig))
-    def __repr__(self):
-        return '{} -> {}•{}@{}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs[:self.pos]), _letlrhstostr(self.rhs[self.pos:]), self.orig)
-
-
 class Grammar:
     """A grammar.
 
