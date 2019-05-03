@@ -54,6 +54,15 @@ class UtilsTest(unittest.TestCase):
         expected = '3 3 Stack(1, 2 ↔)'
         self.assertEqual(expected, actual)
 
+    def test_stack_peek(self):
+        s = Stack()
+        s.push(1)
+        s.push(2)
+        p = s.peek()
+        actual = '{} {}'.format(p, s)
+        expected = '2 Stack(1, 2 ↔)'
+        self.assertEqual(expected, actual)
+
     def test_stack_copy(self):
         s = Stack([1, 2, 3])
         c = s.copy()
