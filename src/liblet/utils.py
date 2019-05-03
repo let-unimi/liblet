@@ -29,36 +29,6 @@ def letstr(obj, sep = None, sort = True):
             return fs.format(sep.join(sorted(map(_ls, obj)) if sort else list(map(_ls, obj))))
     return _ls(obj)
     
-
-class StatesQueueMap(object): # pragma: nocover
-
-    def __init__(self, S0):
-        self.queue = [S0]
-        self.num = 0
-        self.map = {frozenset(S0): 0, frozenset(): None}
-
-    def getorput(self, IS):
-        f = frozenset(IS)
-        try:
-            return self.map[f]
-        except KeyError:
-            self.num += 1
-            self.map[f] = self.num
-            self.queue.append(IS)
-            return self.num
-
-    def empty(self):
-        return len(self.queue) == 0
-
-    def pop(self):
-        return self.queue.pop()
-
-    def states(self):
-        res = [None] * (1 + self.num)
-        for IS, n in self.map.items():
-            if n is not None: res[n] = set(IS)
-        return res
-
 class Queue(object):
     def __init__(self, iterable = None, maxlen = None):
         self.Q = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
