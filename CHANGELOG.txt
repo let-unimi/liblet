@@ -1,6 +1,40 @@
 Changelog
 =========
 
+v0.10.0-alpha (2019-05-03)
+--------------------------
+
+- Modifications in the display module:
+    - removed StateTransitionGraph.from_lr method,
+    - added large_label parameter to StateTransitionGraph.from_automaton method,
+    - added compact parameter to ProductionGraph.
+    - added sep parameter to dod2table method,
+    - added sort parameter to dod2table method (to control sorting of row/column headers),
+    - methods cyk2table and prods2table generate a bordered (non wide) table,
+    - added warn method (to display messages on sys.stderr),
+    - added ff2table method (to display FIRST/FOLLOW table),
+    - added dict2table method (to display a dict as a table),
+    - method dod2table encloses cell content in <pre>, 
+    - method dod2table uses OrderedDict.fromkeys to make the list unique preserving column order,
+    - reviewed table visualization methods.
+- Modifications in the grammar module:
+    - added Item.symbol_after_dot and Item.advance methods,
+    - improved type checking for Transition, 
+    - Transition can be made from tuples of items,
+    - renamed Grammar.context_free to Grammar.is_context_free (and added to __slots__).
+- Modifications in the utils module:
+    - added Stack.peek method (to inspect the top of the stack without pop).
+- Improved documentation:
+    - fixed the documentation of the modified methods and classes,
+    - added documentation for grammar.Item,
+    - regenerated examples (due to display module improvements),
+    - uniformed right/left-hand side naming,
+- Tests:
+    - added tests for the Transition containing items,
+    - added a test for the new Stack.peek method,
+- Cleanup:
+    - moved EarlyItem out of the library (it will not be used soon),
+
 v0.9.2-alpha (2019-04-16)
 -------------------------
 
