@@ -81,6 +81,8 @@ class Stack(object):
         self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
     def push(self, item):
         self.S.append(item)
+    def peek(self):
+        return self.S[-1]
     def pop(self):
         return self.S.pop()
     def copy(self):
