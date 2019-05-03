@@ -139,7 +139,6 @@ class Production:
                 [A -> B C]
                 >>> list(filter(Production.such_that(lhs = 'B', rhs_len = 1), prods))
                 [B -> b]
-
         """
         conditions = []
         if 'lhs' in kwargs:
@@ -157,7 +156,7 @@ class Production:
         return Production((self.lhs, ), self.rhs)
 
 @total_ordering
-class Item(Production): # pragma: no cover
+class Item(Production):
     """A dotted production, also known as an *item*. 
 
     .. doctest::
@@ -180,18 +179,17 @@ class Item(Production): # pragma: no cover
 
     Raises:
         ValueError: in case the left-hand , or right-hand side is not a tuple of strings, or the dot `pos` is invalid.
-
     """
 
     __slots__ = ('pos',)
 
     def __init__(self, lhs, rhs, pos = 0):
-        if isinstance(lhs, (list, tuple)):
-            raise ValueError('The lhs must be a str.')
-        super().__init__(lhs, rhs)
+        if not isinstance(lhs, str) and lhs:
+            raise ValueError('The left-hand side must be a str.')
         if pos < 0 or pos > len(rhs):
             raise ValueError('The dot position is invalid.')
         self.pos = pos
+        super().__init__(lhs, rhs)
 
     def __eq__(self, other):
         if not isinstance(other, Item): return NotImplemented
@@ -211,9 +209,22 @@ class Item(Production): # pragma: no cover
         return '{} -> {}•{}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs[:self.pos]), _letlrhstostr(self.rhs[self.pos:]))
 
     def symbol_after_dot(self):
+        """Returns the symbol after the dot.
+        
+        Returns:
+            The symbol after the dot, or ``None`` if the dot is at the end of the right-hand side.
+        """
         return self.rhs[self.pos] if self.pos < len(self.rhs) else None
 
     def advance(self, X):
+        """Returns a new :obj:`Item` obtained advancing the dot past the given symbol.
+
+        Args:
+            X (str): the terminal, or non terminal, to move the dot over.
+
+        Returns:
+            The new item, or ``None`` if the symbol after the dot is not the given one.
+        """
         return Item(self.lhs, self.rhs, self.pos + 1) if self.pos < len(self.rhs) and self.rhs[self.pos] == X else None
 
 
@@ -410,7 +421,6 @@ class Derivation:
         Raises:
             ValueError: in case the production can't be applied at the specified position.
         """
-
         sf = self._sf
         P = self.G.P[prod].as_type0()
         if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))

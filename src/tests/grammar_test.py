@@ -1,6 +1,6 @@
 import unittest
 
-from liblet import Production, Grammar, Derivation, ε
+from liblet import Production, Item, Grammar, Derivation, ε
 
 
 class TestGrammar(unittest.TestCase):
@@ -65,6 +65,51 @@ class TestGrammar(unittest.TestCase):
 
     def test_production_such_that_rhs_is_suffix_of(self):
         self.assertTrue(Production.such_that(rhs_is_suffix_of = ('a', 'x'))(Production('X', ('x', ))))
+
+    def test_item_wrong_lhs(self):
+        with self.assertRaises(ValueError):
+            Item(1,['a'])
+
+    def test_item_neg_pos(self):
+        with self.assertRaises(ValueError):
+            Item('A', ('B', ), -1)
+
+    def test_item_wrong_pos(self):
+        with self.assertRaises(ValueError):
+            Item('A', ('B', ), 2)
+
+    def test_item_inset(self):
+        P = Item('a',['b','c'])
+        Q = Item('a',('b','c'))
+        s = set()
+        s.add(P)
+        s.add(Q)    
+        self.assertEqual(len(s), 1)
+
+    def test_item_totalorder(self):
+        self.assertTrue(Item('a', ('b', 'c'), 2) > Item('a', ('b', 'c'), 1))
+
+    def test_item_eqo(self):
+        self.assertFalse(Item('a', ('b', )) == object())
+
+    def test_item_lto(self):
+        self.assertIs(Item('a', ('b', )).__lt__(object()), NotImplemented)
+
+    def test_item_unpack(self):
+        lhs, rhs, pos = Item('a',['b', 'c'], 1)
+        self.assertEqual(('a', ('b', 'c'), 1), (lhs, rhs, pos))
+
+    def test_item_advance(self):
+        self.assertEqual(Item('A', ('x', 'B'), 1), Item('A', ('x', 'B')).advance('x'))
+
+    def test_item_notadvance(self):
+        self.assertIsNone(Item('A', ('B', 'C')).advance('x'))
+    
+    def test_item_symbol_after_dot(self):
+        self.assertEqual('B', Item('A', ('x', 'B'), 1).symbol_after_dot())
+
+    def test_item_nosymbol_after_dot(self):
+        self.assertIsNone(Item('A', ('B', 'C'), 2).symbol_after_dot())
 
     def test_grammar_eq(self):
         G0 = Grammar.from_string('S -> A B | B\nA -> a\nB -> b')
