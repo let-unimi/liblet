@@ -156,21 +156,22 @@ class Production:
         if isinstance(self.lhs, tuple): return self
         return Production((self.lhs, ), self.rhs)
 
+@total_ordering
 class Item(Production): # pragma: no cover
     """A dotted production, also known as an *item*. 
 
     .. doctest::
 
-        >>> item = Item('A', 1, ('B', 'C'))
+        >>> item = Item('A', ('B', 'C'), 1)
         >>> item
         A -> B•C
-        >>> lhs, pos, rhs = item
+        >>> lhs, rhs, pos = item
         >>> lhs
         'A'
-        >>> pos
-        1
         >>> rhs 
         ('B', 'C')
+        >>> pos
+        1
 
     Args: 
         lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production. 
@@ -181,7 +182,9 @@ class Item(Production): # pragma: no cover
         ValueError: in case the left-hand , or right-hand side is not a tuple of strings, or the dot `pos` is invalid.
 
     """
+
     __slots__ = ('pos',)
+
     def __init__(self, lhs, rhs, pos = 0):
         if isinstance(lhs, (list, tuple)):
             raise ValueError('The lhs must be a str.')
@@ -189,15 +192,29 @@ class Item(Production): # pragma: no cover
         if pos < 0 or pos > len(rhs):
             raise ValueError('The dot position is invalid.')
         self.pos = pos
+
     def __eq__(self, other):
         if not isinstance(other, Item): return NotImplemented
-        return (self.lhs, self.pos, self.rhs) == (other.lhs, other.pos, other.rhs)
+        return (self.lhs, self.rhs, self.pos) == (other.lhs, other.rhs, other.pos)
+
+    def __lt__(self, other):
+        if not isinstance(other, Production): return NotImplemented
+        return (self.lhs, self.rhs, self.pos) < (other.lhs, other.rhs, other.pos)
+
     def __hash__(self):
-        return hash((self.lhs, self.pos, self.rhs))
+        return hash((self.lhs, self.rhs, self.pos))
+
     def __iter__(self):
-        return iter((self.lhs, self.pos, self.rhs))
+        return iter((self.lhs, self.rhs, self.pos))
+
     def __repr__(self):
         return '{} -> {}•{}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs[:self.pos]), _letlrhstostr(self.rhs[self.pos:]))
+
+    def symbol_after_dot(self):
+        return self.rhs[self.pos] if self.pos < len(self.rhs) else None
+
+    def advance(self, X):
+        return Item(self.lhs, self.rhs, self.pos + 1) if self.pos < len(self.rhs) and self.rhs[self.pos] == X else None
 
 
 class Grammar:
