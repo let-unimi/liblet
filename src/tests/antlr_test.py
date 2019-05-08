@@ -5,6 +5,16 @@ from liblet import ANTLR
 
 class TestGenerationAndParsing(unittest.TestCase):
 
+    def test_tokens(self): 
+        Tk = ANTLR(r"""
+            grammar Tk ;
+            start: ID+ ;
+            ID: [a-z]+;
+            WS : [ \t]+ -> skip ;
+        """)
+        tks = ' '.join(list(map(str,Tk.tokens('tic gulp boom'))))
+        self.assertEqual(tks, "[@0,0:2='tic',<1>,1:0] [@1,4:7='gulp',<1>,1:4] [@2,9:12='boom',<1>,1:9] [@3,13:12='<EOF>',<-1>,1:13]")
+
     def test_to_let_tree(self):
         Bad = ANTLR(r"""
             grammar Bad ;
