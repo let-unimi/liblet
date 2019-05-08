@@ -249,113 +249,113 @@ happening.
     <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 146)">
     <title>%3</title>
     <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-146 122.5518,-146 122.5518,4 -4,4"/>
-    <!-- 5838160267108428135 -->
+    <!-- &#45;1807048785863322331 -->
     <g id="node1" class="node">
-    <title>5838160267108428135</title>
+    <title>&#45;1807048785863322331</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M44.9618,-142C44.9618,-142 39.59,-142 39.59,-142 36.9041,-142 34.2182,-139.3141 34.2182,-136.6282 34.2182,-136.6282 34.2182,-125.3718 34.2182,-125.3718 34.2182,-122.6859 36.9041,-120 39.59,-120 39.59,-120 44.9618,-120 44.9618,-120 47.6477,-120 50.3335,-122.6859 50.3335,-125.3718 50.3335,-125.3718 50.3335,-136.6282 50.3335,-136.6282 50.3335,-139.3141 47.6477,-142 44.9618,-142"/>
     <text text-anchor="middle" x="42.2759" y="-126.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838161528305426958 -->
+    <!-- &#45;1807047524666323508 -->
     <g id="node2" class="node">
-    <title>5838161528305426958</title>
+    <title>&#45;1807047524666323508</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M10.9618,-102C10.9618,-102 5.59,-102 5.59,-102 2.9041,-102 .2182,-99.3141 .2182,-96.6282 .2182,-96.6282 .2182,-85.3718 .2182,-85.3718 .2182,-82.6859 2.9041,-80 5.59,-80 5.59,-80 10.9618,-80 10.9618,-80 13.6477,-80 16.3335,-82.6859 16.3335,-85.3718 16.3335,-85.3718 16.3335,-96.6282 16.3335,-96.6282 16.3335,-99.3141 13.6477,-102 10.9618,-102"/>
     <text text-anchor="middle" x="8.2759" y="-86.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838160267108428135&#45;&gt;5838161528305426958 -->
+    <!-- &#45;1807048785863322331&#45;&gt;&#45;1807047524666323508 -->
     <g id="edge1" class="edge">
-    <title>5838160267108428135&#45;&gt;5838161528305426958</title>
+    <title>&#45;1807048785863322331&#45;&gt;&#45;1807047524666323508</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M34.0454,-121.3171C28.6998,-115.0281 21.761,-106.8649 16.4305,-100.5937"/>
     </g>
-    <!-- 6551493930765941115 -->
+    <!-- &#45;2295235651736806044 -->
     <g id="node3" class="node">
-    <title>6551493930765941115</title>
+    <title>&#45;2295235651736806044</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M44.9078,-102C44.9078,-102 39.6439,-102 39.6439,-102 37.012,-102 34.38,-99.3681 34.38,-96.7361 34.38,-96.7361 34.38,-85.2639 34.38,-85.2639 34.38,-82.6319 37.012,-80 39.6439,-80 39.6439,-80 44.9078,-80 44.9078,-80 47.5398,-80 50.1717,-82.6319 50.1717,-85.2639 50.1717,-85.2639 50.1717,-96.7361 50.1717,-96.7361 50.1717,-99.3681 47.5398,-102 44.9078,-102"/>
     <text text-anchor="middle" x="42.2759" y="-86.8" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>
     </g>
-    <!-- 5838160267108428135&#45;&gt;6551493930765941115 -->
+    <!-- &#45;1807048785863322331&#45;&gt;&#45;2295235651736806044 -->
     <g id="edge2" class="edge">
-    <title>5838160267108428135&#45;&gt;6551493930765941115</title>
+    <title>&#45;1807048785863322331&#45;&gt;&#45;2295235651736806044</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M42.2759,-119.6446C42.2759,-114.1937 42.2759,-107.6819 42.2759,-102.2453"/>
     </g>
-    <!-- 5838161528303096860 -->
+    <!-- &#45;1807047524663993410 -->
     <g id="node4" class="node">
-    <title>5838161528303096860</title>
+    <title>&#45;1807047524663993410</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M78.9618,-102C78.9618,-102 73.59,-102 73.59,-102 70.9041,-102 68.2182,-99.3141 68.2182,-96.6282 68.2182,-96.6282 68.2182,-85.3718 68.2182,-85.3718 68.2182,-82.6859 70.9041,-80 73.59,-80 73.59,-80 78.9618,-80 78.9618,-80 81.6477,-80 84.3335,-82.6859 84.3335,-85.3718 84.3335,-85.3718 84.3335,-96.6282 84.3335,-96.6282 84.3335,-99.3141 81.6477,-102 78.9618,-102"/>
     <text text-anchor="middle" x="76.2759" y="-86.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838160267108428135&#45;&gt;5838161528303096860 -->
+    <!-- &#45;1807048785863322331&#45;&gt;&#45;1807047524663993410 -->
     <g id="edge3" class="edge">
-    <title>5838160267108428135&#45;&gt;5838161528303096860</title>
+    <title>&#45;1807048785863322331&#45;&gt;&#45;1807047524663993410</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M50.5063,-121.3171C55.852,-115.0281 62.7907,-106.8649 68.1212,-100.5937"/>
     </g>
-    <!-- 5838161528305426958&#45;&gt;6551493930765941115 -->
-    <!-- 161372809789799709 -->
+    <!-- &#45;1807047524666323508&#45;&gt;&#45;2295235651736806044 -->
+    <!-- &#45;3722324277543718370 -->
     <g id="node5" class="node">
-    <title>161372809789799709</title>
+    <title>&#45;3722324277543718370</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M10.2393,-62C10.2393,-62 6.3125,-62 6.3125,-62 4.3491,-62 2.3857,-60.0366 2.3857,-58.0732 2.3857,-58.0732 2.3857,-43.9268 2.3857,-43.9268 2.3857,-41.9634 4.3491,-40 6.3125,-40 6.3125,-40 10.2393,-40 10.2393,-40 12.2026,-40 14.166,-41.9634 14.166,-43.9268 14.166,-43.9268 14.166,-58.0732 14.166,-58.0732 14.166,-60.0366 12.2026,-62 10.2393,-62"/>
     <text text-anchor="middle" x="8.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">i</text>
     </g>
-    <!-- 5838161528305426958&#45;&gt;161372809789799709 -->
+    <!-- &#45;1807047524666323508&#45;&gt;&#45;3722324277543718370 -->
     <g id="edge6" class="edge">
-    <title>5838161528305426958&#45;&gt;161372809789799709</title>
+    <title>&#45;1807047524666323508&#45;&gt;&#45;3722324277543718370</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M8.2759,-79.6446C8.2759,-74.1937 8.2759,-67.6819 8.2759,-62.2453"/>
     </g>
-    <!-- 6551493930765941115&#45;&gt;5838161528303096860 -->
-    <!-- 5838164050699424604 -->
+    <!-- &#45;2295235651736806044&#45;&gt;&#45;1807047524663993410 -->
+    <!-- &#45;1807050047060321154 -->
     <g id="node6" class="node">
-    <title>5838164050699424604</title>
+    <title>&#45;1807050047060321154</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M44.9618,-62C44.9618,-62 39.59,-62 39.59,-62 36.9041,-62 34.2182,-59.3141 34.2182,-56.6282 34.2182,-56.6282 34.2182,-45.3718 34.2182,-45.3718 34.2182,-42.6859 36.9041,-40 39.59,-40 39.59,-40 44.9618,-40 44.9618,-40 47.6477,-40 50.3335,-42.6859 50.3335,-45.3718 50.3335,-45.3718 50.3335,-56.6282 50.3335,-56.6282 50.3335,-59.3141 47.6477,-62 44.9618,-62"/>
     <text text-anchor="middle" x="42.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838161528303096860&#45;&gt;5838164050699424604 -->
+    <!-- &#45;1807047524663993410&#45;&gt;&#45;1807050047060321154 -->
     <g id="edge7" class="edge">
-    <title>5838161528303096860&#45;&gt;5838164050699424604</title>
+    <title>&#45;1807047524663993410&#45;&gt;&#45;1807050047060321154</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M68.0454,-81.3171C62.6998,-75.0281 55.761,-66.8649 50.4305,-60.5937"/>
     </g>
-    <!-- &#45;6442874614137620086 -->
+    <!-- 2266774316391378019 -->
     <g id="node7" class="node">
-    <title>&#45;6442874614137620086</title>
+    <title>2266774316391378019</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M78.7759,-62C78.7759,-62 73.7759,-62 73.7759,-62 71.2759,-62 68.7759,-59.5 68.7759,-57 68.7759,-57 68.7759,-45 68.7759,-45 68.7759,-42.5 71.2759,-40 73.7759,-40 73.7759,-40 78.7759,-40 78.7759,-40 81.2759,-40 83.7759,-42.5 83.7759,-45 83.7759,-45 83.7759,-57 83.7759,-57 83.7759,-59.5 81.2759,-62 78.7759,-62"/>
     <text text-anchor="middle" x="76.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">*</text>
     </g>
-    <!-- 5838161528303096860&#45;&gt;&#45;6442874614137620086 -->
+    <!-- &#45;1807047524663993410&#45;&gt;2266774316391378019 -->
     <g id="edge8" class="edge">
-    <title>5838161528303096860&#45;&gt;&#45;6442874614137620086</title>
+    <title>&#45;1807047524663993410&#45;&gt;2266774316391378019</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M76.2759,-79.6446C76.2759,-74.1937 76.2759,-67.6819 76.2759,-62.2453"/>
     </g>
-    <!-- 5838164050701754702 -->
+    <!-- &#45;1807050047062651252 -->
     <g id="node8" class="node">
-    <title>5838164050701754702</title>
+    <title>&#45;1807050047062651252</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M112.9618,-62C112.9618,-62 107.59,-62 107.59,-62 104.9041,-62 102.2182,-59.3141 102.2182,-56.6282 102.2182,-56.6282 102.2182,-45.3718 102.2182,-45.3718 102.2182,-42.6859 104.9041,-40 107.59,-40 107.59,-40 112.9618,-40 112.9618,-40 115.6477,-40 118.3335,-42.6859 118.3335,-45.3718 118.3335,-45.3718 118.3335,-56.6282 118.3335,-56.6282 118.3335,-59.3141 115.6477,-62 112.9618,-62"/>
     <text text-anchor="middle" x="110.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838161528303096860&#45;&gt;5838164050701754702 -->
+    <!-- &#45;1807047524663993410&#45;&gt;&#45;1807050047062651252 -->
     <g id="edge9" class="edge">
-    <title>5838161528303096860&#45;&gt;5838164050701754702</title>
+    <title>&#45;1807047524663993410&#45;&gt;&#45;1807050047062651252</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M84.5063,-81.3171C89.852,-75.0281 96.7907,-66.8649 102.1212,-60.5937"/>
     </g>
-    <!-- 5838164050699424604&#45;&gt;&#45;6442874614137620086 -->
-    <!-- 161365242607806771 -->
+    <!-- &#45;1807050047060321154&#45;&gt;2266774316391378019 -->
+    <!-- &#45;3722326799937716016 -->
     <g id="node9" class="node">
-    <title>161365242607806771</title>
+    <title>&#45;3722326799937716016</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M44.2393,-22C44.2393,-22 40.3125,-22 40.3125,-22 38.3491,-22 36.3857,-20.0366 36.3857,-18.0732 36.3857,-18.0732 36.3857,-3.9268 36.3857,-3.9268 36.3857,-1.9634 38.3491,0 40.3125,0 40.3125,0 44.2393,0 44.2393,0 46.2026,0 48.166,-1.9634 48.166,-3.9268 48.166,-3.9268 48.166,-18.0732 48.166,-18.0732 48.166,-20.0366 46.2026,-22 44.2393,-22"/>
     <text text-anchor="middle" x="42.2759" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">i</text>
     </g>
-    <!-- 5838164050699424604&#45;&gt;161365242607806771 -->
+    <!-- &#45;1807050047060321154&#45;&gt;&#45;3722326799937716016 -->
     <g id="edge12" class="edge">
-    <title>5838164050699424604&#45;&gt;161365242607806771</title>
+    <title>&#45;1807050047060321154&#45;&gt;&#45;3722326799937716016</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M42.2759,-39.6446C42.2759,-34.1937 42.2759,-27.6819 42.2759,-22.2453"/>
     </g>
-    <!-- &#45;6442874614137620086&#45;&gt;5838164050701754702 -->
-    <!-- 161366503804805594 -->
+    <!-- 2266774316391378019&#45;&gt;&#45;1807050047062651252 -->
+    <!-- &#45;3722328061134714839 -->
     <g id="node10" class="node">
-    <title>161366503804805594</title>
+    <title>&#45;3722328061134714839</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M112.2393,-22C112.2393,-22 108.3125,-22 108.3125,-22 106.3491,-22 104.3857,-20.0366 104.3857,-18.0732 104.3857,-18.0732 104.3857,-3.9268 104.3857,-3.9268 104.3857,-1.9634 106.3491,0 108.3125,0 108.3125,0 112.2393,0 112.2393,0 114.2026,0 116.166,-1.9634 116.166,-3.9268 116.166,-3.9268 116.166,-18.0732 116.166,-18.0732 116.166,-20.0366 114.2026,-22 112.2393,-22"/>
     <text text-anchor="middle" x="110.2759" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">i</text>
     </g>
-    <!-- 5838164050701754702&#45;&gt;161366503804805594 -->
+    <!-- &#45;1807050047062651252&#45;&gt;&#45;3722328061134714839 -->
     <g id="edge13" class="edge">
-    <title>5838164050701754702&#45;&gt;161366503804805594</title>
+    <title>&#45;1807050047062651252&#45;&gt;&#45;3722328061134714839</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M110.2759,-39.6446C110.2759,-34.1937 110.2759,-27.6819 110.2759,-22.2453"/>
     </g>
     </g>
@@ -371,113 +371,113 @@ happening.
     <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 146)">
     <title>%3</title>
     <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-146 122.5518,-146 122.5518,4 -4,4"/>
-    <!-- 5838160267108428135 -->
+    <!-- &#45;1807048785863322331 -->
     <g id="node1" class="node">
-    <title>5838160267108428135</title>
+    <title>&#45;1807048785863322331</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M78.9618,-142C78.9618,-142 73.59,-142 73.59,-142 70.9041,-142 68.2182,-139.3141 68.2182,-136.6282 68.2182,-136.6282 68.2182,-125.3718 68.2182,-125.3718 68.2182,-122.6859 70.9041,-120 73.59,-120 73.59,-120 78.9618,-120 78.9618,-120 81.6477,-120 84.3335,-122.6859 84.3335,-125.3718 84.3335,-125.3718 84.3335,-136.6282 84.3335,-136.6282 84.3335,-139.3141 81.6477,-142 78.9618,-142"/>
     <text text-anchor="middle" x="76.2759" y="-126.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838161528305426958 -->
+    <!-- &#45;1807047524666323508 -->
     <g id="node2" class="node">
-    <title>5838161528305426958</title>
+    <title>&#45;1807047524666323508</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M44.9618,-102C44.9618,-102 39.59,-102 39.59,-102 36.9041,-102 34.2182,-99.3141 34.2182,-96.6282 34.2182,-96.6282 34.2182,-85.3718 34.2182,-85.3718 34.2182,-82.6859 36.9041,-80 39.59,-80 39.59,-80 44.9618,-80 44.9618,-80 47.6477,-80 50.3335,-82.6859 50.3335,-85.3718 50.3335,-85.3718 50.3335,-96.6282 50.3335,-96.6282 50.3335,-99.3141 47.6477,-102 44.9618,-102"/>
     <text text-anchor="middle" x="42.2759" y="-86.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838160267108428135&#45;&gt;5838161528305426958 -->
+    <!-- &#45;1807048785863322331&#45;&gt;&#45;1807047524666323508 -->
     <g id="edge1" class="edge">
-    <title>5838160267108428135&#45;&gt;5838161528305426958</title>
+    <title>&#45;1807048785863322331&#45;&gt;&#45;1807047524666323508</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M68.0454,-121.3171C62.6998,-115.0281 55.761,-106.8649 50.4305,-100.5937"/>
     </g>
-    <!-- &#45;6442877136531617732 -->
+    <!-- 2266771793997380373 -->
     <g id="node3" class="node">
-    <title>&#45;6442877136531617732</title>
+    <title>2266771793997380373</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M78.7759,-102C78.7759,-102 73.7759,-102 73.7759,-102 71.2759,-102 68.7759,-99.5 68.7759,-97 68.7759,-97 68.7759,-85 68.7759,-85 68.7759,-82.5 71.2759,-80 73.7759,-80 73.7759,-80 78.7759,-80 78.7759,-80 81.2759,-80 83.7759,-82.5 83.7759,-85 83.7759,-85 83.7759,-97 83.7759,-97 83.7759,-99.5 81.2759,-102 78.7759,-102"/>
     <text text-anchor="middle" x="76.2759" y="-86.8" font-family="Times,serif" font-size="14.00" fill="#000000">*</text>
     </g>
-    <!-- 5838160267108428135&#45;&gt;&#45;6442877136531617732 -->
+    <!-- &#45;1807048785863322331&#45;&gt;2266771793997380373 -->
     <g id="edge2" class="edge">
-    <title>5838160267108428135&#45;&gt;&#45;6442877136531617732</title>
+    <title>&#45;1807048785863322331&#45;&gt;2266771793997380373</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M76.2759,-119.6446C76.2759,-114.1937 76.2759,-107.6819 76.2759,-102.2453"/>
     </g>
-    <!-- 5838161528303096860 -->
+    <!-- &#45;1807047524663993410 -->
     <g id="node4" class="node">
-    <title>5838161528303096860</title>
+    <title>&#45;1807047524663993410</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M112.9618,-102C112.9618,-102 107.59,-102 107.59,-102 104.9041,-102 102.2182,-99.3141 102.2182,-96.6282 102.2182,-96.6282 102.2182,-85.3718 102.2182,-85.3718 102.2182,-82.6859 104.9041,-80 107.59,-80 107.59,-80 112.9618,-80 112.9618,-80 115.6477,-80 118.3335,-82.6859 118.3335,-85.3718 118.3335,-85.3718 118.3335,-96.6282 118.3335,-96.6282 118.3335,-99.3141 115.6477,-102 112.9618,-102"/>
     <text text-anchor="middle" x="110.2759" y="-86.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838160267108428135&#45;&gt;5838161528303096860 -->
+    <!-- &#45;1807048785863322331&#45;&gt;&#45;1807047524663993410 -->
     <g id="edge3" class="edge">
-    <title>5838160267108428135&#45;&gt;5838161528303096860</title>
+    <title>&#45;1807048785863322331&#45;&gt;&#45;1807047524663993410</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M84.5063,-121.3171C89.852,-115.0281 96.7907,-106.8649 102.1212,-100.5937"/>
     </g>
-    <!-- 5838161528305426958&#45;&gt;&#45;6442877136531617732 -->
-    <!-- 5838162789502425781 -->
+    <!-- &#45;1807047524666323508&#45;&gt;2266771793997380373 -->
+    <!-- &#45;1807051308257319977 -->
     <g id="node5" class="node">
-    <title>5838162789502425781</title>
+    <title>&#45;1807051308257319977</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M10.9618,-62C10.9618,-62 5.59,-62 5.59,-62 2.9041,-62 .2182,-59.3141 .2182,-56.6282 .2182,-56.6282 .2182,-45.3718 .2182,-45.3718 .2182,-42.6859 2.9041,-40 5.59,-40 5.59,-40 10.9618,-40 10.9618,-40 13.6477,-40 16.3335,-42.6859 16.3335,-45.3718 16.3335,-45.3718 16.3335,-56.6282 16.3335,-56.6282 16.3335,-59.3141 13.6477,-62 10.9618,-62"/>
     <text text-anchor="middle" x="8.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838161528305426958&#45;&gt;5838162789502425781 -->
+    <!-- &#45;1807047524666323508&#45;&gt;&#45;1807051308257319977 -->
     <g id="edge6" class="edge">
-    <title>5838161528305426958&#45;&gt;5838162789502425781</title>
+    <title>&#45;1807047524666323508&#45;&gt;&#45;1807051308257319977</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M34.0454,-81.3171C28.6998,-75.0281 21.761,-66.8649 16.4305,-60.5937"/>
     </g>
-    <!-- 6551490147177274744 -->
+    <!-- &#45;2295231868148139673 -->
     <g id="node6" class="node">
-    <title>6551490147177274744</title>
+    <title>&#45;2295231868148139673</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M44.9078,-62C44.9078,-62 39.6439,-62 39.6439,-62 37.012,-62 34.38,-59.3681 34.38,-56.7361 34.38,-56.7361 34.38,-45.2639 34.38,-45.2639 34.38,-42.6319 37.012,-40 39.6439,-40 39.6439,-40 44.9078,-40 44.9078,-40 47.5398,-40 50.1717,-42.6319 50.1717,-45.2639 50.1717,-45.2639 50.1717,-56.7361 50.1717,-56.7361 50.1717,-59.3681 47.5398,-62 44.9078,-62"/>
     <text text-anchor="middle" x="42.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>
     </g>
-    <!-- 5838161528305426958&#45;&gt;6551490147177274744 -->
+    <!-- &#45;1807047524666323508&#45;&gt;&#45;2295231868148139673 -->
     <g id="edge7" class="edge">
-    <title>5838161528305426958&#45;&gt;6551490147177274744</title>
+    <title>&#45;1807047524666323508&#45;&gt;&#45;2295231868148139673</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M42.2759,-79.6446C42.2759,-74.1937 42.2759,-67.6819 42.2759,-62.2453"/>
     </g>
-    <!-- 5838162789500095683 -->
+    <!-- &#45;1807051308254989879 -->
     <g id="node7" class="node">
-    <title>5838162789500095683</title>
+    <title>&#45;1807051308254989879</title>
     <path fill="none" stroke="#000000" stroke-width=".25" d="M78.9618,-62C78.9618,-62 73.59,-62 73.59,-62 70.9041,-62 68.2182,-59.3141 68.2182,-56.6282 68.2182,-56.6282 68.2182,-45.3718 68.2182,-45.3718 68.2182,-42.6859 70.9041,-40 73.59,-40 73.59,-40 78.9618,-40 78.9618,-40 81.6477,-40 84.3335,-42.6859 84.3335,-45.3718 84.3335,-45.3718 84.3335,-56.6282 84.3335,-56.6282 84.3335,-59.3141 81.6477,-62 78.9618,-62"/>
     <text text-anchor="middle" x="76.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">E</text>
     </g>
-    <!-- 5838161528305426958&#45;&gt;5838162789500095683 -->
+    <!-- &#45;1807047524666323508&#45;&gt;&#45;1807051308254989879 -->
     <g id="edge8" class="edge">
-    <title>5838161528305426958&#45;&gt;5838162789500095683</title>
+    <title>&#45;1807047524666323508&#45;&gt;&#45;1807051308254989879</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M50.5063,-81.3171C55.852,-75.0281 62.7907,-66.8649 68.1212,-60.5937"/>
     </g>
-    <!-- &#45;6442877136531617732&#45;&gt;5838161528303096860 -->
-    <!-- 161366503804805594 -->
+    <!-- 2266771793997380373&#45;&gt;&#45;1807047524663993410 -->
+    <!-- &#45;3722328061134714839 -->
     <g id="node10" class="node">
-    <title>161366503804805594</title>
+    <title>&#45;3722328061134714839</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M112.2393,-62C112.2393,-62 108.3125,-62 108.3125,-62 106.3491,-62 104.3857,-60.0366 104.3857,-58.0732 104.3857,-58.0732 104.3857,-43.9268 104.3857,-43.9268 104.3857,-41.9634 106.3491,-40 108.3125,-40 108.3125,-40 112.2393,-40 112.2393,-40 114.2026,-40 116.166,-41.9634 116.166,-43.9268 116.166,-43.9268 116.166,-58.0732 116.166,-58.0732 116.166,-60.0366 114.2026,-62 112.2393,-62"/>
     <text text-anchor="middle" x="110.2759" y="-46.8" font-family="Times,serif" font-size="14.00" fill="#000000">i</text>
     </g>
-    <!-- 5838161528303096860&#45;&gt;161366503804805594 -->
+    <!-- &#45;1807047524663993410&#45;&gt;&#45;3722328061134714839 -->
     <g id="edge13" class="edge">
-    <title>5838161528303096860&#45;&gt;161366503804805594</title>
+    <title>&#45;1807047524663993410&#45;&gt;&#45;3722328061134714839</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M110.2759,-79.6446C110.2759,-74.1937 110.2759,-67.6819 110.2759,-62.2453"/>
     </g>
-    <!-- 5838162789502425781&#45;&gt;6551490147177274744 -->
-    <!-- 161374070986798532 -->
+    <!-- &#45;1807051308257319977&#45;&gt;&#45;2295231868148139673 -->
+    <!-- &#45;3722325538740717193 -->
     <g id="node8" class="node">
-    <title>161374070986798532</title>
+    <title>&#45;3722325538740717193</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M10.2393,-22C10.2393,-22 6.3125,-22 6.3125,-22 4.3491,-22 2.3857,-20.0366 2.3857,-18.0732 2.3857,-18.0732 2.3857,-3.9268 2.3857,-3.9268 2.3857,-1.9634 4.3491,0 6.3125,0 6.3125,0 10.2393,0 10.2393,0 12.2026,0 14.166,-1.9634 14.166,-3.9268 14.166,-3.9268 14.166,-18.0732 14.166,-18.0732 14.166,-20.0366 12.2026,-22 10.2393,-22"/>
     <text text-anchor="middle" x="8.2759" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">i</text>
     </g>
-    <!-- 5838162789502425781&#45;&gt;161374070986798532 -->
+    <!-- &#45;1807051308257319977&#45;&gt;&#45;3722325538740717193 -->
     <g id="edge11" class="edge">
-    <title>5838162789502425781&#45;&gt;161374070986798532</title>
+    <title>&#45;1807051308257319977&#45;&gt;&#45;3722325538740717193</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M8.2759,-39.6446C8.2759,-34.1937 8.2759,-27.6819 8.2759,-22.2453"/>
     </g>
-    <!-- 6551490147177274744&#45;&gt;5838162789500095683 -->
-    <!-- 161365242607806771 -->
+    <!-- &#45;2295231868148139673&#45;&gt;&#45;1807051308254989879 -->
+    <!-- &#45;3722326799937716016 -->
     <g id="node9" class="node">
-    <title>161365242607806771</title>
+    <title>&#45;3722326799937716016</title>
     <path fill="none" stroke="#000000" stroke-width="1.25" d="M78.2393,-22C78.2393,-22 74.3125,-22 74.3125,-22 72.3491,-22 70.3857,-20.0366 70.3857,-18.0732 70.3857,-18.0732 70.3857,-3.9268 70.3857,-3.9268 70.3857,-1.9634 72.3491,0 74.3125,0 74.3125,0 78.2393,0 78.2393,0 80.2026,0 82.166,-1.9634 82.166,-3.9268 82.166,-3.9268 82.166,-18.0732 82.166,-18.0732 82.166,-20.0366 80.2026,-22 78.2393,-22"/>
     <text text-anchor="middle" x="76.2759" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">i</text>
     </g>
-    <!-- 5838162789500095683&#45;&gt;161365242607806771 -->
+    <!-- &#45;1807051308254989879&#45;&gt;&#45;3722326799937716016 -->
     <g id="edge12" class="edge">
-    <title>5838162789500095683&#45;&gt;161365242607806771</title>
+    <title>&#45;1807051308254989879&#45;&gt;&#45;3722326799937716016</title>
     <path fill="none" stroke="#000000" stroke-width=".5" d="M76.2759,-39.6446C76.2759,-34.1937 76.2759,-27.6819 76.2759,-22.2453"/>
     </g>
     </g>
@@ -697,7 +697,7 @@ side.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>S<td style="text-align:left">L a | L a M’<tr><th>L<td style="text-align:left">L | L M’ | ε<tr><th>M<td style="text-align:left">M’ | M’ M’ | ε<tr><th>M’<td style="text-align:left"></table>
+    <table class="table-bordered"><tr><th><pre>S</pre><td style="text-align:left"><pre>L a | L a M’</pre><tr><th><pre>L</pre><td style="text-align:left"><pre>L | L M’ | ε</pre><tr><th><pre>M</pre><td style="text-align:left"><pre>M’ | M’ M’ | ε</pre><tr><th><pre>M’</pre><td style="text-align:left"><pre></pre></table>
 
 
 
@@ -724,7 +724,7 @@ process can intruduce new ε-rules, a closure is again needed.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>S<td style="text-align:left">L’ a | L’ a M’ | a | a M’<tr><th>L<td style="text-align:left">L’ | L’ M’ | M’ | ε<tr><th>L’<td style="text-align:left"><tr><th>M<td style="text-align:left">M’ | M’ M’ | ε<tr><th>M’<td style="text-align:left"></table>
+    <table class="table-bordered"><tr><th><pre>S</pre><td style="text-align:left"><pre>L’ a | L’ a M’ | a | a M’</pre><tr><th><pre>L</pre><td style="text-align:left"><pre>L’ | L’ M’ | M’ | ε</pre><tr><th><pre>L’</pre><td style="text-align:left"><pre></pre><tr><th><pre>M</pre><td style="text-align:left"><pre>M’ | M’ M’ | ε</pre><tr><th><pre>M’</pre><td style="text-align:left"><pre></pre></table>
 
 
 
@@ -752,7 +752,7 @@ sides of the one they inlined.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>S<td style="text-align:left">L’ a | L’ a M’ | a | a M’<tr><th>L<td style="text-align:left">L’ | L’ M’ | M’ | ε<tr><th>L’<td style="text-align:left">L’ | L’ M’ | M’<tr><th>M<td style="text-align:left">M’ | M’ M’ | ε<tr><th>M’<td style="text-align:left">M’ | M’ M’</table>
+    <table class="table-bordered"><tr><th><pre>S</pre><td style="text-align:left"><pre>L’ a | L’ a M’ | a | a M’</pre><tr><th><pre>L</pre><td style="text-align:left"><pre>L’ | L’ M’ | M’ | ε</pre><tr><th><pre>L’</pre><td style="text-align:left"><pre>L’ | L’ M’ | M’</pre><tr><th><pre>M</pre><td style="text-align:left"><pre>M’ | M’ M’ | ε</pre><tr><th><pre>M’</pre><td style="text-align:left"><pre>M’ | M’ M’</pre></table>
 
 
 
@@ -797,7 +797,7 @@ refer to a more complex grammar, the one of Figure 4.6 at page 112.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>Number<td style="text-align:left">Integer | Real<tr><th>Digit<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<tr><th>Empty<td style="text-align:left">ε<tr><th>Fraction<td style="text-align:left">. Integer<tr><th>Integer<td style="text-align:left">Digit | Integer Digit<tr><th>Real<td style="text-align:left">Integer Fraction Scale<tr><th>Scale<td style="text-align:left">Empty | e Sign Integer<tr><th>Sign<td style="text-align:left">+ | -</table>
+    <table class="table-bordered"><tr><th><pre>Number</pre><td style="text-align:left"><pre>Integer | Real</pre><tr><th><pre>Digit</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre><tr><th><pre>Empty</pre><td style="text-align:left"><pre>ε</pre><tr><th><pre>Fraction</pre><td style="text-align:left"><pre>. Integer</pre><tr><th><pre>Integer</pre><td style="text-align:left"><pre>Digit | Integer Digit</pre><tr><th><pre>Real</pre><td style="text-align:left"><pre>Integer Fraction Scale</pre><tr><th><pre>Scale</pre><td style="text-align:left"><pre>Empty | e Sign Integer</pre><tr><th><pre>Sign</pre><td style="text-align:left"><pre>+ | -</pre></table>
 
 
 
@@ -814,7 +814,7 @@ We start by applying all the cleaning steps seen so far.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>Number<td style="text-align:left">Integer | Real<tr><th>Digit<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<tr><th>Fraction<td style="text-align:left">. Integer<tr><th>Integer<td style="text-align:left">Digit | Integer Digit<tr><th>Real<td style="text-align:left">Integer Fraction | Integer Fraction Scale’<tr><th>Scale’<td style="text-align:left">e Sign Integer<tr><th>Sign<td style="text-align:left">+ | -</table>
+    <table class="table-bordered"><tr><th><pre>Number</pre><td style="text-align:left"><pre>Integer | Real</pre><tr><th><pre>Digit</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre><tr><th><pre>Fraction</pre><td style="text-align:left"><pre>. Integer</pre><tr><th><pre>Integer</pre><td style="text-align:left"><pre>Digit | Integer Digit</pre><tr><th><pre>Real</pre><td style="text-align:left"><pre>Integer Fraction | Integer Fraction Scale’</pre><tr><th><pre>Scale’</pre><td style="text-align:left"><pre>e Sign Integer</pre><tr><th><pre>Sign</pre><td style="text-align:left"><pre>+ | -</pre></table>
 
 
 
@@ -845,7 +845,7 @@ replaces :math:`A\to B` and :math:`B\to α` with :math:`A\to α`.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>Number<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Integer Fraction Scale’<tr><th>Digit<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<tr><th>Fraction<td style="text-align:left">. Integer<tr><th>Integer<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit<tr><th>Real<td style="text-align:left">Integer Fraction | Integer Fraction Scale’<tr><th>Scale’<td style="text-align:left">e Sign Integer<tr><th>Sign<td style="text-align:left">+ | -</table>
+    <table class="table-bordered"><tr><th><pre>Number</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Integer Fraction Scale’</pre><tr><th><pre>Digit</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre><tr><th><pre>Fraction</pre><td style="text-align:left"><pre>. Integer</pre><tr><th><pre>Integer</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit</pre><tr><th><pre>Real</pre><td style="text-align:left"><pre>Integer Fraction | Integer Fraction Scale’</pre><tr><th><pre>Scale’</pre><td style="text-align:left"><pre>e Sign Integer</pre><tr><th><pre>Sign</pre><td style="text-align:left"><pre>+ | -</pre></table>
 
 
 
@@ -889,7 +889,7 @@ offending :math:`A\to αaβ` with :math:`A\to αN_aβ`.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>Number<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Integer Fraction Scale’<tr><th>Digit<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<tr><th>Fraction<td style="text-align:left">N. Integer<tr><th>Integer<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit<tr><th>N.<td style="text-align:left">.<tr><th>Ne<td style="text-align:left">e<tr><th>Real<td style="text-align:left">Integer Fraction | Integer Fraction Scale’<tr><th>Scale’<td style="text-align:left">Ne Sign Integer<tr><th>Sign<td style="text-align:left">+ | -</table>
+    <table class="table-bordered"><tr><th><pre>Number</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Integer Fraction Scale’</pre><tr><th><pre>Digit</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre><tr><th><pre>Fraction</pre><td style="text-align:left"><pre>N. Integer</pre><tr><th><pre>Integer</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit</pre><tr><th><pre>N.</pre><td style="text-align:left"><pre>.</pre><tr><th><pre>Ne</pre><td style="text-align:left"><pre>e</pre><tr><th><pre>Real</pre><td style="text-align:left"><pre>Integer Fraction | Integer Fraction Scale’</pre><tr><th><pre>Scale’</pre><td style="text-align:left"><pre>Ne Sign Integer</pre><tr><th><pre>Sign</pre><td style="text-align:left"><pre>+ | -</pre></table>
 
 
 
@@ -923,7 +923,7 @@ that is easily accomplished by introducing new nonterminals and rules.
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>Number<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Number1 Scale’<tr><th>Digit<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<tr><th>Fraction<td style="text-align:left">N. Integer<tr><th>Integer<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit<tr><th>N.<td style="text-align:left">.<tr><th>Ne<td style="text-align:left">e<tr><th>Number1<td style="text-align:left">Integer Fraction<tr><th>Real<td style="text-align:left">Integer Fraction | Real1 Scale’<tr><th>Real1<td style="text-align:left">Integer Fraction<tr><th>Scale’<td style="text-align:left">Scale’1 Integer<tr><th>Scale’1<td style="text-align:left">Ne Sign<tr><th>Sign<td style="text-align:left">+ | -</table>
+    <table class="table-bordered"><tr><th><pre>Number</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Number1 Scale’</pre><tr><th><pre>Digit</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre><tr><th><pre>Fraction</pre><td style="text-align:left"><pre>N. Integer</pre><tr><th><pre>Integer</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit</pre><tr><th><pre>N.</pre><td style="text-align:left"><pre>.</pre><tr><th><pre>Ne</pre><td style="text-align:left"><pre>e</pre><tr><th><pre>Number1</pre><td style="text-align:left"><pre>Integer Fraction</pre><tr><th><pre>Real</pre><td style="text-align:left"><pre>Integer Fraction | Real1 Scale’</pre><tr><th><pre>Real1</pre><td style="text-align:left"><pre>Integer Fraction</pre><tr><th><pre>Scale’</pre><td style="text-align:left"><pre>Scale’1 Integer</pre><tr><th><pre>Scale’1</pre><td style="text-align:left"><pre>Ne Sign</pre><tr><th><pre>Sign</pre><td style="text-align:left"><pre>+ | -</pre></table>
 
 
 
@@ -1024,28 +1024,28 @@ recursing in the table following the same logic used to fill it.
     │┌prods('Number1', 1, 4)
     ││┌prods('Integer', 1, 2)
     │││┌prods('Integer', 1, 1)
-    │││└─ [41]
+    │││└─ [6]
     │││┌prods('Digit', 2, 1)
-    │││└─ [44]
-    ││└─ [12, 41, 44]
+    │││└─ [17]
+    ││└─ [36, 6, 17]
     ││┌prods('Fraction', 3, 2)
     │││┌prods('N.', 3, 1)
-    │││└─ [9]
+    │││└─ [21]
     │││┌prods('Integer', 4, 1)
-    │││└─ [40]
-    ││└─ [31, 9, 40]
-    │└─ [14, 12, 41, 44, 31, 9, 40]
+    │││└─ [38]
+    ││└─ [22, 21, 38]
+    │└─ [14, 36, 6, 17, 22, 21, 38]
     │┌prods('Scale’', 5, 3)
     ││┌prods('Scale’1', 5, 2)
     │││┌prods('Ne', 5, 1)
-    │││└─ [11]
+    │││└─ [42]
     │││┌prods('Sign', 6, 1)
-    │││└─ [39]
-    ││└─ [20, 11, 39]
+    │││└─ [41]
+    ││└─ [37, 42, 41]
     ││┌prods('Integer', 7, 1)
     ││└─ [34]
-    │└─ [15, 20, 11, 39, 34]
-    └─ [38, 14, 12, 41, 44, 31, 9, 40, 15, 20, 11, 39, 34]
+    │└─ [18, 37, 42, 41, 34]
+    └─ [20, 14, 36, 6, 17, 22, 21, 38, 18, 37, 42, 41, 34]
 
 
 .. code:: ipython3
@@ -1082,7 +1082,7 @@ is we clean the original grammar but avoid the
 
 .. raw:: html
 
-    <table class="table-bordered"><tr><th>Number<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Number1 Scale’<tr><th>Digit<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9<tr><th>Empty<td style="text-align:left">ε<tr><th>Empty’<td style="text-align:left"><tr><th>Fraction<td style="text-align:left">N. Integer<tr><th>Integer<td style="text-align:left">0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit<tr><th>N.<td style="text-align:left">.<tr><th>Ne<td style="text-align:left">e<tr><th>Number1<td style="text-align:left">Integer Fraction<tr><th>Real<td style="text-align:left">Integer Fraction | Real1 Scale’<tr><th>Real1<td style="text-align:left">Integer Fraction<tr><th>Scale<td style="text-align:left">Scale1 Integer | ε<tr><th>Scale1<td style="text-align:left">Ne Sign<tr><th>Scale’<td style="text-align:left">Scale’1 Integer<tr><th>Scale’1<td style="text-align:left">Ne Sign<tr><th>Sign<td style="text-align:left">+ | -</table>
+    <table class="table-bordered"><tr><th><pre>Number</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit | Integer Fraction | Number1 Scale’</pre><tr><th><pre>Digit</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre><tr><th><pre>Empty</pre><td style="text-align:left"><pre>ε</pre><tr><th><pre>Empty’</pre><td style="text-align:left"><pre></pre><tr><th><pre>Fraction</pre><td style="text-align:left"><pre>N. Integer</pre><tr><th><pre>Integer</pre><td style="text-align:left"><pre>0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Integer Digit</pre><tr><th><pre>N.</pre><td style="text-align:left"><pre>.</pre><tr><th><pre>Ne</pre><td style="text-align:left"><pre>e</pre><tr><th><pre>Number1</pre><td style="text-align:left"><pre>Integer Fraction</pre><tr><th><pre>Real</pre><td style="text-align:left"><pre>Integer Fraction | Real1 Scale’</pre><tr><th><pre>Real1</pre><td style="text-align:left"><pre>Integer Fraction</pre><tr><th><pre>Scale</pre><td style="text-align:left"><pre>Scale1 Integer | ε</pre><tr><th><pre>Scale1</pre><td style="text-align:left"><pre>Ne Sign</pre><tr><th><pre>Scale’</pre><td style="text-align:left"><pre>Scale’1 Integer</pre><tr><th><pre>Scale’1</pre><td style="text-align:left"><pre>Ne Sign</pre><tr><th><pre>Sign</pre><td style="text-align:left"><pre>+ | -</pre></table>
 
 
 
