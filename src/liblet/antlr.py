@@ -1,15 +1,16 @@
 from importlib import util as imputil
-from os import environ, mkdir
+from os import environ
 from os.path import join as pjoin, exists
+from re import findall
 from subprocess import run
-from sys import modules, stderr
+from sys import modules
 from tempfile import TemporaryDirectory
 
 from antlr4.CommonTokenStream import CommonTokenStream
 from antlr4.InputStream import InputStream
 from antlr4.tree.Tree import ParseTreeVisitor
 
-from .display import Tree
+from .display import warn
 
 if not 'READTHEDOCS' in environ:
     if 'ANTLR4_JAR' not in environ:
@@ -17,61 +18,78 @@ if not 'READTHEDOCS' in environ:
     if not exists(environ['ANTLR4_JAR']):
         raise ImportError('The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR']))
 
-def generate_and_load(name, grammar):
-    with TemporaryDirectory() as tmpdir:
+class ANTLR:
+
+    __slots__ = ('name', 'Lexer', 'Parser', 'Visitor', 'Listener') # the order is crucial, due to the module loading/execution sequence
+
+    def __init__(self, grammar):
         
-        with open(pjoin(tmpdir, name) + '.g', 'w') as ouf: ouf.write(grammar)        
-        res = run([
-            'java', '-jar', environ['ANTLR4_JAR'], 
-             '-Dlanguage=Python3',
-            '-listener', '-visitor',
-            '{}.g'.format(name)
-        ], capture_output = True, cwd = tmpdir)
-        if res.returncode:
-            stderr.write(res.stderr)
-            return None
+        try:
+            name = findall(r'grammar\s+(\w+)\s*;', grammar)[0]
+        except IndexError:
+            raise ValueError('Grammar name not found')
+        self.name = name
 
-        res = {}
-        for suffix in 'Lexer', 'Parser', 'Visitor', 'Listener':
-            qn = '{}{}'.format(name, suffix)
-            if qn in modules: del modules[qn]
-            spec = imputil.spec_from_file_location(qn, pjoin(tmpdir, qn) + '.py')
-            module = imputil.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            modules[qn] = module
-            res[suffix] = getattr(module, qn)
-        return type(name, (object,), res)
+        with TemporaryDirectory() as tmpdir:
+            
+            with open(pjoin(tmpdir, name) + '.g', 'w') as ouf: ouf.write(grammar)        
+            res = run([
+                'java', '-jar', environ['ANTLR4_JAR'], 
+                '-Dlanguage=Python3',
+                '-listener', '-visitor',
+                '{}.g'.format(name)
+            ], capture_output = True, cwd = tmpdir)
+            if res.returncode:
+                warn(str(res.stderr))
+                return None
 
-def parse_tree(text, start, grammar_obj):
-    lexer = grammar_obj.Lexer(InputStream(text))
-    stream = CommonTokenStream(lexer)
-    parser = grammar_obj.Parser(stream)
-    return getattr(parser, start)()
+            for suffix in self.__slots__[1:]:
+                qn = '{}{}'.format(name, suffix)
+                if qn in modules: del modules[qn]
+                spec = imputil.spec_from_file_location(qn, pjoin(tmpdir, qn) + '.py')
+                module = imputil.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                modules[qn] = module
+                setattr(self, suffix, getattr(module, qn))
 
-def to_let_tree(tree, symbolic = False):
+    def tree(self, text, symbol):
+        lexer = self.Lexer(InputStream(text))
+        stream = CommonTokenStream(lexer)
+        parser = self.Parser(stream)
+        return getattr(parser, symbol)()
 
-    RULE_NAMES = tree.parser.ruleNames
-    
-    def tokenName(ttype):
-        symbolic = tree.parser.symbolicNames[ttype]
-        if symbolic == '<INVALID>':
-            return tree.parser.literalNames[ttype]
-        else:
-            return symbolic
+    def tokens(self, text):
+        lexer = self.Lexer(InputStream(text))
+        stream = CommonTokenStream(lexer)
+        stream.fill()
+        return stream.tokens
 
-    class TreeVisitor(ParseTreeVisitor):
-        def visitTerminal(self, t):
+    def as_str(self, tree):
+        return tree.toStringTree(recog = self.Parser)
+
+    def as_lol(self, tree, symbolic = False):
+
+        PARSER = self.Parser
+        RULE_NAMES = PARSER.ruleNames
+        
+        def _name(token):
+            ts = token.symbol
+            text = r'\\n' if ts.text == '\n' else ts.text
             if symbolic:
-                name = '{} [{}]'.format(tokenName(t.symbol.type), r'\\n' if t.symbol.text == '\n' else t.symbol.text)
+                name = PARSER.symbolicNames[ts.type]
+                if name == '<INVALID>': name = PARSER.literalNames[ts.type]
+                return '{} [{}]'.format(name, text)
             else:
-                name = r'\\n' if t.symbol.text == '\n' else t.symbol.text
-            return Tree(name)
-        def aggregateResult(self, result, childResult):
-            if result is None: return [childResult]
-            result.append(childResult)
-            return result
-        def visitChildren(self, ctx):
-            return Tree(RULE_NAMES[ctx.getRuleIndex()], super().visitChildren(ctx))
+                return text
 
-    tv = TreeVisitor()
-    return tv.visit(tree)
+        class TreeVisitor(ParseTreeVisitor):
+            def visitTerminal(self, t):
+                return [_name(t)]
+            def aggregateResult(self, result, childResult):
+                if result is None: return [childResult]
+                result.append(childResult)
+                return result
+            def visitChildren(self, ctx):
+                return [RULE_NAMES[ctx.getRuleIndex()]] + super().visitChildren(ctx)
+
+        return TreeVisitor().visit(tree)

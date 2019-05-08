@@ -1,12 +1,12 @@
 import unittest
 
-from liblet import generate_and_load, parse_tree, to_let_tree
+from liblet import ANTLR
 
 
 class TestGenerationAndParsing(unittest.TestCase):
 
     def test_to_let_tree(self):
-        Bad = generate_and_load('Bad', r"""
+        Bad = ANTLR(r"""
             grammar Bad ;
 
             start: expr ;
@@ -15,12 +15,12 @@ class TestGenerationAndParsing(unittest.TestCase):
             OP: '+' | '-' ;
             ID: [a-z];
         """)
-        tree = parse_tree('z-a+a', 'start', Bad)
-        T = to_let_tree(tree)
-        self.assertEqual(str(T), '(start: (expr: (expr: (expr: (z)), (-), (a)), (+), (a)))')
+        tree = Bad.tree('z-a+a', 'start')
+        lol = Bad.as_lol(tree)
+        self.assertEqual(lol, ['start', ['expr', ['expr', ['expr', ['z']], ['-'], ['a']], ['+'], ['a']]])
 
     def test_to_let_tree_symbolic(self):
-        Bad = generate_and_load('Bad', r"""
+        Bad = ANTLR(r"""
             grammar Bad ;
 
             start: expr ;
@@ -29,12 +29,12 @@ class TestGenerationAndParsing(unittest.TestCase):
             OP: '+' | '-' ;
             ID: [a-z];
         """)
-        tree = parse_tree('z-a+a', 'start', Bad)
-        T = to_let_tree(tree, True)
-        self.assertEqual(str(T), '(start: (expr: (expr: (expr: (ID [z])), (OP [-]), (ID [a])), (OP [+]), (ID [a])))')
+        tree = Bad.tree('z-a+a', 'start')
+        lol = Bad.as_lol(tree, True)
+        self.assertEqual(lol, ['start', ['expr', ['expr', ['expr', ['ID [z]']], ['OP [-]'], ['ID [a]']], ['OP [+]'], ['ID [a]'] ]])
 
     def test_alltogether(self):
-        Expr = generate_and_load('Expr', r"""
+        Expr = ANTLR(r"""
             grammar Expr;
 
             prog: stat+ ;
@@ -57,7 +57,7 @@ class TestGenerationAndParsing(unittest.TestCase):
             WS : [ \t]+ -> skip ;
         """)
         expr = '1 + 2 * 3\nA = 3\n2 * A\n'
-        tree = parse_tree(expr, 'prog', Expr)
-        actual = tree.toStringTree(recog = Expr.Parser)
+        tree = Expr.tree(expr, 'prog')
+        actual = Expr.as_str(tree)
         expected = r'(prog (stat (expr (expr 1) + (expr (expr 2) * (expr 3))) \n) (stat A = (expr 3) \n) (stat (expr (expr 2) * (expr A)) \n))'
         self.assertEqual(actual, expected)

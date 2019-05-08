@@ -301,7 +301,7 @@ def cyk2table(TABLE):
         ))
 
 def prods2table(G):
-    to_row = lambda N: '<th>{}<td style="text-align:left">{}'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
+    to_row = lambda N: '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
     rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
     return HTML('<table class="table-bordered"><tr>' + '<tr>'.join(rows) + '</table>')
 
