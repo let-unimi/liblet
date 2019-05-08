@@ -6,7 +6,9 @@ from subprocess import run
 from sys import modules
 from tempfile import TemporaryDirectory
 
+from antlr4.atn.PredictionMode import PredictionMode
 from antlr4.CommonTokenStream import CommonTokenStream
+from antlr4.error.DiagnosticErrorListener import DiagnosticErrorListener
 from antlr4.InputStream import InputStream
 from antlr4.tree.Tree import ParseTreeVisitor
 
@@ -52,10 +54,15 @@ class ANTLR:
                 modules[qn] = module
                 setattr(self, suffix, getattr(module, qn))
 
-    def tree(self, text, symbol):
+    def tree(self, text, symbol, trace = False, diag = False, buildParseTrees = True):
         lexer = self.Lexer(InputStream(text))
         stream = CommonTokenStream(lexer)
         parser = self.Parser(stream)
+        parser.setTrace(trace)
+        if diag:
+            parser.addErrorListener(DiagnosticErrorListener())
+            parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
+        parser.buildParseTrees = buildParseTrees
         return getattr(parser, symbol)()
 
     def tokens(self, text):
