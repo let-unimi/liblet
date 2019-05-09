@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.11.0-alpha (2019-05-09)
+--------------------------
+
+- Complete redesign of liblet.antlr module.
+- Removed utils.StatesQueueMap class.
+
 v0.10.0-alpha (2019-05-03)
 --------------------------
 
