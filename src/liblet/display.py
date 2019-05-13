@@ -45,15 +45,13 @@ class Tree(BaseGraph):
     def __init__(self, root, children = None):
         self.root = root
         self.children = children if children else []
-        self.dictnodes = False
 
     @classmethod
-    def from_lol(cls, nl, dictnodes = False):
+    def from_lol(cls, lol):
         def _to_tree(lst):
-            tree = cls(lst[0], [_to_tree(sl) for sl in lst[1:]])
-            tree.dictnodes = dictnodes
-            return tree
-        return _to_tree(nl)
+            root, *children = lst
+            return cls(root, [_to_tree(child) for child in children])
+        return _to_tree(lol)
 
     def __repr__(self):
         def walk(T):
@@ -61,6 +59,12 @@ class Tree(BaseGraph):
         return walk(self)
 
     def _gvgraph_(self):
+        def _gv_args(node):
+            is_dict = isinstance(node, dict)
+            return {
+                'shape': 'none' if is_dict else 'box',
+                'margin': '0' if is_dict else '.05'
+            }   
         def _tostr(node):
             if isinstance(node, dict):
                 return ''.join(
@@ -69,10 +73,10 @@ class Tree(BaseGraph):
                     ['</TABLE></FONT>>'])
             return str(node)
         def walk(T):
-            curr = self.node(G, _tostr(T.root), id(T))
+            curr = self.node(G, _tostr(T.root), id(T), gv_args = _gv_args(T.root))
             if T.children:
                 for child in T.children: 
-                    self.node(G, _tostr(child.root), id(child))
+                    self.node(G, _tostr(child.root), id(child), gv_args = _gv_args(child.root))
                     self.edge(G, curr, id(child ))
                 with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
                     for f, t in zip(T.children, T.children[1:]): 
@@ -84,8 +88,6 @@ class Tree(BaseGraph):
                 'ranksep': '.25'    
             },
             node_attr = {
-                'shape': 'none' if self.dictnodes else 'box',
-                'margin': '0' if self.dictnodes else '.05',
                 'width': '0',
                 'height': '0',
                 'style': 'rounded, setlinewidth(.25)'
