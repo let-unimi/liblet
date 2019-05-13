@@ -22,7 +22,7 @@ if not 'READTHEDOCS' in environ: # pragma: nocover
 
 class ANTLR:
 
-    __slots__ = ('name', 'Lexer', 'Parser', 'Visitor', 'Listener') # the order is crucial, due to the module loading/execution sequence
+    __slots__ = ('name', 'Lexer', 'Parser', 'Visitor', 'Listener', 'source') 
 
     def __init__(self, grammar):
         
@@ -31,6 +31,7 @@ class ANTLR:
         except IndexError:
             raise ValueError('Grammar name not found')
         self.name = name
+        self.source = {}
 
         with TemporaryDirectory() as tmpdir:
             
@@ -45,10 +46,12 @@ class ANTLR:
                 warn(str(res.stderr))
                 return None
 
-            for suffix in self.__slots__[1:]:
+            for suffix in  'Lexer', 'Parser', 'Visitor', 'Listener': # the order is crucial, due to the module loading/execution sequence
                 qn = '{}{}'.format(name, suffix)
                 if qn in modules: del modules[qn]
-                spec = imputil.spec_from_file_location(qn, pjoin(tmpdir, qn) + '.py')
+                src_path = pjoin(tmpdir, qn) + '.py'
+                with open(src_path, 'r') as inf: self.source[suffix] = inf.read()
+                spec = imputil.spec_from_file_location(qn, src_path)
                 module = imputil.module_from_spec(spec)
                 spec.loader.exec_module(module)
                 modules[qn] = module
