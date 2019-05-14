@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.11.1-alpha (2019-05-14)
+--------------------------
+
+- The display.Tree class uses pseudo-HTML Graphviz labels if the root is a dict.
+- The antlr.ANTLR class keeps track of the generated sources (in the sources field).
+
 v0.11.0-alpha (2019-05-09)
 --------------------------
 
