@@ -111,6 +111,20 @@ From transitions one can obtain a representation of a (*nondeterministic*)
 
 Automata can be displayed using :obj:`StateTransitionGraph.from_automaton <liblet.display.StateTransitionGraph.from_automaton>`.
 
+ANTLR support
+-------------
+
+This library provides a commodity class to deal with `ANTLR <https://www.antlr.org/>`_ for the Python 3 *target*.
+
+.. currentmodule:: liblet.antlr
+
+.. autoclass:: ANTLR
+
+   .. automethod:: print_grammar
+   .. automethod:: context
+   .. automethod:: tokens
+   .. automethod:: tree
+
 Rich dislpay
 ------------
 
