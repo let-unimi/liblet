@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.12.0-alpha (2019-05-15)
+--------------------------
+
+- Added documentation for the Tree class.
+- Refactored heavily the ANTLR class.
+- Added documentation for the ANTLR class.
+
 v0.11.1-alpha (2019-05-14)
 --------------------------
 
