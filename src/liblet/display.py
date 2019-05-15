@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from collections.abc import Set
+from html import escape
 from itertools import chain
+from re import sub
 from sys import stderr
 
 from IPython.display import HTML
@@ -11,6 +13,9 @@ from .utils import letstr
 from .grammar import _letlrhstostr, HAIR_SPACE
 
 # graphviz stuff
+
+def _escape(label):
+    return sub('\]', '&#93;', sub('\[', '&#91;', escape(str(label))))
 
 class BaseGraph(ABC):
 
@@ -41,13 +46,49 @@ class BaseGraph(ABC):
         return self._gvgraph_()._repr_svg_()
 
 class Tree(BaseGraph):
+    """A *n-ary tree* with ordered children.
+
+    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name. A
+    tree is represented as a string as a ``(<root>: <children>)`` where ``<root>``
+    is the string representation of the root node content and ``<children>`` is the
+    recursively obtained string representation of its children.
+
+    It also as a representation as a graph; in such case, if the root is a :obj:`dict` it
+    will be rendered by Graphviz using `HTML-Like Labels <https://www.graphviz.org/doc/info/shapes.html#html>`__
+    built as a table where each dictionary item corresponds to a row which columns are the
+    key and value pair of such item.
+
+    Args:
+        root: the root node content (can be of any type).
+        children: an :term:`iterable` of trees to become the current tree children.
+    """
     
     def __init__(self, root, children = None):
         self.root = root
-        self.children = children if children else []
+        self.children = list(children) if children else []
 
     @classmethod
     def from_lol(cls, lol):
+        """Builds a tree from a *list of lists*.
+
+        A list of lists (lol) is a list recursively defined such that the first element of a lol 
+        is the tree node content and the following elements are lols.
+
+        Args:
+            lol (list): a list representing a tree.
+
+        Examples:
+            The following code 
+
+        .. code:: ipython3
+
+            Tree.from_lol([{'this': 'is', 'an': 2},[3, ['example']], [5]])
+
+        produces the following tree
+
+        .. image:: tree.svg
+
+        """
         def _to_tree(lst):
             root, *children = lst
             return cls(root, [_to_tree(child) for child in children])
@@ -69,7 +110,7 @@ class Tree(BaseGraph):
             if isinstance(node, dict):
                 return ''.join(
                     ['<<FONT POINT-SIZE="12"><TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">'] +
-                    ['<TR><TD>{}</TD><TD>{}</TD></TR>'.format(k, v) for k, v in node.items()] +
+                    ['<TR><TD>{}</TD><TD>{}</TD></TR>'.format(k, _escape(v)) for k, v in node.items()] +
                     ['</TABLE></FONT>>'])
             return str(node)
         def walk(T):
