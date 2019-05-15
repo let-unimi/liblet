@@ -1,4 +1,6 @@
+from contextlib import redirect_stderr
 from importlib import util as imputil
+from io import StringIO
 from os import environ
 from os.path import join as pjoin, exists
 from re import findall
@@ -65,7 +67,7 @@ class ANTLR:
             ], capture_output = True, cwd = tmpdir)
             if res.returncode:
                 warn(res.stderr.decode('utf-8'))
-                return None
+                return
 
             for suffix in  'Lexer', 'Parser', 'Visitor', 'Listener': # the order is crucial, due to the module loading/execution sequence
                 qn = '{}{}'.format(name, suffix)
@@ -78,7 +80,7 @@ class ANTLR:
                 modules[qn] = module
                 setattr(self, suffix, getattr(module, qn))
 
-    def print_grammar(self, number_lines = True):
+    def print_grammar(self, number_lines = True): # pragma: nocover 
         """Prints the grammar (with line numbers)
 
         Args:
@@ -108,10 +110,15 @@ class ANTLR:
             parser.addErrorListener(DiagnosticErrorListener())
             parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
         parser.buildParseTrees = build_parse_trees
+        buf = StringIO()
+        with redirect_stderr(buf):
+            ctx = getattr(parser, symbol)()
+        errs = buf.getvalue().strip()
+        if errs: warn(errs)
         if as_string:
-            return getattr(parser, symbol)().toStringTree(recog = self.Parser)
+            return ctx.toStringTree(recog = self.Parser)
         else:
-            return getattr(parser, symbol)()
+            return ctx
 
     def tokens(self, text):
         """Returns a list of *tokens*.
@@ -151,9 +158,8 @@ class ANTLR:
                 return name
             else:
                 label = ctx.__class__.__name__
-                if label.endswith('Context'): 
-                    label = label[:-7]
-                    label = label[0].lower() + label[1:]
+                label = label[:-7] # remove trailing 'Context'
+                label = label[0].lower() + label[1:]
                 return {'type': 'rule', 'name': name, 'label': label}
 
         def _token(token):
