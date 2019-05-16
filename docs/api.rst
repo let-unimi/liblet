@@ -86,7 +86,7 @@ case of grammars, the symbols and terminals are simply :obj:`strings <str>`.
 
 .. autoclass:: Transition
 
-   A convenience method is provided to obtain transtions from a suitable string
+   A convenience method is provided to obtain transitions from a suitable string
    representation of them.
 
    .. automethod:: from_string
@@ -125,7 +125,7 @@ This library provides a commodity class to deal with `ANTLR <https://www.antlr.o
    .. automethod:: tokens
    .. automethod:: tree
 
-Rich dislpay
+Rich display
 ------------
 
 .. currentmodule:: liblet.display
