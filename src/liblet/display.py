@@ -141,6 +141,24 @@ class Tree(BaseGraph):
         walk(self)
         return G
 
+    def with_thread(self, THREAD):
+
+        G = self._gvgraph_()
+        del G.edge_attr['dir']
+        G.edge_attr['arrowsize'] = '.5'
+
+        node_args = {'shape': 'point', 'width': '.07', 'height': '.07', 'color': 'red'}
+        edge_args = {'dir': 'forward', 'arrowhead': 'vee', 'arrowsize': '.5', 'style': 'dashed', 'color': 'red'}
+
+        for node in THREAD:
+            if node.root['type'] in ('<START>', '<JOIN>'):
+                self.node(G, node.root['type'], id(node), gv_args = node_args)    
+
+        for node, info in THREAD.items():
+            for nxt in filter(lambda _: _.startswith('next'), info.keys()): 
+                self.edge(G, id(node), id(info[nxt]), gv_args = edge_args)
+
+        return G
 
 class Graph(BaseGraph):
 
