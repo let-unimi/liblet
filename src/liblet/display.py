@@ -141,7 +141,7 @@ class Tree(BaseGraph):
         walk(self)
         return G
 
-    def with_thread(self, THREAD):
+    def with_threads(self, THREADS):
 
         G = self._gvgraph_()
         del G.edge_attr['dir']
@@ -150,11 +150,11 @@ class Tree(BaseGraph):
         node_args = {'shape': 'point', 'width': '.07', 'height': '.07', 'color': 'red'}
         edge_args = {'dir': 'forward', 'arrowhead': 'vee', 'arrowsize': '.5', 'style': 'dashed', 'color': 'red'}
 
-        for node in THREAD:
+        for node in THREADS:
             if node.root['type'] in ('<START>', '<JOIN>'):
                 self.node(G, node.root['type'], id(node), gv_args = node_args)    
 
-        for node, info in THREAD.items():
+        for node, info in THREADS.items():
             for nxt in filter(lambda _: _.startswith('next'), info.keys()): 
                 self.edge(G, id(node), id(info[nxt]), gv_args = edge_args)
 
@@ -341,10 +341,10 @@ def side_by_side(*iterable):
     return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
 
 def iter2table(it):
-    return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{n}<td style="text-align:left"><pre>{e}</pre>' for n, e in enumerate(it)) + '</table>')
+    return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{n}<td style="text-align:left"><pre>{_escape(e)}</pre>' for n, e in enumerate(it)) + '</table>')
 
 def dict2table(it):
-    return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{v}</pre>' for k, v in it.items()) + '</table>')
+    return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{_escape(v)}</pre>' for k, v in it.items()) + '</table>')
 
 def dod2table(dod, sort = False, sep = None):
     def fmt(r, c):
