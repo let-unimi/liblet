@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.12.2-alpha (2019-05-28)
+--------------------------
+
+- Added HTML escaping to liblet.dislpay.iter2table and liblet.dislpay.dict2table.
+- Added liblet.display.Tree.with_thread method.
+- Added liblet.antlr.AnnotatedTreeWalker class.
+
 v0.12.1-alpha (2019-05-15)
 --------------------------
 
