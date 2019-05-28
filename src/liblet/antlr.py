@@ -140,9 +140,9 @@ class ANTLR:
         context information from the parsing process, more precisely, nodes are :obj:`dicts <dict>` with the following keys:
         
         - ``type``: can be ``rule`` or ``token``,
-        - ``name``: the grammar *rule* or *token* name (or the token itself, if it has no name),
+        - ``name``: the *rule label* or *token name* (or the rule name if it has no label: or, similarly, the token itself if it has no name),
         - ``value``: the *token* value (only present for *tokens* named in the *lexer* part of the grammar),
-        - ``label``: the *rule* label (only present for *rules*, it the rule is not labelled, the rule name is used).
+        - ``rule``: the *rule* name (only present for *rules*, will be different from ``name`` for labelled rules).
 
         Note that the values are strings (so if the *value* is a number, it should be converted before usage).
 
@@ -153,14 +153,14 @@ class ANTLR:
         """
 
         def _rule(ctx):
-            name = self.Parser.ruleNames[ctx.getRuleIndex()]
+            rule = self.Parser.ruleNames[ctx.getRuleIndex()]
             if simple:
-                return name
+                return rule
             else:
-                label = ctx.__class__.__name__
-                label = label[:-7] # remove trailing 'Context'
-                label = label[0].lower() + label[1:]
-                return {'type': 'rule', 'name': name, 'label': label}
+                name = ctx.__class__.__name__
+                name = name[:-7] # remove trailing 'Context'
+                name = name[0].lower() + name[1:]
+                return {'type': 'rule', 'name': name, 'rule': rule}
 
         def _token(token):
             ts = token.symbol

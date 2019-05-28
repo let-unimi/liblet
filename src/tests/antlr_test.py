@@ -66,7 +66,7 @@ class TestGenerationAndParsing(unittest.TestCase):
             ID: [a-z];
         """)
         tree = str(Bad.tree('z-a+a*x', 'start'))
-        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'label': 'start'}: ({'type': 'rule', 'name': 'expr', 'label': 'expr'}: ({'type': 'rule', 'name': 'expr', 'label': 'expr'}: ({'type': 'rule', 'name': 'expr', 'label': 'expr'}: ({'type': 'rule', 'name': 'expr', 'label': 'expr'}: ({'type': 'token', 'name': 'ID', 'value': 'z'})), ({'type': 'token', 'name': 'OP', 'value': '-'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': 'OP', 'value': '+'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': '*'}), ({'type': 'token', 'name': 'ID', 'value': 'x'})))")
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'ID', 'value': 'z'})), ({'type': 'token', 'name': 'OP', 'value': '-'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': 'OP', 'value': '+'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': '*'}), ({'type': 'token', 'name': 'ID', 'value': 'x'})))")
 
     def test_diag(self):
         with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
