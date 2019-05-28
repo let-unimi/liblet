@@ -13,7 +13,7 @@ from .display import Tree, Graph, StateTransitionGraph, ProductionGraph, side_by
 from .grammar import Production, Item, Grammar, Derivation
 from .automaton import Transition, Automaton
 from .utils import peek, union_of, letstr, Stack, Queue
-from .antlr import ANTLR
+from .antlr import ANTLR, AnnotatedTreeWalker
 
 if 'LIBLET_NOBEACON' not in environ and 'READTHEDOCS' not in environ:
     try:

@@ -185,3 +185,34 @@ class ANTLR:
                 return Tree(_rule(ctx), super().visitChildren(ctx))
 
         return TreeVisitor().visit(self.context(text, symbol))
+
+class AnnotatedTreeWalker:
+
+    @staticmethod
+    def RECOURSE_CHILDREN(walk, tree):
+        for child in tree.children: walk(child)
+
+    @staticmethod
+    def TREE_CATCHALL(walk, tree):
+        warn('TREE_CATCHALL: {}'.format(tree.root))
+        return Tree(tree.root, [walk(child) for child in tree.children])
+
+    @staticmethod
+    def TEXT_CATCHALL(walk, tree):
+        warn('TEXT_CATCHALL: {}'.format(tree.root))
+        return '{}'.format(tree.root) + ('\n' + indent('\n'.join(walk(child) for child in tree.children), '\t') if tree.children else '')
+
+    def __init__(self, key, catchall = None):
+        self.key = key
+        self._catchall = catchall if catchall is not None else AnnotatedTreeWalker.TREE_CATCHALL
+        self.DT = {}
+
+    def catchall(self, func):
+        self._catchall = func
+
+    def register(self, func):
+        self.DT[func.__name__] = func
+
+    def __call__(self, tree):
+        key = tree.root[self.key]
+        return self.DT[key](self.__call__, tree) if key in self.DT else self._catchall(self.__call__, tree)
