@@ -4,7 +4,8 @@ from textwrap import dedent
 import unittest
 import unittest.mock
 
-from liblet import ANTLR
+from liblet import Tree
+from liblet.antlr import ANTLR, AnnotatedTreeWalker
 
 
 class TestGenerationAndParsing(unittest.TestCase):
@@ -108,5 +109,57 @@ class TestGenerationAndParsing(unittest.TestCase):
             exit    stat, LT(1)=<EOF>
         """)[1:] # remove first blank line
         self.assertEqual(buf.getvalue(), trace)
+
+    def test_atw_tree_ca(self):
+        at = Tree({'key': 'a'}, [Tree({'key': 'b'}), Tree({'key': 'c'})])
+        w = AnnotatedTreeWalker('key')
+        with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
+            res = w(at)
+        self.assertEqual(str(res), "({'key': 'a'}: ({'key': 'b'}), ({'key': 'c'}))")
+
+    def test_atw_text_ca(self):
+        at = Tree({'key': 'a'}, [Tree({'key': 'b'}), Tree({'key': 'c'})])
+        w = AnnotatedTreeWalker('key', AnnotatedTreeWalker.TEXT_CATCHALL) 
+        with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
+            res = w(at)
+        self.assertEqual(res, "{'key': 'a'}\n\t{'key': 'b'}\n\t{'key': 'c'}")
+
+    def test_atw_rc_ca(self):
+        at = Tree({'key': 'a'}, [Tree({'key': 'b'}), Tree({'key': 'c'})])
+        w = AnnotatedTreeWalker('key', AnnotatedTreeWalker.RECOURSE_CHILDREN)
+        SEEN = False
+        @w.register
+        def c(visit, tree):
+            nonlocal SEEN
+            print('merda')
+            SEEN = True
+        w(at)
+        self.assertTrue(SEEN)
+
+    def test_atw_user_ca(self):
+        at = Tree({'key': 'a'}, [Tree({'key': 'b'}), Tree({'key': 'c'})])
+        w = AnnotatedTreeWalker('key')
+        @w.catchall
+        def catchall(visit, tree):
+            nonlocal SEEN
+            SEEN = True
+        SEEN = False
+        w(at)
+        self.assertTrue(SEEN)
+
+    def test_atw_register(self):
+        at = Tree({'key': 'a'}, [Tree({'key': 'b'}, [Tree({'key': 'x'})]), Tree({'key': 'c'})])
+        w = AnnotatedTreeWalker('key')
+        @w.register
+        def a(visit, tree):
+            return visit(tree.children[0])
+        @w.register
+        def x(visit, tree):
+            return Tree('X')
+        with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
+            res = w(at)
+        self.assertEqual(str(res), "({'key': 'b'}: (X))")
+
+
 
 if __name__ == '__main__': unittest.main()
