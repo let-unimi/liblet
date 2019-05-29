@@ -1,14 +1,20 @@
 from collections import deque
 from collections.abc import Set, Iterable
 from itertools import chain
+from sys import stderr
 
 from IPython.display import HTML
 
+def warn(msg):
+    """Emits a string on the *standard error*."""
+    stderr.write(msg + '\n')
 
 def peek(s):
+    """Returns the fist element of the given :obj:`set`."""
     return next(iter(s)) if s else None
 
 def union_of(s):
+    """Return the set union of its arguments."""
     return set().union(*s)
 
 def letstr(obj, sep = None, sort = True):
@@ -30,6 +36,7 @@ def letstr(obj, sep = None, sort = True):
     return _ls(obj)
     
 class Queue(object):
+    """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue``, and ``copy`` methods."""
     def __init__(self, iterable = None, maxlen = None):
         self.Q = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
     def enqueue(self, item):
@@ -47,6 +54,7 @@ class Queue(object):
         return len(self.Q)
 
 class Stack(object):
+    """A convenience implementation of a *stack* providing the usual ``push``, ``pop``, ``peek``, and ``copy`` methods."""
     def __init__(self, iterable = None, maxlen = None):
         self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
     def push(self, item):

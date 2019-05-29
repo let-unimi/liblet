@@ -125,6 +125,15 @@ This library provides a commodity class to deal with `ANTLR <https://www.antlr.o
    .. automethod:: tokens
    .. automethod:: tree
 
+.. autoclass:: AnnotatedTreeWalker
+
+   .. automethod:: catchall
+   .. automethod:: register
+   .. automethod:: RECOURSE_CHILDREN
+   .. automethod:: TREE_CATCHALL
+   .. automethod:: TEXT_CATCHALL
+
+
 Rich display
 ------------
 
@@ -137,6 +146,7 @@ Rich display
 .. autoclass:: Tree
 
    .. automethod:: from_lol
+   .. automethod:: with_threads
 
 .. autoclass:: ProductionGraph
 
@@ -144,10 +154,17 @@ Rich display
 
    .. automethod:: from_automaton
 
+
 Utilities and decorators
 ------------------------
 
 .. currentmodule:: liblet.utils
+
+.. autoclass:: Queue
+.. autoclass:: Stack
+.. autofunction:: warn
+.. autofunction:: peek
+.. autofunction:: union_of
 
 .. currentmodule:: liblet.decorators
 

@@ -47,14 +47,18 @@ class BaseGraph(ABC):
 class Tree(BaseGraph):
     """A *n-ary tree* with ordered children.
 
-    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name. A
-    tree is represented as a string as a ``(<root>: <children>)`` where ``<root>``
+    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name. If 
+    the tree root is a :obj:`dict` the tree is an *annotated* tree. This kind of trees
+    arise from parsing, for example using the :meth:`~liblet.antlr.ANTLR.tree` method of the
+    :class:`~liblet.antlr.ANTLR` class.
+    
+    A tree is represented as a string as a ``(<root>: <children>)`` where ``<root>``
     is the string representation of the root node content and ``<children>`` is the
     recursively obtained string representation of its children.
 
-    It also as a representation as a graph; in such case, if the root is a :obj:`dict` it
+    It also as a representation as a graph; in such case, if the tree is annotated it
     will be rendered by Graphviz using `HTML-Like Labels <https://www.graphviz.org/doc/info/shapes.html#html>`__
-    built as a table where each dictionary item corresponds to a row which columns are the
+    built as a table where each dictionary item corresponds to a row with two columns containing the
     key and value pair of such item.
 
     Args:
@@ -140,7 +144,21 @@ class Tree(BaseGraph):
         walk(self)
         return G
 
-    def with_threads(self, THREADS):
+    def with_threads(self, threads):
+        """Draws a *threaded* and *annotated* tree (as a graph).
+
+        Tree *threads* are arcs among tree nodes (or special nodes), more
+        precisely, a :obj:`dict` mapping annotated tree *source* nodes to a
+        :obj:`dict` whose values are *destinations* tree nodes; arcs are
+        represented as dotted arrows. Special nodes are: the *start* tree (an
+        annotated tree whose root contains the ``(type, <START>)`` item), the
+        *join* trees (annotated trees whose root contains the ``(type, <JOIN>)``
+        item) and the ``None`` value; such special nodes are represented as red
+        dots.
+
+
+        Args: threads (dict): a dictionary representing the threads.
+        """
 
         G = self._gvgraph_()
         del G.edge_attr['dir']
@@ -149,13 +167,13 @@ class Tree(BaseGraph):
         node_args = {'shape': 'point', 'width': '.07', 'height': '.07', 'color': 'red'}
         edge_args = {'dir': 'forward', 'arrowhead': 'vee', 'arrowsize': '.5', 'style': 'dashed', 'color': 'red'}
 
-        for node in THREADS:
-            if node.root['type'] in ('<START>', '<JOIN>'):
+        for node in threads:
+            if 'type' in node.root and node.root['type'] in ('<START>', '<JOIN>'):
                 self.node(G, node.root['type'], id(node), gv_args = node_args)    
         self.node(G, None, id(None), gv_args = node_args)    
 
-        for node, info in THREADS.items():
-            for nxt in filter(lambda _: _.startswith('next'), info.keys()): 
+        for node, info in threads.items():
+            for nxt in info.keys(): 
                 self.edge(G, id(node), id(info[nxt]), gv_args = edge_args)
 
         return G
@@ -378,8 +396,3 @@ def prods2table(G):
 
 def ff2table(G, FIRST, FOLLOW):
     return dod2table({N: {'First': ' '.join(FIRST[(N, )]), 'Follow': ' '.join(FOLLOW[N])} for N in G.N})
-
-# MISC
-
-def warn(msg):
-    stderr.write(msg + '\n')

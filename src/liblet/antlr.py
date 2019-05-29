@@ -189,20 +189,55 @@ class ANTLR:
         return TreeVisitor().visit(self.context(text, symbol))
 
 class AnnotatedTreeWalker:
+    """A *dispatch table* based way to recursively walk an annotated tree.
+
+    The aim of this class is to provide a convenient way to recursively apply
+    functions to the subtrees of a given tree according to their root annotations.
+
+    More precisely, once an object of this class is instantiated it can be used
+    to *register* a set of functions named as the values of a specified *key*
+    contained in the annotated tree root; trees that don't have a corresponding
+    registered function are handled via a *catchall* function (few sensible
+    defaults are provided). 
+
+    Once such functions are registered, the object can be used as a `callable <https://docs.python.org/3/reference/expressions.html?highlight=callable#calls>`__ and
+    invoked on an annotated tree; this will lead to the recursive invocation of
+    the registered (and the catchall) functions on subtrees. Such functions are
+    invoked with the object as the first argument (and the subtree as second); in this
+    way they can recurse on their subtrees as needed.
+
+    Args:
+        key (str): the key that will be looked up in the node :obj:`dict` to
+                   determine which registered function to call.
+        catchall (callable): the *catchall* function that will be invoked in case
+                             the root is not a dict, or does not contain the key, or
+                             no function has been registered for the value corresponding to the key.
+
+    """
 
     @staticmethod
-    def RECOURSE_CHILDREN(walk, tree):
-        for child in tree.children: walk(child)
+    def RECOURSE_CHILDREN(visit, tree):
+        """A default *catchall* that will invoke the recursion on all the subtrees;
+        this function does not emit any warning and does not return any value.
+        """
+        for child in tree.children: visit(child)
 
     @staticmethod
-    def TREE_CATCHALL(walk, tree):
+    def TREE_CATCHALL(visit, tree):
+        """A default *catchall* that will invoke the recursion on all the subtrees, emitting 
+        a :meth:`~liblet.utils.warn` and returning a tree with the same root of the given tree 
+        and having as children the recursively visited children of the given tree."""
         warn('TREE_CATCHALL: {}'.format(tree.root))
-        return Tree(tree.root, [walk(child) for child in tree.children])
+        return Tree(tree.root, [visit(child) for child in tree.children])
 
     @staticmethod
-    def TEXT_CATCHALL(walk, tree):
+    def TEXT_CATCHALL(visit, tree):
+        """A default *catchall* that will invoke the recursion on all the subtrees, emitting 
+        a :meth:`~liblet.utils.warn` and returning a string with the same root of the given tree 
+        and having as children the (indented string representation of the) recursively visited 
+        children of the given tree."""
         warn('TEXT_CATCHALL: {}'.format(tree.root))
-        return '{}'.format(tree.root) + ('\n' + indent('\n'.join(walk(child) for child in tree.children), '\t') if tree.children else '')
+        return '{}'.format(tree.root) + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')
 
     def __init__(self, key, catchall = None):
         self.key = key
@@ -210,9 +245,20 @@ class AnnotatedTreeWalker:
         self.DT = {}
 
     def catchall(self, func):
+        """A :term:`decorator` used to register a *catchall* function.
+
+        The decorated function must have two arguments: the first will be always an instance of this object, the
+        second the annotate tree on which to operate. The previous registered *catchall* function will be overwritten.
+        """
         self._catchall = func
 
     def register(self, func):
+        """A :term:`decorator` used to register a function.
+
+        The function will be registered with his name (possibly replacing a previous registration).
+        The decorated function must have two arguments: the first will be always an instance of this object, the
+        second the annotate tree on which to operate.
+        """
         self.DT[func.__name__] = func
 
     def __call__(self, tree):
