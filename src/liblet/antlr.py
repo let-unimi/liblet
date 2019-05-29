@@ -148,6 +148,8 @@ class ANTLR:
 
         Note that the values are strings (so if the *value* is a number, it should be converted before usage).
 
+        This method removes any ``<EOF>`` tree returned in the underlying parse tree..
+
         Args:
             text (str): the text to be parsed.
             symbol (str): the symbol (rule name) the parse should start at.
@@ -181,7 +183,8 @@ class ANTLR:
                 return Tree(_token(t))
             def aggregateResult(self, result, childResult):
                 if result is None: return [childResult]
-                result.append(childResult)
+                if not (childResult.root['type'] == 'token' and 'value' in childResult.root and childResult.root['value'] == '<EOF>'):
+                    result.append(childResult)
                 return result
             def visitChildren(self, ctx):
                 return Tree(_rule(ctx), super().visitChildren(ctx))
