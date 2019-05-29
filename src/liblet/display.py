@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from collections.abc import Set
 from html import escape
 from itertools import chain
@@ -163,6 +163,15 @@ class Tree(BaseGraph):
         G = self._gvgraph_()
         del G.edge_attr['dir']
         G.edge_attr['arrowsize'] = '.5'
+
+        depths = defaultdict(list)
+        def _depth(tree, d):
+            depths[d].append(tree)
+            for child in tree.children: _depth(child, d + 1)
+        _depth(self, 0)
+        for d in sorted(depths.keys()):
+            with G.subgraph(graph_attr = {'rank': 'same'}) as S:
+                for n in depths[d]: S.node(str(id(n)))
 
         node_args = {'shape': 'point', 'width': '.07', 'height': '.07', 'color': 'red'}
         edge_args = {'dir': 'forward', 'arrowhead': 'vee', 'arrowsize': '.5', 'style': 'dashed', 'color': 'red'}
