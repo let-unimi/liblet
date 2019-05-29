@@ -67,7 +67,27 @@ class TestGenerationAndParsing(unittest.TestCase):
             ID: [a-z];
         """)
         tree = str(Bad.tree('z-a+a*x', 'start'))
-        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'ID', 'value': 'z'})), ({'type': 'token', 'name': 'OP', 'value': '-'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': 'OP', 'value': '+'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': '*'}), ({'type': 'token', 'name': 'ID', 'value': 'x'})))")
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'ID', 'value': 'z'})), ({'type': 'token', 'name': 'OP', 'value': '-'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': 'OP', 'value': '+'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': '*', 'value': '*'}), ({'type': 'token', 'name': 'ID', 'value': 'x'})))")
+
+    def test_nolexersym(self):
+        NoSym = ANTLR(r"""
+            grammar NoSym ;
+
+            start: expr * ;
+            expr: 'a';
+        """)
+        tree = str(NoSym.tree('aa', 'start'))
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})))")
+
+    def test_eof(self):
+        NoSym = ANTLR(r"""
+            grammar NoSym ;
+
+            start: expr * EOF;
+            expr: 'a';
+        """)
+        tree = str(NoSym.tree('aa', 'start'))
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})))")
 
     def test_diag(self):
         with unittest.mock.patch('liblet.antlr.warn') as mock_warn:

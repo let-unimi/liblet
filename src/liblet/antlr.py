@@ -172,19 +172,22 @@ class ANTLR:
             if simple:
                 return text
             else:
-                name = self.Parser.symbolicNames[ts.type]
-                if name == '<INVALID>': 
-                    return {'type': 'token', 'name': self.Parser.literalNames[ts.type][1:-1]}
-                else:
-                    return {'type': 'token', 'name': name, 'value': text}
+                try:
+                    name = self.Parser.symbolicNames[ts.type]
+                except IndexError:
+                    name = '<INVALID>'
+                if name == '<INVALID>':
+                    name = self.Parser.literalNames[ts.type][1:-1]
+                return {'type': 'token', 'name': name, 'value': text}
 
         class TreeVisitor(ParseTreeVisitor):
             def visitTerminal(self, t):
+                if t.symbol.type == -1: return None
                 return Tree(_token(t))
             def aggregateResult(self, result, childResult):
                 if result is None: return [childResult]
-                if simple or not (childResult.root['type'] == 'token' and 'value' in childResult.root and childResult.root['value'] == '<EOF>'):
-                    result.append(childResult)
+                if childResult is None: return result
+                result.append(childResult)
                 return result
             def visitChildren(self, ctx):
                 return Tree(_rule(ctx), super().visitChildren(ctx))
