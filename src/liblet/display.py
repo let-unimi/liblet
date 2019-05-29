@@ -153,6 +153,7 @@ class Tree(BaseGraph):
         for node in THREADS:
             if node.root['type'] in ('<START>', '<JOIN>'):
                 self.node(G, node.root['type'], id(node), gv_args = node_args)    
+        self.node(G, None, id(None), gv_args = node_args)    
 
         for node, info in THREADS.items():
             for nxt in filter(lambda _: _.startswith('next'), info.keys()): 
