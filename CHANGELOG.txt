@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.12.3-alpha (2019-05-28)
+--------------------------
+
+- Added new documentation for recently added classes and a few utils.
+- Moved the liblet.display.warn method to liblet.utils.warn.
+- Fixing the None node display style in liblet.display.Tree.with_threads.
+
 v0.12.2-alpha (2019-05-28)
 --------------------------
 
