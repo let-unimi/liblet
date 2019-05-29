@@ -131,7 +131,6 @@ class TestGenerationAndParsing(unittest.TestCase):
         @w.register
         def c(visit, tree):
             nonlocal SEEN
-            print('merda')
             SEEN = True
         w(at)
         self.assertTrue(SEEN)
