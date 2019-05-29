@@ -1,6 +1,7 @@
 import unittest
+import unittest.mock
 
-from liblet.utils import peek, union_of, letstr, Stack, Queue
+from liblet.utils import peek, union_of, letstr, Stack, Queue, warn
 
 
 class UtilsTest(unittest.TestCase):
@@ -130,5 +131,9 @@ class UtilsTest(unittest.TestCase):
         expected = '2 2 Queue(← 3 ←)'
         self.assertEqual(expected, actual)
 
+    def test_warn(self):
+        with unittest.mock.patch('liblet.utils.stderr') as stderr_mock:
+            warn('this is a test')
+            stderr_mock.write.assert_called_with('this is a test\n')
 
 if __name__ == '__main__': unittest.main()
