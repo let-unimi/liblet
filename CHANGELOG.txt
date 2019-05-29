@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.12.4-alpha (2019-05-28)
+--------------------------
+
+- The liblet.display.Tree.with_threads method puts nodes at the same rank according to their depth in the tree.
+- The liblet.antlr.ANTLR.tree method ignores <EOF> tokens for non simple trees.
+
 v0.12.3-alpha (2019-05-28)
 --------------------------
 
