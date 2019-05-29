@@ -15,7 +15,8 @@ from antlr4.error.DiagnosticErrorListener import DiagnosticErrorListener
 from antlr4.InputStream import InputStream
 from antlr4.tree.Tree import ParseTreeVisitor
 
-from .display import Tree, warn
+from .display import Tree
+from .utils import warn
 
 if not 'READTHEDOCS' in environ: # pragma: nocover
     if 'ANTLR4_JAR' not in environ:

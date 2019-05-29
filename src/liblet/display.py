@@ -4,7 +4,6 @@ from collections.abc import Set
 from html import escape
 from itertools import chain
 from re import sub
-from sys import stderr
 
 from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
