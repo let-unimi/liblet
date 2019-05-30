@@ -1,10 +1,21 @@
 Changelog
 =========
 
+1.0.0-alpha (2019-05-28)
+------------------------
+
+- Bumped the major version, non new features expected since this year class is done.
+- Added the parameter fail_on_error to the liblet.antlr.ANTLR.context method to make 
+  it return None in case of parsing errors
+- Modified the liblet.antlr.ANTLR.tree method so that it returns None in case of
+  parse errors
+- The liblet.antlr.ANTLR.tree method does not include nodes for the EOF token.
+
 v0.12.4-alpha (2019-05-28)
 --------------------------
 
-- The liblet.display.Tree.with_threads method puts nodes at the same rank according to their depth in the tree.
+- The liblet.display.Tree.with_threads method puts nodes at the same rank according to 
+  their depth in the tree.
 - The liblet.antlr.ANTLR.tree method ignores <EOF> tokens for non simple trees.
 
 v0.12.3-alpha (2019-05-28)
