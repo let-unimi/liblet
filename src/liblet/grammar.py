@@ -91,8 +91,8 @@ class Production:
             x T y -> t
 
         Raises:
-            ValueError: in case the productions are declared as ``context_free`` but on of 
-                        them has more than one symbol on the right-hand side.
+            ValueError: in case the productions are declared as ``context_free`` but one of 
+                        them has more than one symbol on the left-hand side.
         """
         P = []
         for p in prods.splitlines():
