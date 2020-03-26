@@ -1,11 +1,17 @@
 Changelog
 =========
 
+v1.0.1-alpha (2020-03-26)
+-------------------------
+
+- Bumped ANTLR jar to version 4.8.
+- Fixed a few typos in docs (thanks also to @andreazube)
+
 1.0.0-alpha (2019-05-28)
 ------------------------
 
 - Bumped the major version, non new features expected since this year class is done.
-- Added the parameter fail_on_error to the liblet.antlr.ANTLR.context method to make 
+- Added the parameter fail_on_error to the liblet.antlr.ANTLR.context method to make
   it return None in case of parsing errors
 - Modified the liblet.antlr.ANTLR.tree method so that it returns None in case of
   parse errors
@@ -14,7 +20,7 @@ Changelog
 v0.12.4-alpha (2019-05-28)
 --------------------------
 
-- The liblet.display.Tree.with_threads method puts nodes at the same rank according to 
+- The liblet.display.Tree.with_threads method puts nodes at the same rank according to
   their depth in the tree.
 - The liblet.antlr.ANTLR.tree method ignores <EOF> tokens for non simple trees.
 
@@ -69,12 +75,12 @@ v0.10.0-alpha (2019-05-03)
     - added warn method (to display messages on sys.stderr),
     - added ff2table method (to display FIRST/FOLLOW table),
     - added dict2table method (to display a dict as a table),
-    - method dod2table encloses cell content in <pre>, 
+    - method dod2table encloses cell content in <pre>,
     - method dod2table uses OrderedDict.fromkeys to make the list unique preserving column order,
     - reviewed table visualization methods.
 - Modifications in the grammar module:
     - added Item.symbol_after_dot and Item.advance methods,
-    - improved type checking for Transition, 
+    - improved type checking for Transition,
     - Transition can be made from tuples of items,
     - renamed Grammar.context_free to Grammar.is_context_free (and added to __slots__).
 - Modifications in the utils module:
@@ -124,14 +130,14 @@ v0.9.0-alpha (2019-04-02)
 v0.8.6-alpha (2019-04-01)
 -------------------------
 
-- Maintenance release. 
+- Maintenance release.
 
 v0.8.5-alpha (2019-03-28)
 -------------------------
 
 - Added tests to take coverage of the grammar module to 100%.
 - Added this CHANGELOG.txt file (and some tools to handle it).
-- Fixed display.cyk2table function for the case with a nullable 
+- Fixed display.cyk2table function for the case with a nullable
   row.
 
 
@@ -146,12 +152,12 @@ v0.8.3-alpha (2019-03-28)
 
 - Added methods Grammar.restrict_to, Production.such_that, and
   function display.prods2table.
-  
+
 
 v0.8.2-alpha (2019-03-25)
 -------------------------
 
-- Added display.cyk2table function and renamed display.dod2html 
+- Added display.cyk2table function and renamed display.dod2html
   function to display.dod2table.
 
 
@@ -167,7 +173,7 @@ v0.8.1-alpha (2019-03-18)
 v0.8.0-alpha (2019-03-17)
 -------------------------
 
-- Removed Grammar.all_terminals method and and renamed Grammar.rhs 
+- Removed Grammar.all_terminals method and and renamed Grammar.rhs
   method to Grammar.alternatives.
 - Filled the docs of Derivation.
 - Added a reference to the jar installation script.
@@ -183,7 +189,7 @@ v0.7.1-alpha (2019-03-17)
 v0.7.0-alpha (2019-03-17)
 -------------------------
 
-- Moved difficult to test (god forbids) code for rich display 
+- Moved difficult to test (god forbids) code for rich display
   in a single (non tested) module.
 - Removed jupyter repr tricks.
 - Added codecov integration.
@@ -212,7 +218,7 @@ v0.5.0-alpha (2019-03-12)
 -------------------------
 
 - Working on documentation.
-- Now matches can be restricted to prod or pos, used to implement 
+- Now matches can be restricted to prod or pos, used to implement
   left/rightmost steps.
 - Made Derivation immutable.
 - Repurposed display.productions_table in the more general display.iter2table.
