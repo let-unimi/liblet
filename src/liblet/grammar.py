@@ -16,10 +16,10 @@ class Production:
     """A grammar production.
 
     This class represents a grammar production, it has a left-hand and
-    right-hand sides that can be *nonempty* :obj:`strings <str>`, or 
-    :obj:`tuples <tuple>` of *nonempty* strings; the right-hand side can 
-    contain ε only if is the only symbol it comprises. A production is 
-    :term:`iterable` and unpacking can be used to obtain its sides, so 
+    right-hand sides that can be *nonempty* :obj:`strings <str>`, or
+    :obj:`tuples <tuple>` of *nonempty* strings; the right-hand side can
+    contain ε only if is the only symbol it comprises. A production is
+    :term:`iterable` and unpacking can be used to obtain its sides, so
     for example
 
     .. doctest::
@@ -27,11 +27,11 @@ class Production:
         >>> lhs, rhs = Production('A', ('B', 'C'))
         >>> lhs
         'A'
-        >>> rhs 
+        >>> rhs
         ('B', 'C')
 
-    Args: 
-        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production. 
+    Args:
+        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production.
         rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right-hand side of the production.
 
     Raises:
@@ -43,21 +43,21 @@ class Production:
     def __init__(self, lhs, rhs):
         if isinstance(lhs, str) and lhs:
             self.lhs = lhs
-        elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str) and _, lhs)): 
+        elif isinstance(lhs, (list, tuple)) and all(map(lambda _: isinstance(_, str) and _, lhs)):
             self.lhs = tuple(lhs)
         else:
             raise ValueError('The left-hand side is not a nonempty str, nor a tuple (or list) of nonempty str.')
-        if isinstance(rhs, (list, tuple)) and rhs and all(map(lambda _: isinstance(_, str) and _, rhs)): 
+        if isinstance(rhs, (list, tuple)) and rhs and all(map(lambda _: isinstance(_, str) and _, rhs)):
             self.rhs = tuple(rhs)
         else:
-            raise ValueError('The right-hand side is not a tuple (or list) of nonempty str.')        
+            raise ValueError('The right-hand side is not a tuple (or list) of nonempty str.')
         if ε in self.rhs and len(self.rhs) != 1:
             raise ValueError('The right-hand side contains ε but has more than one symbol')
 
     def __lt__(self, other):
         if not isinstance(other, Production): return NotImplemented
         return (self.lhs, self.rhs) < (other.lhs, other.rhs)
-        
+
     def __eq__(self, other):
         if not isinstance(other, Production): return NotImplemented
         return (self.lhs, self.rhs) == (other.lhs, other.rhs)
@@ -71,7 +71,7 @@ class Production:
     def __repr__(self):
         return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
 
-    @classmethod 
+    @classmethod
     def from_string(cls, prods, context_free = True):
         """Builds a tuple of *productions* obtained from the given string.
 
@@ -84,15 +84,15 @@ class Production:
             lhs -> alternatives
 
         where ``alternatives`` is a list of ``rhs`` strings (possibly separated by ``|``)
-        and ``lhs`` and ``rhs`` are space separated strings that will be used as left-hand and 
+        and ``lhs`` and ``rhs`` are space separated strings that will be used as left-hand and
         right-hand sides of the returned productions; for example::
 
             S -> ( S ) | x T y
             x T y -> t
 
         Raises:
-            ValueError: in case the productions are declared as ``context_free`` but one of 
-                        them has more than one symbol on the left-hand side.
+            ValueError: in case the productions are declared as ``context_free`` but on of
+                        them has more than one symbol on the right-hand side.
         """
         P = []
         for p in prods.splitlines():
@@ -110,20 +110,20 @@ class Production:
     def such_that(cls, **kwargs):
         """Returns a conjunction of predicates specified by its named arguments.
 
-        This method returns a predicate that can be conveniently used with :func:`filter` to 
+        This method returns a predicate that can be conveniently used with :func:`filter` to
 
         Args:
-            lhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.            
+            lhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.
             rhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.
             rhs_len: returns a predicate that is ``True`` weather the length of the production left-hand side is equal to the argument value.
             rhs_is_suffix_of: returns a predicate that is ``True`` weather the the argument value ends with the production.
-        
+
         Returns:
             A predicate (that is a one-argument function that retuns ``True`` or ``False``) that is ``True`` weather the production
             given as argument satisfies all the predicates given by the named arguments.
 
         Example:
-            As an example, consider the following productions and the subset of them you can obtaining 
+            As an example, consider the following productions and the subset of them you can obtaining
             by filtering them according to different predicates
 
             .. doctest::
@@ -157,7 +157,7 @@ class Production:
 
 @total_ordering
 class Item(Production):
-    """A dotted production, also known as an *item*. 
+    """A dotted production, also known as an *item*.
 
     .. doctest::
 
@@ -167,13 +167,13 @@ class Item(Production):
         >>> lhs, rhs, pos = item
         >>> lhs
         'A'
-        >>> rhs 
+        >>> rhs
         ('B', 'C')
         >>> pos
         1
 
-    Args: 
-        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production. 
+    Args:
+        lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production.
         rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right-hand side of the production.
         pos (int): the position of the dot (optional, 0 if absent).
 
@@ -210,7 +210,7 @@ class Item(Production):
 
     def symbol_after_dot(self):
         """Returns the symbol after the dot.
-        
+
         Returns:
             The symbol after the dot, or ``None`` if the dot is at the end of the right-hand side.
         """
@@ -232,8 +232,8 @@ class Grammar:
     """A grammar.
 
     This class represents a formal grammar, that is a tuple :math:`(N, T, P, S)` where
-    :math:`N` is the finite set of *nonterminals* or *variables* symbols, :math:`T` is the 
-    finite set of *terminals*, :math:`P` are the grammar *productions* or *rules* and, 
+    :math:`N` is the finite set of *nonterminals* or *variables* symbols, :math:`T` is the
+    finite set of *terminals*, :math:`P` are the grammar *productions* or *rules* and,
     :math:`S \in N` is the *start* symbol.
 
     Args:
@@ -253,12 +253,12 @@ class Grammar:
         self.S = S
         self.is_context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
         if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common.'.format(set(self.N & self.T)))
-        if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')    
+        if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')
         if self.is_context_free:
             bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
             if bad_prods: raise ValueError('The following productions have a left-hand side that is not a nonterminal: {}.'.format(bad_prods))
         bad_prods = tuple(P for P in self.P if not (set(P.as_type0().lhs) | set(P.rhs)).issubset(self.N | self.T | {ε}))
-        if bad_prods: raise ValueError('The following productions contain symbols that are neither terminals or nonterminals: {}.'.format(bad_prods))        
+        if bad_prods: raise ValueError('The following productions contain symbols that are neither terminals or nonterminals: {}.'.format(bad_prods))
 
     def __eq__(self, other):
         if not isinstance(other, Grammar): return NotImplemented
@@ -278,17 +278,17 @@ class Grammar:
             prods (str): a string describing the productions.
             context_free (bool): if ``True`` the grammar is expected to be context-free.
 
-        Once the *productions* are determined via a call to :func:`Production.from_string`, 
+        Once the *productions* are determined via a call to :func:`Production.from_string`,
         the remaining defining elements of the grammar are obtained as follows:
-        
+
         * if the grammar is *not* context-free the *nonterminals* is the set of symbols,
-          appearing in (the left-hand, or right-hand side of) any production, beginning with 
+          appearing in (the left-hand, or right-hand side of) any production, beginning with
           an uppercase letter, the *terminals* are the remaining symbols. The *start* symbol
           is the left-hand side of the first production;
 
         * if the grammar is *context-free* the *nonterminals* is the set of symbols appearing
           in a left-hand side of any production, the *terminals* are the remaining symbols. The
-          *start* symbol is the left-hand side of the first production.           
+          *start* symbol is the left-hand side of the first production.
         """
         P = Production.from_string(prods, context_free)
         if context_free:
@@ -321,9 +321,9 @@ class Grammar:
         Args:
             symbols: the only allowed symbols.
         Returns:
-             :obj:`Grammar`: a new grammar containing only the given symbols (and hence 
-             no production of the original grammar that uses a symbol not in the given 
-             set.) 
+             :obj:`Grammar`: a new grammar containing only the given symbols (and hence
+             no production of the original grammar that uses a symbol not in the given
+             set.)
         """
         return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if (({P.lhs} | set(P.rhs)) & self.N) <= symbols), self.S)
 
@@ -333,7 +333,7 @@ class Derivation:
     """A derivation.
 
     This class is *immutable*, derivations can be built invoking
-    :func:`~Derivation.step`, :func:`~Derivation.leftmost`, and 
+    :func:`~Derivation.step`, :func:`~Derivation.leftmost`, and
     :func:`~Derivation.rightmost`
 
     Args:
@@ -354,7 +354,7 @@ class Derivation:
 
     def __hash__(self):
         return hash((self.G, self._steps))
-    
+
     def __repr__(self):
         return self._repr
 
@@ -406,7 +406,7 @@ class Derivation:
         else:
             raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf,)))
 
-    def step(self, prod, pos): 
+    def step(self, prod, pos):
         """Performs a derivation step, returning a new derivation.
 
         Applies the specified production to the given position in the sentential form.
@@ -433,13 +433,13 @@ class Derivation:
     def possible_steps(self, prod = None, pos = None):
         """Yields all the possible steps that can be performed given the grammar and current *sentential form*.
 
-        Determines all the position of the *sentential form* that correspond to the left-hand side of 
-        one of the production in the grammar, returning the position and production number. If a 
+        Determines all the position of the *sentential form* that correspond to the left-hand side of
+        one of the production in the grammar, returning the position and production number. If a
         production is specified, it yields only the pairs referring to it; similarly, if a position
         is specified, it yields only the pairs referring to it.
 
         Args:
-            prod (int): the production whose left-hand side is to be searched (that is `G.P[prod].lhs``) in the *sentential form*.
+            prod (int): the production whose left-hand side is to be searched (that is ``G.P[prod].lhs``) in the *sentential form*.
             pos (int): the position where to look for grammar productions that have a matching left-hand side.
 
         Yields:
@@ -450,14 +450,14 @@ class Derivation:
             for p in range(len(self._sf) - len(P.lhs) + 1) if pos is None else (pos, ):
                 if self._sf[p: p + len(P.lhs)] == P.lhs:
                     yield n, p
-    
+
     def steps(self):
         """Returns the steps of the derivation.
 
         Returns: a :obj:`tuple` of ``(prod, pos)`` pairs corresponding to this derivation steps.
         """
         return tuple(self._steps)
-        
+
     def sentential_form(self):
         """Returns the *sentential form* of the derivation.
 
