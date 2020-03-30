@@ -8,11 +8,11 @@ class TestGrammar(unittest.TestCase):
     def test_production_wrong_lhs(self):
         with self.assertRaises(ValueError):
             Production(1,['a'])
- 
+
     def test_production_nonempty_lhs(self):
         with self.assertRaisesRegex(ValueError, 'nonempty'):
             Production('',['a'])
- 
+
     def test_production_wrong_rhs(self):
         with self.assertRaises(ValueError):
             Production('a',[1])
@@ -36,7 +36,7 @@ class TestGrammar(unittest.TestCase):
     def test_production_aε(self):
         with self.assertRaisesRegex(ValueError, 'contains ε but has more than one symbol'):
             Production('A', ('a', ε))
-            
+
     def test_production_unpack(self):
         lhs, rhs = Production('a',['b'])
         self.assertEqual(('a', ('b',)), (lhs, rhs))
@@ -83,7 +83,7 @@ class TestGrammar(unittest.TestCase):
         Q = Item('a',('b','c'))
         s = set()
         s.add(P)
-        s.add(Q)    
+        s.add(Q)
         self.assertEqual(len(s), 1)
 
     def test_item_totalorder(self):
@@ -104,7 +104,7 @@ class TestGrammar(unittest.TestCase):
 
     def test_item_notadvance(self):
         self.assertIsNone(Item('A', ('B', 'C')).advance('x'))
-    
+
     def test_item_symbol_after_dot(self):
         self.assertEqual('B', Item('A', ('x', 'B'), 1).symbol_after_dot())
 
@@ -199,7 +199,7 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_repr(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         d = Derivation(G)
@@ -209,7 +209,7 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_sf(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         d = Derivation(G)
@@ -222,7 +222,7 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_eq(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         d0 = Derivation(G)
@@ -230,11 +230,11 @@ class TestGrammar(unittest.TestCase):
         d1 = Derivation(G)
         for prod, pos in [(0, 0), (1, 0), (2, 1)]: d1 = d1.step(prod, pos)
         self.assertEqual(d0, d1)
-        
+
     def test_derivation_hash(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         d0 = Derivation(G)
@@ -243,11 +243,11 @@ class TestGrammar(unittest.TestCase):
         for prod, pos in [(0, 0), (1, 0), (2, 1)]: d1 = d1.step(prod, pos)
         S = {d0: 1, d1: 2}
         self.assertEqual(1, len(S))
-        
+
     def test_derivation_steps(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         d = Derivation(G)
@@ -255,29 +255,49 @@ class TestGrammar(unittest.TestCase):
         for prod, pos in steps: d = d.step(prod, pos)
         self.assertEqual(steps, d.steps())
 
+    def test_derivation_steps_list(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a
+            B -> b
+        """, False)
+        steps = ((0, 0), (1, 0), (2, 1))
+        d = Derivation(G).step(steps)
+        self.assertEqual(steps, d.steps())
+
     def test_derivation_wrong_step(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         d = Derivation(G)
         steps = ((0, 0), (1, 1))
         with self.assertRaisesRegex(ValueError, 'at position'):
             for prod, pos in steps: d = d.step(prod, pos)
-        
+
     def test_derivation_leftmost(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """)
         d = Derivation(G).leftmost(0).leftmost(1).leftmost(2)
         steps = ((0, 0), (1, 0), (2, 1))
         self.assertEqual(steps, d.steps())
 
+    def test_derivation_leftmost_list(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a
+            B -> b
+        """)
+        d = Derivation(G).leftmost([0, 1, 2])
+        steps = ((0, 0), (1, 0), (2, 1))
+        self.assertEqual(steps, d.steps())
+
     def test_derivation_leftmost_ncf(self):
-        with self.assertRaisesRegex(ValueError, 'derivation on a non context-free grammar'): 
+        with self.assertRaisesRegex(ValueError, 'derivation on a non context-free grammar'):
             Derivation(Grammar.from_string('S -> s\nT U ->s', False)).leftmost(0)
 
     def test_derivation_leftmost_allterminals(self):
@@ -303,15 +323,25 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_rightmost(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """)
         d = Derivation(G).rightmost(0).rightmost(2).rightmost(1)
         steps = ((0, 0), (2, 1), (1, 0))
         self.assertEqual(steps, d.steps())
 
+    def test_derivation_rightmost_list(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a
+            B -> b
+        """)
+        d = Derivation(G).rightmost([0, 2, 1])
+        steps = ((0, 0), (2, 1), (1, 0))
+        self.assertEqual(steps, d.steps())
+
     def test_derivation_rightmost_ncf(self):
-        with self.assertRaisesRegex(ValueError, 'derivation on a non context-free grammar'): 
+        with self.assertRaisesRegex(ValueError, 'derivation on a non context-free grammar'):
             Derivation(Grammar.from_string('S -> s\nT U ->s', False)).rightmost(0)
 
     def test_derivation_rightmost_allterminals(self):
@@ -337,7 +367,7 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_possible_steps(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         expected = [(1, 0), (2, 1)]
@@ -347,7 +377,7 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_possible_steps_prod(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         expected = [(1, 0)]
@@ -357,7 +387,7 @@ class TestGrammar(unittest.TestCase):
     def test_derivation_possible_steps_pos(self):
         G = Grammar.from_string("""
             S -> A B
-            A -> a 
+            A -> a
             B -> b
         """, False)
         expected = [(2, 1)]

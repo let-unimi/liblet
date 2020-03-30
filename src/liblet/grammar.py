@@ -1,4 +1,5 @@
 from collections import namedtuple
+from collections.abc import Iterable
 from functools import total_ordering
 from itertools import chain
 from operator import attrgetter, itemgetter
@@ -361,10 +362,10 @@ class Derivation:
     def leftmost(self, prod):
         """Performs a *leftmost* derivation step.
 
-        Applies the specified production to the current leftmost nonterminal in the sentential form.
+        Applies the specified production(s) to the current leftmost nonterminal in the sentential form.
 
         Args:
-            prod (int): the production to apply, that is ``G.P[prod]``.
+            prod (int or :obj:`~collections.abc.Iterable`): the production to apply, that is ``G.P[prod]``; if it is an *iterable* of integers, the productions will be applied in order.
 
         Returns:
             :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
@@ -372,23 +373,36 @@ class Derivation:
         Raises:
             ValueError: in case the leftmost nonterminal isn't the left-hand side of the given production.
         """
-        if not self.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
-        for pos, symbol in enumerate(self._sf):
-            if symbol in self.G.N:
-                if self.G.P[prod].lhs == symbol:
-                    return self.step(prod, pos)
-                else:
-                    raise ValueError('Cannot apply {}: the leftmost nonterminal of {} is {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf), symbol))
+
+        def _leftmost(derivation, prod):
+          if not derivation.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
+          for pos, symbol in enumerate(derivation._sf):
+              if symbol in derivation.G.N:
+                  if derivation.G.P[prod].lhs == symbol:
+                      return derivation.step(prod, pos)
+                  else:
+                      raise ValueError('Cannot apply {}: the leftmost nonterminal of {} is {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf), symbol))
+          else:
+              raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
+
+        if isinstance(prod, int):
+          res = _leftmost(self, prod)
+        elif isinstance(prod, Iterable):
+          res = self
+          for nprod in prod:
+            res = _leftmost(res, nprod)
         else:
-            raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf,)))
+          raise ValueError('Argument is not an integer, or an iterable of integers')
+        return res
+
 
     def rightmost(self, prod):
         """Performs a *rightmost* derivation step.
 
-        Applies the specified production to the current rightmost nonterminal in the sentential form.
+        Applies the specified production(s) to the current rightmost nonterminal in the sentential form.
 
         Args:
-            prod (int): the production to apply, that is ``G.P[prod]``.
+            prod (int or :obj:`~collections.abc.Iterable`): the production to apply, that is ``G.P[prod]``; if it is an *iterable* of integers, the productions will be applied in order.
 
         Returns:
             :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
@@ -396,24 +410,37 @@ class Derivation:
         Raises:
             ValueError: in case the rightmost nonterminal isn't the left-hand side of the given production.
         """
-        if not self.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
-        for pos, symbol in list(enumerate(self._sf))[::-1]:
-            if symbol in self.G.N:
-                if self.G.P[prod].lhs == symbol:
-                    return self.step(prod, pos)
-                else:
-                    raise ValueError('Cannot apply {}: the rightmost nonterminal of {} is {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf), symbol))
-        else:
-            raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(self.G.P[prod], HAIR_SPACE.join(self._sf,)))
 
-    def step(self, prod, pos):
+        def _rightmost(derivation, prod):
+          if not derivation.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
+          for pos, symbol in list(enumerate(derivation._sf))[::-1]:
+              if symbol in derivation.G.N:
+                  if derivation.G.P[prod].lhs == symbol:
+                      return derivation.step(prod, pos)
+                  else:
+                      raise ValueError('Cannot apply {}: the rightmost nonterminal of {} is {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf), symbol))
+          else:
+              raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
+
+        if isinstance(prod, int):
+          res = _rightmost(self, prod)
+        elif isinstance(prod, Iterable):
+          res = self
+          for nprod in prod:
+            res = _rightmost(res, nprod)
+        else:
+          raise ValueError('Argument is not an integer, or an iterable of integers')
+        return res
+
+
+    def step(self, prod, pos = None):
         """Performs a derivation step, returning a new derivation.
 
-        Applies the specified production to the given position in the sentential form.
+        Applies the specified production(s) to the given position in the sentential form.
 
         Args:
-            prod (int): the production to apply, that is ``G.P[prod]``.
-            pos (int): the position (in the current *sentential form*) where to apply the production.
+            prod (int or :obj:`~collections.abc.Iterable`): the production to apply, that is ``G.P[prod]``; ; if it is an *iterable* of pairs of integers, the productions will be applied in order.
+            pos (int or None): the position (in the current *sentential form*) where to apply the production; it must be ``None`` iff ``prod`` is a list.
 
         Returns:
             :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
@@ -421,14 +448,26 @@ class Derivation:
         Raises:
             ValueError: in case the production can't be applied at the specified position.
         """
-        sf = self._sf
-        P = self.G.P[prod].as_type0()
-        if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
-        copy = Derivation(self.G)
-        copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != 'ε')
-        copy._steps = self._steps + ((prod, pos), )
-        copy._repr = self._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
-        return copy
+
+        def _step(derivation, prod, pos):
+          sf = derivation._sf
+          P = derivation.G.P[prod].as_type0()
+          if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
+          copy = Derivation(derivation.G)
+          copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != 'ε')
+          copy._steps = derivation._steps + ((prod, pos), )
+          copy._repr = derivation._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
+          return copy
+
+        if isinstance(prod, int) and isinstance(pos, int):
+          res = _step(self, prod, pos)
+        elif isinstance(prod, Iterable) and pos is None:
+          res = self
+          for nprod, pos in prod:
+            res = _step(res, nprod, pos)
+        else:
+          raise ValueError('Arguments are not integers, or an iterable of integers')
+        return res
 
     def possible_steps(self, prod = None, pos = None):
         """Yields all the possible steps that can be performed given the grammar and current *sentential form*.
