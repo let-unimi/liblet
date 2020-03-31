@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.1.0-alpha (2020-03-31)
+-------------------------
+
+- Now Derivation accepts also an iterable of steps (both for left/rightmost and
+  general case).
+
 v1.0.1-alpha (2020-03-26)
 -------------------------
 
