@@ -326,7 +326,7 @@ class Grammar:
              no production of the original grammar that uses a symbol not in the given
              set.)
         """
-        return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if (({P.lhs} | set(P.rhs)) & self.N) <= symbols), self.S)
+        return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if ({P.lhs} | set(P.rhs)) <= symbols), self.S)
 
 
 
