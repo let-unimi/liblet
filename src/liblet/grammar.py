@@ -115,8 +115,8 @@ class Production:
 
         Args:
             lhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.
-            rhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.
-            rhs_len: returns a predicate that is ``True`` weather the length of the production left-hand side is equal to the argument value.
+            rhs: returns a predicate that is ``True`` weather the production right-hand side is equal to the argument value.
+            rhs_len: returns a predicate that is ``True`` weather the length of the production right-hand side is equal to the argument value.
             rhs_is_suffix_of: returns a predicate that is ``True`` weather the the argument value ends with the production.
 
         Returns:
