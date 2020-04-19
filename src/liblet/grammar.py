@@ -320,12 +320,15 @@ class Grammar:
         """Returns a grammar using only the given symbols.
 
         Args:
-            symbols: the only allowed symbols.
+            symbols: the only allowed symbols (it must contain the *start symbol*).
         Returns:
              :obj:`Grammar`: a new grammar containing only the given symbols (and hence
              no production of the original grammar that uses a symbol not in the given
              set.)
+        Raises:
+            ValueError: in case the *start symbol* is not among the one to keep.
         """
+        if not self.S in symbols: raise ValueError('The start symbol must be present among the symbols to keep.')
         return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if ({P.lhs} | set(P.rhs)) <= symbols), self.S)
 
 

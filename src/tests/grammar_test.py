@@ -187,6 +187,16 @@ class TestGrammar(unittest.TestCase):
         """)
         self.assertEqual(G.restrict_to((G.T | G.N) - {'X', 'x'}), Gr)
 
+    def test_grammar_restrict_to_no_start(self):
+        G = Grammar.from_string("""
+            Z -> E $
+            E -> T | E + T | X
+            X -> x
+            T -> i | ( E )
+        """)
+        with self.assertRaisesRegex(ValueError, 'start symbol'):
+          G.restrict_to((G.T | G.N) - {'Z'})
+
     def test_alternatives(self):
         actual = set(Grammar.from_string("""
             Z -> E $
