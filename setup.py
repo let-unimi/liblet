@@ -25,7 +25,7 @@ setup(
     author = 'Massimo Santini',
     author_email = 'massimo.santini@unimi.it',
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Framework :: IPython',
         'Framework :: Jupyter',
         'Intended Audience :: Developers',
