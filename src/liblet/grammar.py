@@ -399,12 +399,12 @@ class Derivation:
               raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
 
         if not self.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
-        if isinstance(prod, Iterable):
+        if isinstance(prod, int) or isinstance(prod, Production):
+          res = _leftmost(self, prod)
+        else:
           res = self
           for nprod in prod:
             res = _leftmost(res, nprod)
-        else:
-          res = _leftmost(self, prod)
         return res
 
 
@@ -435,12 +435,12 @@ class Derivation:
               raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
 
         if not self.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
-        if isinstance(prod, Iterable):
+        if isinstance(prod, int) or isinstance(prod, Production):
+          res = _rightmost(self, prod)
+        else:
           res = self
           for nprod in prod:
             res = _rightmost(res, nprod)
-        else:
-          res = _rightmost(self, prod)
         return res
 
 
@@ -471,12 +471,12 @@ class Derivation:
           copy._repr = derivation._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
           return copy
 
-        if isinstance(prod, Iterable) and pos is None:
+        if isinstance(prod, int) or isinstance(prod, Production):
+          res = _step(self, prod, pos)
+        else:
           res = self
           for nprod, pos in prod:
             res = _step(res, nprod, pos)
-        else:
-          res = _step(self, prod, pos)
         return res
 
     def possible_steps(self, prod = None, pos = None):

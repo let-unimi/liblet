@@ -265,6 +265,26 @@ class TestGrammar(unittest.TestCase):
         for prod, pos in steps: d = d.step(prod, pos)
         self.assertEqual(steps, d.steps())
 
+    def test_derivation_byprods(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a
+            B -> b
+        """)
+        d = Derivation(G)
+        p = Production('S', ('A', 'B')), Production('A', ('a', ))
+        self.assertEqual(d.leftmost(p).sentential_form(), ('a', 'B'))
+
+    def test_derivation_byprod(self):
+        G = Grammar.from_string("""
+            S -> A B
+            A -> a
+            B -> b
+        """)
+        d = Derivation(G)
+        p = Production('S', ('A', 'B'))
+        self.assertEqual(d.leftmost(p).sentential_form(), ('A', 'B'))
+
     def test_derivation_steps_list(self):
         G = Grammar.from_string("""
             S -> A B
