@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v1.2.0-beta (2020-04-21)
+-------------------------
+
+- Bumped to beta.
+- Added display.animate_derivation (and hence ipywidgets to the deps).
+- Dderivation now admits productions and not only indexes.
+- Added utils.uc to append unicode combination chars.
+- Grammar.restrict_to now makes explicit that the start symbol must be kept and
+  throws away productions containing also not specified terminals.
+
 v1.1.0-alpha (2020-03-31)
 -------------------------
 
