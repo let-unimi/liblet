@@ -7,9 +7,10 @@ from re import sub
 
 from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
+from ipywidgets import interactive, IntSlider
 
 from .utils import letstr
-from .grammar import _letlrhstostr, HAIR_SPACE
+from .grammar import _letlrhstostr, HAIR_SPACE, Derivation
 
 # graphviz stuff
 
@@ -22,7 +23,7 @@ class BaseGraph(ABC):
     def _gvgraph_(self):
         pass
 
-    # letstr(node) is always used as node_label 
+    # letstr(node) is always used as node_label
     # node_id is str(x) where x is id (if not None) or hash(node_label)
     def node(self, G, node, id = None, sep = None, gv_args = None):
         if gv_args is None: gv_args = {}
@@ -47,11 +48,11 @@ class BaseGraph(ABC):
 class Tree(BaseGraph):
     """A *n-ary tree* with ordered children.
 
-    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name. If 
+    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name. If
     the tree root is a :obj:`dict` the tree is an *annotated* tree. This kind of trees
     arise from parsing, for example using the :meth:`~liblet.antlr.ANTLR.tree` method of the
     :class:`~liblet.antlr.ANTLR` class.
-    
+
     A tree is represented as a string as a ``(<root>: <children>)`` where ``<root>``
     is the string representation of the root node content and ``<children>`` is the
     recursively obtained string representation of its children.
@@ -65,7 +66,7 @@ class Tree(BaseGraph):
         root: the root node content (can be of any type).
         children: an :term:`iterable` of trees to become the current tree children.
     """
-    
+
     def __init__(self, root, children = None):
         self.root = root
         self.children = list(children) if children else []
@@ -74,14 +75,14 @@ class Tree(BaseGraph):
     def from_lol(cls, lol):
         """Builds a tree from a *list of lists*.
 
-        A list of lists (lol) is a list recursively defined such that the first element of a lol 
+        A list of lists (lol) is a list recursively defined such that the first element of a lol
         is the tree node content and the following elements are lols.
 
         Args:
             lol (list): a list representing a tree.
 
         Examples:
-            The following code 
+            The following code
 
         .. code:: ipython3
 
@@ -108,7 +109,7 @@ class Tree(BaseGraph):
             return {
                 'shape': 'none' if is_dict else 'box',
                 'margin': '0' if is_dict else '.05'
-            }   
+            }
         def _tostr(node):
             if isinstance(node, dict):
                 return ''.join(
@@ -119,17 +120,17 @@ class Tree(BaseGraph):
         def walk(T):
             curr = self.node(G, _tostr(T.root), id(T), gv_args = _gv_args(T.root))
             if T.children:
-                for child in T.children: 
+                for child in T.children:
                     self.node(G, _tostr(child.root), id(child), gv_args = _gv_args(child.root))
                     self.edge(G, curr, id(child ))
                 with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
-                    for f, t in zip(T.children, T.children[1:]): 
+                    for f, t in zip(T.children, T.children[1:]):
                         self.edge(S, id(f), id(t))
                 for child in T.children: walk(child)
         G = gvDigraph(
             graph_attr = {
                 'nodesep': '.25',
-                'ranksep': '.25'    
+                'ranksep': '.25'
             },
             node_attr = {
                 'width': '0',
@@ -178,11 +179,11 @@ class Tree(BaseGraph):
 
         for node in threads:
             if 'type' in node.root and node.root['type'] in ('<START>', '<JOIN>'):
-                self.node(G, node.root['type'], id(node), gv_args = node_args)    
-        self.node(G, None, id(None), gv_args = node_args)    
+                self.node(G, node.root['type'], id(node), gv_args = node_args)
+        self.node(G, None, id(None), gv_args = node_args)
 
         for node, info in threads.items():
-            for nxt in info.keys(): 
+            for nxt in info.keys():
                 self.edge(G, id(node), id(info[nxt]), gv_args = edge_args)
 
         return G
@@ -255,31 +256,31 @@ class ProductionGraph(BaseGraph):
             self.node(S, sentence[0][0], hash(sentence[0]))
 
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
-            
+
             lhs, rhs = derivation.G.P[rule].as_type0()
             rhsn = tuple((X, step, p) for p, X in enumerate(rhs))
-            
+
             with G.subgraph(graph_attr = {'rank': 'same'}) as S:
                 if use_levels: new_level = self.node(S, ('LevelNode', step), gv_args = {'style': 'invis'})
                 for node in rhsn: self.node(S, node[0], hash(node), gv_args = {'style': 'rounded, setlinewidth(1.25)' if node in last_sentence else 'rounded, setlinewidth(.25)'})
-            if use_levels: 
+            if use_levels:
                 self.edge(G, prev_level, new_level, gv_args = {'style': 'invis'})
-                prev_level = new_level 
-            
-            if len(lhs) == 1:                
+                prev_level = new_level
+
+            if len(lhs) == 1:
                 frm = sentence[pos]
                 for to in rhsn: self.edge(G, hash(frm), hash(to))
             else:
                 id_dot = self.node(G, (step, rule), gv_args = {'shape': 'point', 'width': '.07', 'height': '.07'})
                 for frm in sentence[pos:pos + len(lhs)]: self.edge(G, hash(frm), id_dot)
                 for to in rhsn: self.edge(G, id_dot, hash(to))
-            
+
             if len(rhs) > 1:
                 with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
                     for f, t in zip(rhsn, rhsn[1:]): self.edge(S, hash(f), hash(t))
 
             sentence = remove_ε(sentence[:pos] + rhsn + sentence[pos + len(lhs):])
-        
+
         self.G = G
         return G
 
@@ -294,14 +295,14 @@ class StateTransitionGraph(BaseGraph):
       large_labels (bool): whether the string labelling nodes are long and require pre-formatting before being drawn or not.
 
     Examples:
-      The following code 
+      The following code
 
       .. code:: ipython3
 
         StateTransitionGraph([
-              ('node a','arc (a,b)','node b'), 
-              ('node a', 'arc (a,c)', 'node c'), 
-              ('node b', 'arc (b, c)', 'node c')], 
+              ('node a','arc (a,b)','node b'),
+              ('node a', 'arc (a,c)', 'node c'),
+              ('node b', 'arc (b, c)', 'node c')],
           'node a', {'node b'})
 
       gives the following graph
@@ -328,7 +329,7 @@ class StateTransitionGraph(BaseGraph):
             coalesce_sets (bool): whether the automata states are sets and the corresponding labels must be obtained joining the strings in the sets.
         """
         def tostr(N):
-            if coalesce_sets and isinstance(N, Set): 
+            if coalesce_sets and isinstance(N, Set):
                 return HAIR_SPACE.join(sorted(N))
             return N
         transitions = tuple((tostr(frm), label, tostr(to)) for frm, label, to in A.transitions)
@@ -348,19 +349,30 @@ class StateTransitionGraph(BaseGraph):
                 engine = 'dot'
             )
         if self.S is not None:
-            self.edge(G, 
-                self.node(G, '', id(self.S), gv_args = {'shape': 'none'}), 
+            self.edge(G,
+                self.node(G, '', id(self.S), gv_args = {'shape': 'none'}),
                 self.node(G, self.S, sep = sep, gv_args = {'peripheries': '2' if self.S in self.F else '1'})
             )
         for X, x, Y in self.transitions:
-            self.edge(G, 
-                self.node(G, X, sep = sep, gv_args = {'peripheries': '2' if X in self.F else '1'}), 
-                self.node(G, Y, sep = sep, gv_args = {'peripheries': '2' if Y in self.F else '1'}), 
+            self.edge(G,
+                self.node(G, X, sep = sep, gv_args = {'peripheries': '2' if X in self.F else '1'}),
+                self.node(G, Y, sep = sep, gv_args = {'peripheries': '2' if Y in self.F else '1'}),
                 x, self.large_labels
             )
         self.G = G
         return G
 
+# Jupyter Widgets sfuff
+
+def animate_derivation(d, height = '300px'):
+    steps = d.steps()
+    d =  Derivation(d.G)
+    ui = interactive(
+        lambda n: display(ProductionGraph(d.step(steps[:n]))),
+        n = IntSlider(min = 0, max = len(steps), value = 0)
+    )
+    ui.children[-1].layout.height = height
+    return ui
 
 # HTML stuff
 
