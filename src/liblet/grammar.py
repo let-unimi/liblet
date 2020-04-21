@@ -362,6 +362,16 @@ class Derivation:
     def __repr__(self):
         return self._repr
 
+    def __ensure_prod_idx__(self, prod):
+      if isinstance(prod, int):
+        if 0 <= prod < len(self.G.P): return prod
+        raise ValueError('There is no production of index {} in G'.format(prod))
+      if isinstance(prod, Production):
+        if prod in self.G.P: return self.G.P.index(prod)
+        raise ValueError('Production {} does not belong to G'.format(prod))
+      else:
+        raise ValueError('The argument is not a production or an integer')
+
     def leftmost(self, prod):
         """Performs a *leftmost* derivation step.
 
@@ -378,7 +388,7 @@ class Derivation:
         """
 
         def _leftmost(derivation, prod):
-          if not derivation.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
+          prod = self.__ensure_prod_idx__(prod)
           for pos, symbol in enumerate(derivation._sf):
               if symbol in derivation.G.N:
                   if derivation.G.P[prod].lhs == symbol:
@@ -388,14 +398,13 @@ class Derivation:
           else:
               raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
 
-        if isinstance(prod, int):
-          res = _leftmost(self, prod)
-        elif isinstance(prod, Iterable):
+        if not self.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
+        if isinstance(prod, Iterable):
           res = self
           for nprod in prod:
             res = _leftmost(res, nprod)
         else:
-          raise ValueError('Argument is not an integer, or an iterable of integers')
+          res = _leftmost(self, prod)
         return res
 
 
@@ -415,7 +424,7 @@ class Derivation:
         """
 
         def _rightmost(derivation, prod):
-          if not derivation.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
+          prod = self.__ensure_prod_idx__(prod)
           for pos, symbol in list(enumerate(derivation._sf))[::-1]:
               if symbol in derivation.G.N:
                   if derivation.G.P[prod].lhs == symbol:
@@ -425,14 +434,13 @@ class Derivation:
           else:
               raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
 
-        if isinstance(prod, int):
-          res = _rightmost(self, prod)
-        elif isinstance(prod, Iterable):
+        if not self.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
+        if isinstance(prod, Iterable):
           res = self
           for nprod in prod:
             res = _rightmost(res, nprod)
         else:
-          raise ValueError('Argument is not an integer, or an iterable of integers')
+          res = _rightmost(self, prod)
         return res
 
 
@@ -454,6 +462,7 @@ class Derivation:
 
         def _step(derivation, prod, pos):
           sf = derivation._sf
+          prod = self.__ensure_prod_idx__(prod)
           P = derivation.G.P[prod].as_type0()
           if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
           copy = Derivation(derivation.G)
@@ -462,14 +471,12 @@ class Derivation:
           copy._repr = derivation._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
           return copy
 
-        if isinstance(prod, int) and isinstance(pos, int):
-          res = _step(self, prod, pos)
-        elif isinstance(prod, Iterable) and pos is None:
+        if isinstance(prod, Iterable) and pos is None:
           res = self
           for nprod, pos in prod:
             res = _step(res, nprod, pos)
         else:
-          raise ValueError('Arguments are not integers, or an iterable of integers')
+          res = _step(self, prod, pos)
         return res
 
     def possible_steps(self, prod = None, pos = None):
