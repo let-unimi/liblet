@@ -1,3 +1,4 @@
+from functools import partial
 from collections import deque
 from collections.abc import Set, Iterable
 from itertools import chain
@@ -34,7 +35,7 @@ def letstr(obj, sep = None, sort = True):
             if sep == '\n': fs = '{}'
             return fs.format(sep.join(sorted(map(_ls, obj)) if sort else list(map(_ls, obj))))
     return _ls(obj)
-    
+
 class Queue(object):
     """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue``, and ``copy`` methods."""
     def __init__(self, iterable = None, maxlen = None):
@@ -73,3 +74,9 @@ class Stack(object):
     def __len__(self):
         return len(self.S)
 
+def uc(s, c = ''):
+    return ''.join(map(lambda _: _ + c, s))
+
+uc.dot = partial(uc, c = '\u0307')
+uc.overline = partial(uc, c = '\u0305')
+uc.prime = partial(uc, c = '\u031b')
