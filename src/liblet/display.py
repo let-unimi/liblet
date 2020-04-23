@@ -376,14 +376,18 @@ def animate_derivation(d, height = '300px'):
 
 # HTML stuff
 
+def __bordered_table__(content):
+    return HTML('<style>td, th {border: 1pt solid lightgray !important ;}</style><table>'+ content + '</table>')
+
+
 def side_by_side(*iterable):
     return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
 
 def iter2table(it):
-    return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{n}<td style="text-align:left"><pre>{_escape(e)}</pre>' for n, e in enumerate(it)) + '</table>')
+    return __bordered_table__('\n'.join(f'<tr><th style="text-align:left">{n}<td style="text-align:left"><pre>{_escape(e)}</pre>' for n, e in enumerate(it)))
 
 def dict2table(it):
-    return HTML('<table class="table-bordered">' + '\n'.join(f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{_escape(v)}</pre>' for k, v in it.items()) + '</table>')
+    return __bordered_table__('\n'.join(f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{_escape(v)}</pre>' for k, v in it.items()))
 
 def dod2table(dod, sort = False, sep = None):
     def fmt(r, c):
@@ -397,23 +401,23 @@ def dod2table(dod, sort = False, sep = None):
     if sort: cols = sorted(cols)
     head = '<tr><td>&nbsp;<th style="text-align:left">' + '<th style="text-align:left">'.join(cols)
     body = '\n'.join('<tr><th style="text-align:left"><pre>{}</pre><td style="text-align:left">{}'.format(letstr(r, sep), '<td style="text-align:left">'.join(fmt(r, c) for c in cols)) for r in rows)
-    return HTML('<table class="table-bordered">\n{}\n{}\n</table>'.format(head, body))
+    return __bordered_table__('{}\n{}\n'.format(head, body))
 
 def cyk2table(TABLE):
     I, L = max(TABLE.keys())
     # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
     # (otherwise i <= N); in any case the lengths range in [N, L - 1)
     N = I - 1 if L == 0 else I
-    return HTML('<table class="table-bordered"><tr>{}</table>'.format(
+    return __bordered_table__('<tr>' +
         '<tr>'.join('<td style="text-align:left"><pre>' + '</pre></td><td style="text-align:left"><pre>'.join(
                 (letstr(TABLE[(i, l)], sep = '\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
             ) + '</pre></td>' for l in range(N, L - 1, -1))
-        ))
+        )
 
 def prods2table(G):
     to_row = lambda N: '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
     rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
-    return HTML('<table class="table-bordered"><tr>' + '<tr>'.join(rows) + '</table>')
+    return __bordered_table__('<tr>' + '<tr>'.join(rows) + '</table>')
 
 def ff2table(G, FIRST, FOLLOW):
     return dod2table({N: {'First': ' '.join(FIRST[(N, )]), 'Follow': ' '.join(FOLLOW[N])} for N in G.N})
