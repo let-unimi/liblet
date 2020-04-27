@@ -36,7 +36,7 @@ class Production:
         rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right-hand side of the production.
 
     Raises:
-        ValueError: in case the left-hand or right-hand side is not a strings, or tuples of strings.
+        ValueError: in case the left-hand or right-hand side is not a string, or a tuple of strings.
     """
 
     __slots__ = ('lhs', 'rhs')
