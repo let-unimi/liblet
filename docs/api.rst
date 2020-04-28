@@ -7,15 +7,15 @@ API
 
    from liblet import Production, Item, closure, show_calls, Transition
 
-Symbols, alphabets, words and languages
+Symbols, alphabets, words, and languages
 ---------------------------------------
 
 This library main focus are *formal languages*, with particular attention to
 *parsing* aspects.
 
-It is hence important first of all to focus  on how **symbols** are represented;
+It is hence important first of all to focus on how **symbols** are represented;
 to keep things simple (and make the library more interoperable with the rest of
-Python data structures), il LibLet there isn't a specific *type* for such
+Python data structures), in LibLet there isn't a specific *type* for such
 entities that are always represented by :obj:`strings <str>` (possibly longer
 that one character). Observe in passing that Python hasn't a type for
 *characters*, but uses strings of length one to represent them.
@@ -34,7 +34,7 @@ Finally, **languages** are represented by :obj:`sets <set>` of sequences of
 strings.
 
 
-Productions, Grammars and Derivations
+Productions, Grammars, and Derivations
 -------------------------------------
 
 .. currentmodule:: liblet.grammar
