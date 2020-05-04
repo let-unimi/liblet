@@ -28,9 +28,6 @@ class TestAutomaton(unittest.TestCase):
     def test_transition_str(self):
         self.assertEqual('frm-label->to', str(Transition('frm', 'label', 'to')))
 
-    def test_transition_lt(self):
-        self.assertEqual('frm-label->to', str(Transition('frm', 'label', 'to')))
-
     def test_transition_set(self):
         self.assertEqual('{frm}-label->{to}', str(Transition({'frm'}, 'label', {'to'})))
 
