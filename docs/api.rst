@@ -8,7 +8,7 @@ API
    from liblet import Production, Item, closure, show_calls, Transition
 
 Symbols, alphabets, words, and languages
----------------------------------------
+----------------------------------------
 
 This library main focus are *formal languages*, with particular attention to
 *parsing* aspects.
@@ -35,7 +35,7 @@ strings.
 
 
 Productions, Grammars, and Derivations
--------------------------------------
+--------------------------------------
 
 .. currentmodule:: liblet.grammar
 
@@ -188,6 +188,7 @@ Utilities and decorators
 
 .. autoclass:: Queue
 .. autoclass:: Stack
+.. autoclass:: Table
 .. autofunction:: warn
 .. autofunction:: peek
 .. autofunction:: union_of
