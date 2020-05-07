@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v1.2.0-beta (2020-05-07)
+------------------------
+
+- Added a Table class.
+- Small fixes to texts and docs.
+- Added an introduction in the documentation to highlight the difference among
+  words and strings.
+- Added a workaround to have bordered HTML tables in Jupyter Lab.
+
 v1.2.0-beta (2020-04-21)
 -------------------------
 
