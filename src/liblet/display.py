@@ -224,7 +224,6 @@ class ProductionGraph(BaseGraph):
                 'ranksep': '.25'
             },
             node_attr = {
-                'size': '8',
                 'shape': 'box',
                 'margin': '.05',
                 'width': '0',
@@ -343,7 +342,7 @@ class StateTransitionGraph(BaseGraph):
         G = gvDigraph(
                 graph_attr = {
                     'rankdir': 'LR',
-                    'size': '8'
+                    'size': '32'
                 },
                 node_attr = {'margin': '.05'} if self.large_labels else {},
                 engine = 'dot'
