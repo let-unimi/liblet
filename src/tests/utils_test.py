@@ -1,13 +1,13 @@
 import unittest
 import unittest.mock
 
-from liblet.utils import peek, union_of, letstr, Stack, Queue, warn
+from liblet.utils import first, union_of, letstr, Stack, Queue, warn
 
 
 class UtilsTest(unittest.TestCase):
 
-    def test_peek(self):
-        self.assertEqual('a', peek({'a'}))
+    def test_first(self):
+        self.assertEqual('a', first({'a'}))
 
     def test_unionof(self):
         self.assertEqual({'a', 'b'}, union_of([{'a'},{'b'}]))
@@ -29,7 +29,7 @@ class UtilsTest(unittest.TestCase):
 
     def test_sefofstr(self):
         self.assertEqual('{a, b, c}', letstr({'a', 'b', 'c'}))
-    
+
     def test_tupleofesefofstr(self):
         self.assertEqual('(d, {a, b, c})', letstr(({'a', 'b', 'c'}, 'd')))
 
