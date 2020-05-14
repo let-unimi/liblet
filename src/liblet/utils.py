@@ -10,9 +10,13 @@ def warn(msg):
     """Emits a string on the *standard error*."""
     stderr.write(msg + '\n')
 
-def peek(s):
+def first(s):
     """Returns the fist element of the given :obj:`set`."""
     return next(iter(s)) if s else None
+
+def peek(s):
+    """Deprecated. Use """
+    raise DeprecationWarning('The function "peek" is now deprecated, please use "first" instead.')
 
 def union_of(s):
     """Return the set union of its arguments."""
