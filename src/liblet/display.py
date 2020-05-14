@@ -328,8 +328,8 @@ class StateTransitionGraph(BaseGraph):
             coalesce_sets (bool): whether the automata states are sets and the corresponding labels must be obtained joining the strings in the sets.
         """
         def tostr(N):
-            if coalesce_sets and isinstance(N, Set):
-                return HAIR_SPACE.join(sorted(N))
+            if coalesce_sets and not large_labels and isinstance(N, Set):
+                return HAIR_SPACE.join(sorted(map(str, N)))
             return N
         transitions = tuple((tostr(frm), label, tostr(to)) for frm, label, to in A.transitions)
         F = set(map(tostr, A.F))

@@ -15,9 +15,9 @@ class Transition:
         *state* and a `to` destination *state* and a `label`, the states can be:
 
         - *nonempty* :obj:`strings <str>`, or
-        - *nonempty* :obj:`sets <set>` of *nonempty* strings, or 
-        - *nonempty* :obj:`tuples <tuple>` of :obj:`items <liblet.grammar.Item>`, 
-        
+        - *nonempty* :obj:`sets <set>` of *nonempty* strings, or
+        - *nonempty* :obj:`tuples <tuple>` of :obj:`items <liblet.grammar.Item>`,
+
         whereas the label is a :obj:`str`.  A transition is
         :term:`iterable` and unpacking can be used to obtain its components, so for
         example
@@ -32,13 +32,13 @@ class Transition:
             >>> to
             {'D'}
 
-        Args: 
-            frm (:obj:`str` or :obj:`set` of :obj:`str`): The starting state(s) of the transition. 
+        Args:
+            frm (:obj:`str` or :obj:`set` of :obj:`str`): The starting state(s) of the transition.
             label (str): The label of the transition.
             to (:obj:`str` or :obj:`set` of :obj:`str`): The destination state(s) of the transition.
 
         Raises:
-            ValueError: in case the frm or to states are not nonempty strings, or nonempty set 
+            ValueError: in case the frm or to states are not nonempty strings, or nonempty set
                         of nonempty strings, or the label is not a nonempty string.
     """
 
@@ -49,7 +49,7 @@ class Transition:
         def _cssos(s):
             if isinstance(s, str) and s: return True
             if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _, s)): return True
-            if isinstance(s, tuple) and s and all(map(lambda _: isinstance(_, Item), s)): return True
+            if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, Item), s)): return True
             return False
 
         if _cssos(frm):
@@ -69,7 +69,7 @@ class Transition:
     def __lt__(self, other):
         if not isinstance(other, Transition): return NotImplemented
         return (self.frm, self.label, self.to) < (other.frm, other.label, other.to)
-        
+
     def __eq__(self, other):
         if not isinstance(other, Transition): return False
         return (self.frm, self.label, self.to) == (other.frm, other.label, other.to)
@@ -93,7 +93,7 @@ class Transition:
         The string must be a sequence of lines of the form::
 
             frm, label, to
-    
+
         where the parts are strings not containing spaces.s
         """
         res = []
@@ -109,8 +109,8 @@ class Automaton(object):
 
         This class represents a (*nondeterministic*) *finite automaton*.
 
-        Args: 
-            N (set): The states of the automaton. 
+        Args:
+            N (set): The states of the automaton.
             T (set): The transition labels.
             transitions (:obj:`set` of :obj:`Transition`): The transition of the automata.
             q0: The starting state of the automaton.
@@ -118,7 +118,7 @@ class Automaton(object):
     """
 
     __slots__ = ('N', 'T', 'transitions', 'q0', 'F')
-    
+
     def __init__(self, N, T, transitions, q0, F):
         self.N = set(N)
         self.T = set(T)
@@ -126,8 +126,8 @@ class Automaton(object):
         self.q0 = q0
         self.F = set(F)
         if self.N & self.T: raise ValueError('The set of states and input symbols are not disjoint, but have {} in common.'.format(letstr(set(self.N & self.T))))
-        if not self.q0 in self.N: raise ValueError('The specified q0 ({}) is not a state.'.format(letstr(q0)))    
-        if not self.F <= self.N: raise ValueError('The accepting states {} in F are not states.'.format(letstr(self.F - self.N)))        
+        if not self.q0 in self.N: raise ValueError('The specified q0 ({}) is not a state.'.format(letstr(q0)))
+        if not self.F <= self.N: raise ValueError('The accepting states {} in F are not states.'.format(letstr(self.F - self.N)))
         bad_trans = tuple(t for t in transitions if not t.frm in self.N or not t.to in self.N or not t.label in (self.T | {ε}))
         if bad_trans: raise ValueError('The following transitions contain states or symbols that are neither states nor input symbols: {}.'.format(bad_trans))
 
@@ -146,7 +146,7 @@ class Automaton(object):
 
     def __repr__(self):
         return 'Automaton(N={}, T={}, transitions={}, F={}, q0={})'.format(letstr(self.N), letstr(self.T), self.transitions, letstr(self.F), letstr(self.q0))
-   
+
     @classmethod
     def from_string(cls, transitions, F = None, q0 = None):
         """Builds an automaton obtained from the given transitions.
@@ -156,7 +156,7 @@ class Automaton(object):
             F (set): The set of *final* states.
             q0 (str): The starting state of the automaton (inferred from transitions if ``None``).
 
-        Once the *transitions* are determined via a call to :func:`Transition.from_string`, 
+        Once the *transitions* are determined via a call to :func:`Transition.from_string`,
         the starting state (if not specified) is defined as the ``frm`` state of the first transition.
         """
         transitions = Transition.from_string(transitions)
@@ -173,7 +173,7 @@ class Automaton(object):
         Args:
             G (:obj:`~liblet.Grammar`): the *regular grammar* to derive the automata from.
 
-        The method works under the assumption that the only rules of the 
+        The method works under the assumption that the only rules of the
         grammar are of the form :math:`A\to aB`, :math:`A\to B`, :math:`A\to a`,
         and :math:`A\to ε`.
         """
