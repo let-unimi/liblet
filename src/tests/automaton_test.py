@@ -31,8 +31,8 @@ class TestAutomaton(unittest.TestCase):
     def test_transition_set(self):
         self.assertEqual('{frm}-label->{to}', str(Transition({'frm'}, 'label', {'to'})))
 
-    def test_transition_tupleofitems(self):
-        self.assertEqual('(A -> •B)-label->(C -> •D)', str(Transition((Item('A', ('B', )), ), 'label', (Item('C', ('D',)), ))))
+    def test_transition_setofitems(self):
+        self.assertEqual('{A -> •B}-label->{C -> •D}', str(Transition({Item('A', ('B', ))}, 'label', {Item('C', ('D',))})))
 
     def test_transition_wrong_label1(self):
         with self.assertRaisesRegex(ValueError, 'The label is not'):

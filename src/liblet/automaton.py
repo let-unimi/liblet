@@ -16,7 +16,7 @@ class Transition:
 
         - *nonempty* :obj:`strings <str>`, or
         - *nonempty* :obj:`sets <set>` of *nonempty* strings, or
-        - *nonempty* :obj:`tuples <tuple>` of :obj:`items <liblet.grammar.Item>`,
+        - *nonempty* :obj:`sets <set>` of :obj:`items <liblet.grammar.Item>`,
 
         whereas the label is a :obj:`str`.  A transition is
         :term:`iterable` and unpacking can be used to obtain its components, so for
