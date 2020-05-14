@@ -1,6 +1,18 @@
 Changelog
 =========
 
+v1.2.3-beta (2020-05-07)
+------------------------
+
+- To avoid confusion with peek of Stack and Queue, utils.peek has been
+  deprecated in favor of utils.first.
+- Updated Automaton and StateTransitionGraph to allow representing item
+  set with frozenset instead of tuples.
+- Modified utils.closure so that it always return the computed value,
+  in this way if just one iteration is performed, the returned type
+  coincides nonetheless with the type returned by the wrapped function.
+- Fixing some graphviz visualization sizes.
+
 v1.2.1-beta (2020-05-07)
 ------------------------
 
