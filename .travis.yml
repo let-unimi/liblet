@@ -5,6 +5,6 @@ install:
   - pip install -e .[test]
   - install_antlrjar
 script:
-  - export LIBLET_NOBEACON=1 ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.9-complete.jar" && ./bin/tests
+  - export LIBLET_NOBEACON=1 ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.9.1-complete.jar" && ./bin/tests
 after_success:
   - codecov
