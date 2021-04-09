@@ -58,6 +58,12 @@ in the context of LR(0) parsing,  productions are extended to include a dot in t
 
 .. autoclass:: Item
 
+   The class has just two metods, useful for the construction of the Knuth Automaton.
+
+   .. automethod:: advance
+
+   .. automethod:: symbol_after_dot
+
 A grammar can be represented by the following class, that can be instantiated
 given the usual formal definition of a grammar as a tuple.
 
@@ -136,6 +142,31 @@ From transitions one can obtain a representation of a (*nondeterministic*)
    .. automethod:: δ
 
 Automata can be displayed using :class:`StateTransitionGraph.from_automaton <liblet.display.StateTransitionGraph.from_automaton>`.
+
+Instantaneous Descriptions
+--------------------------
+
+.. currentmodule:: liblet.automaton
+
+During the analysis of some parsing algorithms can be convenient to keep track
+of the computation of the related (*nondeterministic*) *pushdown automata*. The
+following class serves the purpose to represent an *instantaneous description*
+of the automaton given by its stack and, the tape content and the position of
+the reading head.
+
+.. autoclass:: InstantaneousDescription
+
+   The class is immutable, few methods can be used to inspect its content, or to get
+   a new instantaneous description corresponding to a *match* or *predict* move.
+
+   .. automethod:: head
+
+   .. automethod:: top
+
+   .. automethod:: match
+
+   .. automethod:: predict
+
 
 
 ANTLR support

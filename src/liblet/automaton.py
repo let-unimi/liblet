@@ -170,7 +170,7 @@ class Automaton(object):
         r"""Builds the automaton corresponding to the given *regular grammar*.
 
         Args:
-            G (:class:`~liblet.Grammar`): the *regular grammar* to derive the automata from.
+            G (:class:`~liblet.grammar.Grammar`): the *regular grammar* to derive the automata from.
 
         The method works under the assumption that the only rules of the
         grammar are of the form :math:`A\to aB`, :math:`A\to B`, :math:`A\to a`,
@@ -188,3 +188,65 @@ class Automaton(object):
             else:
                 res.append(Transition(*((P.lhs, ) + P.rhs + (DIAMOND,))))
         return cls(G.N | {DIAMOND}, G.T, tuple(res), G.S, {DIAMOND})
+
+class InstantaneousDescription(object):
+    """An Instantaneous Description.
+
+        This class represents a *instantaneous description* of a *pushdown* auotmata.
+
+        Args:
+            G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
+            w (tuple): The word initially on the tape.
+    """
+
+    def __init__(self, G, w = None):
+        if HASH in (G.N | G.T): raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
+        self.G = G
+        if w is not None:
+            self.tape = tuple(w) + (HASH, )
+            self.stack = Stack([HASH, G.S])
+            self.derivation = Derivation(G)
+            self.head_pos = 0
+
+    def __repr__(self):
+        return '{}, {}, {}\u0332{}'.format( # combining underline, \u20dd will be combining enclosing circle
+            self.derivation,
+            ''.join(reversed(list(self.stack))),
+            ''.join(self.tape[:1 + self.head_pos:]), ''.join(self.tape[self.head_pos + 1:])
+        )
+
+    def __update(self, P = None):
+      u = InstantaneousDescription(self.G)
+      u.tape = self.tape
+      u.stack = self.stack.copy()
+      u.derivation = self.derivation
+      u.head_pos = self.head_pos
+      u.stack.pop()
+      if P is None:
+          u.head_pos += 1
+      else:
+          u.derivation = u.derivation.leftmost(P)
+          for X in reversed(P.rhs): u.stack.push(X)
+      return u
+
+    def head(self):
+        """Returns the symbol under the tape head."""
+        return self.tape[self.head_pos]
+
+    def top(self):
+        """Returns the symbol at the top of the stack."""
+        return self.stack.peek()
+
+    def is_done(self):
+        """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `＃`."""
+        return self.top() == self.head() == HASH
+
+    def match(self):
+        """Attempts a match move and returns the corresponding new instantaneous description."""
+        if self.top() in self.G.T and self.top() == self.head(): return self.__update()
+        raise ValueError('The top of the stack and tape head symbol are not equal.')
+
+    def predict(self, P):
+        """Attempts a prediction move, given the specified production, and returns the corresponding new instantaneous description."""
+        if P in self.G.P and self.top() == P.lhs: return self.__update(P)
+        raise ValueError('The top of the stack does not correspond to the production lhs.')
