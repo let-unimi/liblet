@@ -321,10 +321,10 @@ class StateTransitionGraph(BaseGraph):
 
     @classmethod
     def from_automaton(cls, A, coalesce_sets = True, large_labels = False):
-        """A factory method to build a :obj:`StateTransitionGraph` starting from an :obj:`~liblet.automaton.Automaton`.
+        """A factory method to build a :class:`StateTransitionGraph` starting from an :class:`~liblet.automaton.Automaton`.
 
         Args:
-            A (:obj:`~liblet.automaton.Automaton`): the automaton.
+            A (:class:`~liblet.automaton.Automaton`): the automaton.
             coalesce_sets (bool): whether the automata states are sets and the corresponding labels must be obtained joining the strings in the sets.
         """
         def tostr(N):

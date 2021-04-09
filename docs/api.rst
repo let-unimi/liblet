@@ -96,7 +96,7 @@ following class.
 
    .. automethod:: sentential_form
 
-Derivations can be displayed using a :obj:`~liblet.display.ProductionGraph`.
+Derivations can be displayed using a :class:`~liblet.display.ProductionGraph`.
 
 Transitions and Automata
 ------------------------
@@ -135,7 +135,8 @@ From transitions one can obtain a representation of a (*nondeterministic*)
 
    .. automethod:: δ
 
-Automata can be displayed using :obj:`StateTransitionGraph.from_automaton <liblet.display.StateTransitionGraph.from_automaton>`.
+Automata can be displayed using :class:`StateTransitionGraph.from_automaton <liblet.display.StateTransitionGraph.from_automaton>`.
+
 
 ANTLR support
 -------------

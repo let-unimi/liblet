@@ -30,26 +30,26 @@ class ANTLR:
     """An utility class representing an ANTLR (v4) grammar and code generated from it.
 
     Given the *grammar* the constructor of this class **generates the code** for the
-    *lexer*, *parser*, *visitor*, and *listener* using the ANTLR tool; if no errors 
-    are found, it then **loads the modules** (with their original names) and stores 
-    a reference to them in the attributes named :attr:`Lexer`, :attr:`Parser`, :attr:`Visitor`, and 
+    *lexer*, *parser*, *visitor*, and *listener* using the ANTLR tool; if no errors
+    are found, it then **loads the modules** (with their original names) and stores
+    a reference to them in the attributes named :attr:`Lexer`, :attr:`Parser`, :attr:`Visitor`, and
     :attr:`Listener`. If the constructor is called a second time, it correctly *unloads
-    the previously generated modules* (so that the current one are correctly 
+    the previously generated modules* (so that the current one are correctly
     corresponding to the current grammar). Moreover, to facilitate *debugging the
-    grammar* it keeps track both of the grammar source (in an attribute of the same name) 
-    and of the sources of the generated modules, in an attribute named :attr:`source` that 
+    grammar* it keeps track both of the grammar source (in an attribute of the same name)
+    and of the sources of the generated modules, in an attribute named :attr:`source` that
     is a :obj:`dict` indexed by ``Lexer``, ``Parser``, ``Visitor``, and ``Listener``.
 
-    Args: 
+    Args:
         grammar (str): the grammar to process (in ANTLR v4 format).
 
     Raises:
         ValueError: if the grammar does not contain the name.
     """
-    __slots__ = ('name', 'Lexer', 'Parser', 'Visitor', 'Listener', 'source', 'grammar') 
+    __slots__ = ('name', 'Lexer', 'Parser', 'Visitor', 'Listener', 'source', 'grammar')
 
     def __init__(self, grammar):
-        
+
         self.grammar = grammar
         try:
             name = findall(r'grammar\s+(\w+)\s*;', grammar)[0]
@@ -57,12 +57,12 @@ class ANTLR:
             raise ValueError('Grammar name not found')
         self.name = name
         self.source = {}
-        
+
         with TemporaryDirectory() as tmpdir:
-            
-            with open(pjoin(tmpdir, name) + '.g', 'w') as ouf: ouf.write(grammar)        
+
+            with open(pjoin(tmpdir, name) + '.g', 'w') as ouf: ouf.write(grammar)
             res = run([
-                'java', '-jar', environ['ANTLR4_JAR'], 
+                'java', '-jar', environ['ANTLR4_JAR'],
                 '-Dlanguage=Python3',
                 '-listener', '-visitor',
                 '{}.g'.format(name)
@@ -82,7 +82,7 @@ class ANTLR:
                 modules[qn] = module
                 setattr(self, suffix, getattr(module, qn))
 
-    def print_grammar(self, number_lines = True): # pragma: nocover 
+    def print_grammar(self, number_lines = True): # pragma: nocover
         """Prints the grammar (with line numbers)
 
         Args:
@@ -91,7 +91,7 @@ class ANTLR:
         if number_lines:
             print('\n'.join(map(lambda n_r: '{:3}:\t{}'.format(n_r[0], n_r[1]), enumerate(self.grammar.splitlines(), 1))))
         else:
-            print(grammar)
+            print(self.grammar)
 
     def context(self, text, symbol, trace = False, diag = False, build_parse_trees = True, as_string = False, fail_on_error = False):
         """Returns an object subclass of a ``antlr4.ParserRuleContext`` corresponding to the specified symbol (possibly as a string).
@@ -106,7 +106,7 @@ class ANTLR:
             fail_on_error (bool): if ``True`` the method will return ``None`` in case of paring errors.
 
         Returns:
-            A parser context, in case of parsing errors the it can be used to investigate the errors (unless ``fail_on_error`` is ``True`` in what case this method returns ``None``).    
+            A parser context, in case of parsing errors the it can be used to investigate the errors (unless ``fail_on_error`` is ``True`` in what case this method returns ``None``).
         """
         lexer = self.Lexer(InputStream(text))
         stream = CommonTokenStream(lexer)
@@ -120,7 +120,7 @@ class ANTLR:
         with redirect_stderr(buf):
             ctx = getattr(parser, symbol)()
         errs = buf.getvalue().strip()
-        if errs: 
+        if errs:
             warn(errs)
             if fail_on_error: return None
         if as_string:
@@ -142,11 +142,11 @@ class ANTLR:
         return stream.tokens
 
     def tree(self, text, symbol, simple = False):
-        """Returns an *annotated* :obj:`~liblet.display.Tree` representing the parse tree (derived from the parse context).
+        """Returns an *annotated* :class:`~liblet.display.Tree` representing the parse tree (derived from the parse context).
 
         Unless a *simple* tree is required, the returned is an *annotated* tree whose nodes store
         context information from the parsing process, more precisely, nodes are :obj:`dicts <dict>` with the following keys:
-        
+
         - ``type``: can be ``rule`` or ``token``,
         - ``name``: the *rule label* or *token name* (or the rule name if it has no label: or, similarly, the token itself if it has no name),
         - ``value``: the *token* value (only present for *tokens* named in the *lexer* part of the grammar),
@@ -161,7 +161,7 @@ class ANTLR:
             symbol (str): the symbol (rule name) the parse should start at.
             simple (bool): if ``True`` the returned tree nodes will be strings (with no context information).
         Returns:
-            :obj:`liblet.display.Tree` the (possibly annotated) parse tree, or ``None`` in case of parsing errors.
+            :class:`liblet.display.Tree` the (possibly annotated) parse tree, or ``None`` in case of parsing errors.
         """
 
         def _rule(ctx):
@@ -214,7 +214,7 @@ class AnnotatedTreeWalker:
     to *register* a set of functions named as the values of a specified *key*
     contained in the annotated tree root; trees that don't have a corresponding
     registered function are handled via a *catchall* function (few sensible
-    defaults are provided). 
+    defaults are provided).
 
     Once such functions are registered, the object can be used as a `callable <https://docs.python.org/3/reference/expressions.html?highlight=callable#calls>`__ and
     invoked on an annotated tree; this will lead to the recursive invocation of
@@ -240,17 +240,17 @@ class AnnotatedTreeWalker:
 
     @staticmethod
     def TREE_CATCHALL(visit, tree):
-        """A default *catchall* that will invoke the recursion on all the subtrees, emitting 
-        a :meth:`~liblet.utils.warn` and returning a tree with the same root of the given tree 
+        """A default *catchall* that will invoke the recursion on all the subtrees, emitting
+        a :meth:`~liblet.utils.warn` and returning a tree with the same root of the given tree
         and having as children the recursively visited children of the given tree."""
         warn('TREE_CATCHALL: {}'.format(tree.root))
         return Tree(tree.root, [visit(child) for child in tree.children])
 
     @staticmethod
     def TEXT_CATCHALL(visit, tree):
-        """A default *catchall* that will invoke the recursion on all the subtrees, emitting 
-        a :meth:`~liblet.utils.warn` and returning a string with the same root of the given tree 
-        and having as children the (indented string representation of the) recursively visited 
+        """A default *catchall* that will invoke the recursion on all the subtrees, emitting
+        a :meth:`~liblet.utils.warn` and returning a string with the same root of the given tree
+        and having as children the (indented string representation of the) recursively visited
         children of the given tree."""
         warn('TEXT_CATCHALL: {}'.format(tree.root))
         return '{}'.format(tree.root) + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')

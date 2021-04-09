@@ -1,8 +1,6 @@
-from collections import namedtuple
-from collections.abc import Iterable
 from functools import total_ordering
 from itertools import chain
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
 from . import ε
 from .utils import letstr
@@ -218,7 +216,7 @@ class Item(Production):
         return self.rhs[self.pos] if self.pos < len(self.rhs) else None
 
     def advance(self, X):
-        """Returns a new :obj:`Item` obtained advancing the dot past the given symbol.
+        """Returns a new :class:`Item` obtained advancing the dot past the given symbol.
 
         Args:
             X (str): the terminal, or non terminal, to move the dot over.
@@ -240,7 +238,7 @@ class Grammar:
     Args:
         N (set): the grammar nonterminals.
         T (set): the grammar terminals.
-        P (tuple): the grammar :obj:`productions <Production>`.
+        P (tuple): the grammar :class:`productions <Production>`.
         S (str): the grammar start symbol.
 
     """
@@ -322,7 +320,7 @@ class Grammar:
         Args:
             symbols: the only allowed symbols (it must contain the *start symbol*).
         Returns:
-             :obj:`Grammar`: a new grammar containing only the given symbols (and hence
+             :class:`Grammar`: a new grammar containing only the given symbols (and hence
              no production of the original grammar that uses a symbol not in the given
              set.)
         Raises:
@@ -381,7 +379,7 @@ class Derivation:
             prod (int or :obj:`~collections.abc.Iterable`): the production to apply, that is ``G.P[prod]``; if it is an *iterable* of integers, the productions will be applied in order.
 
         Returns:
-            :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
+            :class:`Derivation`: A derivation obtained applying the specified production to the present production.
 
         Raises:
             ValueError: in case the leftmost nonterminal isn't the left-hand side of the given production.
@@ -417,7 +415,7 @@ class Derivation:
             prod (int or :obj:`~collections.abc.Iterable`): the production to apply, that is ``G.P[prod]``; if it is an *iterable* of integers, the productions will be applied in order.
 
         Returns:
-            :obj:`Derivation`: A derivation obtained applying the specified production to the present production.
+            :class:`Derivation`: A derivation obtained applying the specified production to the present production.
 
         Raises:
             ValueError: in case the rightmost nonterminal isn't the left-hand side of the given production.

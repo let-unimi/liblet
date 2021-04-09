@@ -1,6 +1,6 @@
 from functools import partial
 from collections import deque, defaultdict, OrderedDict
-from collections.abc import Set, Iterable
+from collections.abc import Set
 from itertools import chain
 from sys import stderr
 

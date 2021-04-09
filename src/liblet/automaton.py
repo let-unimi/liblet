@@ -1,11 +1,10 @@
-from collections import namedtuple
 from collections.abc import Set
 from functools import total_ordering
 from operator import attrgetter
 
-from . import DIAMOND, ε
-from .utils import letstr
-from .grammar import Item
+from . import ε, DIAMOND, HASH
+from .utils import letstr, Stack
+from .grammar import Item, Derivation
 
 @total_ordering
 class Transition:
@@ -16,7 +15,7 @@ class Transition:
 
         - *nonempty* :obj:`strings <str>`, or
         - *nonempty* :obj:`sets <set>` of *nonempty* strings, or
-        - *nonempty* :obj:`sets <set>` of :obj:`items <liblet.grammar.Item>`,
+        - *nonempty* :obj:`sets <set>` of :class:`items <liblet.grammar.Item>`,
 
         whereas the label is a :obj:`str`.  A transition is
         :term:`iterable` and unpacking can be used to obtain its components, so for
@@ -112,7 +111,7 @@ class Automaton(object):
         Args:
             N (set): The states of the automaton.
             T (set): The transition labels.
-            transitions (:obj:`set` of :obj:`Transition`): The transition of the automata.
+            transitions (:obj:`set` of :class:`Transition`): The transition of the automata.
             q0: The starting state of the automaton.
             F (set): The set of *final* states.
     """
@@ -171,7 +170,7 @@ class Automaton(object):
         r"""Builds the automaton corresponding to the given *regular grammar*.
 
         Args:
-            G (:obj:`~liblet.Grammar`): the *regular grammar* to derive the automata from.
+            G (:class:`~liblet.Grammar`): the *regular grammar* to derive the automata from.
 
         The method works under the assumption that the only rules of the
         grammar are of the form :math:`A\to aB`, :math:`A\to B`, :math:`A\to a`,
