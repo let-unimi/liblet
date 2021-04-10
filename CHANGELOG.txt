@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.3.0-alpha (2021-04-10)
+-------------------------
+
+- Added a first version of the InstantaneousDescription class (in liblet.automata).
+- Documentation improvement (substituted :obj: with :class: where appropriate).
+- Bumped ANTLR version to 4.9.1.
+- Created FUNDING.yml for GitHub sponsorship.
+
 v1.2.3-beta (2020-05-07)
 ------------------------
 
