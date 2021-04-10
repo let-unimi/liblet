@@ -1,10 +1,12 @@
 from collections.abc import Set
+from copy import copy
 from functools import total_ordering
 from operator import attrgetter
 
 from . import ε, DIAMOND, HASH
 from .utils import letstr, Stack
-from .grammar import Item, Derivation
+from .grammar import Item
+from .display import Tree
 
 @total_ordering
 class Transition:
@@ -196,46 +198,50 @@ class InstantaneousDescription(object):
 
         Args:
             G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
-            w (tuple): The word initially on the tape.
     """
 
-    def __init__(self, G, w = None):
-        if HASH in (G.N | G.T): raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
+    def __init__(self, G):
         self.G = G
-        if w is not None:
-            self.tape = tuple(w) + (HASH, )
-            self.stack = Stack([HASH, G.S])
-            self.derivation = Derivation(G)
-            self.head_pos = 0
+        self.tape = tuple()
+        self.stack = Stack()
+        self.steps = tuple()
+        self.head_pos = 0
 
     def __repr__(self):
         return '{}, {}, {}\u0332{}'.format( # combining underline, \u20dd will be combining enclosing circle
-            self.derivation,
+            self.steps,
             ''.join(reversed(list(self.stack))),
             ''.join(self.tape[:1 + self.head_pos:]), ''.join(self.tape[self.head_pos + 1:])
         )
-
-    def __update(self, P = None):
-      u = InstantaneousDescription(self.G)
-      u.tape = self.tape
-      u.stack = self.stack.copy()
-      u.derivation = self.derivation
-      u.head_pos = self.head_pos
-      u.stack.pop()
-      if P is None:
-          u.head_pos += 1
-      else:
-          u.derivation = u.derivation.leftmost(P)
-          for X in reversed(P.rhs): u.stack.push(X)
-      return u
 
     def head(self):
         """Returns the symbol under the tape head."""
         return self.tape[self.head_pos]
 
     def top(self):
-        """Returns the symbol at the top of the stack."""
-        return self.stack.peek()
+        """Returns the symbol at the (root of the Tree at the) top of the stack."""
+        t = self.stack.peek()
+        return t.root if isinstance(t, Tree) else t
+
+    def is_done(self):
+        """Used by subclasses to determine if the automata is in an accepting state."""
+        return False
+
+class TopDownInstantaneousDescription(InstantaneousDescription):
+    """An Instantaneous Description for a *top-down* parsing automaton.
+
+        This class represents a *instantaneous description* of a *pushdown* auotmata.
+
+        Args:
+            G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
+            word (tuple): The word initially on the tape.
+    """
+
+    def __init__(self, G, word):
+        super().__init__(G)
+        if HASH in (G.N | G.T): raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
+        self.tape = tuple(word) + (HASH, )
+        self.stack = Stack([HASH, G.S])
 
     def is_done(self):
         """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `＃`."""
@@ -243,10 +249,49 @@ class InstantaneousDescription(object):
 
     def match(self):
         """Attempts a match move and returns the corresponding new instantaneous description."""
-        if self.top() in self.G.T and self.top() == self.head(): return self.__update()
+        if self.top() in self.G.T and self.top() == self.head():
+            c = copy(self)
+            c.stack = copy(c.stack)
+            c.stack.pop()
+            c.head_pos += 1
+            return c
         raise ValueError('The top of the stack and tape head symbol are not equal.')
 
     def predict(self, P):
         """Attempts a prediction move, given the specified production, and returns the corresponding new instantaneous description."""
+        if P in self.G.P and self.top() == P.lhs:
+            c = copy(self)
+            c.stack = copy(c.stack)
+            c.stack.pop()
+            c.steps += (P, )
+            for X in reversed(P.rhs): c.stack.push(X)
+            return c
+        raise ValueError('The top of the stack does not correspond to the production lhs.')
+
+class BottomUpInstantaneousDescription(InstantaneousDescription):
+    """An Instantaneous Description for a *bottom-up* parsing automaton.
+
+        This class represents a *instantaneous description* of a *pushdown* auotmata.
+
+        Args:
+            G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
+            word (tuple): The word initially on the tape.
+    """
+
+    def __init__(self, G, word):
+        super().__init__(G)
+        self.tape = tuple(word)
+
+    def is_done(self):
+        """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `＃`."""
+        return self.top() == self.head() == HASH
+
+    def shift(self):
+        """Performs a shift move and returns the corresponding new instantaneous description."""
+        if self.top() in self.G.T and self.top() == self.head(): return self.__update()
+        raise ValueError('The top of the stack and tape head symbol are not equal.')
+
+    def reduce(self, P):
+        """Attempts a reduce move, given the specified production, and returns the corresponding new instantaneous description."""
         if P in self.G.P and self.top() == P.lhs: return self.__update(P)
         raise ValueError('The top of the stack does not correspond to the production lhs.')
