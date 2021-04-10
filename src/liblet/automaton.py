@@ -210,7 +210,7 @@ class InstantaneousDescription(object):
     def __repr__(self):
         return '{}, {}, {}\u0332{}'.format( # combining underline, \u20dd will be combining enclosing circle
             self.steps,
-            ''.join(reversed(list(self.stack))),
+            ''.join(reversed(list(map(str, self.stack)))),
             ''.join(self.tape[:1 + self.head_pos:]), ''.join(self.tape[self.head_pos + 1:])
         )
 
@@ -283,15 +283,25 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
         self.tape = tuple(word)
 
     def is_done(self):
-        """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `＃`."""
-        return self.top() == self.head() == HASH
+        """Returns `True` if the computation is done, that is if the stack contains the a tree rooted in G.S and the head is at the tape end."""
+        return len(self.stack) == 1 and len(self.tape) == self.head_pos and self.top() == self.G.S
 
     def shift(self):
         """Performs a shift move and returns the corresponding new instantaneous description."""
-        if self.top() in self.G.T and self.top() == self.head(): return self.__update()
-        raise ValueError('The top of the stack and tape head symbol are not equal.')
+        c = copy(self)
+        c.stack = copy(c.stack)
+        c.stack.push(Tree(c.head()))
+        c.head_pos += 1
+        return c
 
     def reduce(self, P):
         """Attempts a reduce move, given the specified production, and returns the corresponding new instantaneous description."""
-        if P in self.G.P and self.top() == P.lhs: return self.__update(P)
-        raise ValueError('The top of the stack does not correspond to the production lhs.')
+        if not P in self.G.P: raise ValueError('The production does not belong to the grammar.')
+        c = copy(self)
+        c.stack = copy(c.stack)
+        children = [c.stack.pop() for _ in P.rhs][::-1]
+        for X, T in zip(P.rhs, children):
+          if X != T.root: raise ValueError('The rhs does not correspond to the symbols on the stack.')
+        c.stack.push(Tree(P.lhs, children))
+        c.steps = (P, ) + c.steps
+        return c
