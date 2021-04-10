@@ -1,3 +1,5 @@
+from copy import copy
+
 import unittest
 import unittest.mock
 
@@ -66,7 +68,7 @@ class UtilsTest(unittest.TestCase):
 
     def test_stack_copy(self):
         s = Stack([1, 2, 3])
-        c = s.copy()
+        c = copy(s)
         s.push(4)
         c.push(5)
         actual = '{} {}'.format(s, c)
@@ -105,7 +107,7 @@ class UtilsTest(unittest.TestCase):
 
     def test_queue_copy(self):
         q = Queue([1, 2, 3])
-        c = q.copy()
+        c = copy(q)
         q.enqueue(4)
         c.enqueue(5)
         actual = '{} {}'.format(q, c)
