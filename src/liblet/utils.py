@@ -3,7 +3,7 @@ from collections import deque, defaultdict, OrderedDict
 from collections.abc import Set
 from itertools import chain
 from sys import stderr
-from warnings import warn
+from warnings import warn as wwarn
 
 from IPython.display import HTML
 
@@ -17,7 +17,7 @@ def first(s):
 
 def peek(s):
     """Deprecated. Use first"""
-    warn('The function "peek" is now deprecated, please use "first" instead.', DeprecationWarning)
+    wwarn('The function "peek" is now deprecated, please use "first" instead.', DeprecationWarning)
     return first(s)
 
 def union_of(s):
@@ -51,7 +51,7 @@ class Queue(object):
     def dequeue(self):
         return self.Q.popleft()
     def copy(self):
-        warn('The copy method is deprecated, use the copy module.', DeprecationWarning)
+        wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning)
         return self.__copy__()
     def __copy__(self):
         return Queue(self.Q, self.Q.maxlen)
@@ -74,7 +74,7 @@ class Stack(object):
     def pop(self):
         return self.S.pop()
     def copy(self):
-        warn('The copy method is deprecated, use the copy module.', DeprecationWarning)
+        wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning)
         return self.__copy__()
     def __copy__(self):
         return Stack(self.S, self.S.maxlen)
