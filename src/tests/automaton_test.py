@@ -1,6 +1,7 @@
 import unittest
 
-from liblet import Automaton, Transition, Grammar, Item
+from liblet import Automaton, Transition, Grammar, Item, InstantaneousDescription
+from liblet.grammar import Production
 
 
 class TestAutomaton(unittest.TestCase):
@@ -158,5 +159,81 @@ class TestAutomaton(unittest.TestCase):
     def test_automaton_FN(self):
         with self.assertRaisesRegex(ValueError, r'states {C} in F are not states'):
             Automaton({'A', 'B'}, {'b', 'c'}, tuple(), 'A', {'B', 'C'})
+
+    def test_instantaneousdescription_init(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        self.assertEqual('S, S＃, a̲aba＃', str(i))
+
+    def test_instantaneousdescription_init_exception(self):
+        G = Grammar.from_string("""
+            S -> ＃
+        """)
+        with self.assertRaisesRegex(ValueError, r'.*＃.*belong to terminal'):
+            InstantaneousDescription(G, 'aaba')
+
+    def test_instantaneousdescription_predict(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        i = i.predict(G.P[0])
+        self.assertEqual('S -> a B C, aBC＃, a̲aba＃', str(i))
+
+    def test_instantaneousdescription_predict_exception0(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        with self.assertRaisesRegex(ValueError, r'.*top of the stack.*production'):
+            i = i.predict(Production('X', ('Y', )))
+
+    def test_instantaneousdescription_predict_exception1(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        with self.assertRaisesRegex(ValueError, r'.*top of the stack.*production'):
+            i = i.predict(G.P[1])
+
+    def test_instantaneousdescription_match(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        i = i.predict(G.P[0]).match()
+        self.assertEqual('S -> a B C, BC＃, aa̲ba＃', str(i))
+
+    def test_instantaneousdescription_match_exception(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        with self.assertRaisesRegex(ValueError, r'.*top of the stack.*head symbol'):
+            i = i.match()
+
+    def test_instantaneousdescription_done(self):
+        G = Grammar.from_string("""
+            S -> a B C
+            B -> a B | b
+            C -> a
+        """)
+        i = InstantaneousDescription(G, 'aaba')
+        i = i.predict(G.P[0]).match().predict(G.P[1]).match().predict(G.P[2]).match().predict(G.P[3]).match()
+        self.assertTrue(i.is_done())
 
 if __name__ == '__main__': unittest.main()
