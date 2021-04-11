@@ -207,6 +207,14 @@ class InstantaneousDescription(object):
         self.steps = tuple()
         self.head_pos = 0
 
+    def __copy__(self):
+        c = type(self)(self.G)
+        c.tape = self.tape
+        c.stack = copy(self.stack)
+        c.steps = self.steps
+        c.head_pos = self.head_pos
+        return c
+
     def __repr__(self):
         return '{}, {}, {}\u0332{}'.format( # combining underline, \u20dd will be combining enclosing circle
             self.steps,
@@ -237,11 +245,12 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
             word (tuple): The word initially on the tape.
     """
 
-    def __init__(self, G, word):
+    def __init__(self, G, word = None):
         super().__init__(G)
         if HASH in (G.N | G.T): raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
-        self.tape = tuple(word) + (HASH, )
-        self.stack = Stack([HASH, G.S])
+        if word is not None:
+            self.tape = tuple(word) + (HASH, )
+            self.stack = Stack([HASH, G.S])
 
     def is_done(self):
         """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `＃`."""
@@ -278,9 +287,9 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
             word (tuple): The word initially on the tape.
     """
 
-    def __init__(self, G, word):
+    def __init__(self, G, word = None):
         super().__init__(G)
-        self.tape = tuple(word)
+        if word is not None: self.tape = tuple(word)
 
     def is_done(self):
         """Returns `True` if the computation is done, that is if the stack contains the a tree rooted in G.S and the head is at the tape end."""
@@ -289,7 +298,6 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
     def shift(self):
         """Performs a shift move and returns the corresponding new instantaneous description."""
         c = copy(self)
-        c.stack = copy(c.stack)
         c.stack.push(Tree(c.head()))
         c.head_pos += 1
         return c
@@ -298,7 +306,6 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
         """Attempts a reduce move, given the specified production, and returns the corresponding new instantaneous description."""
         if not P in self.G.P: raise ValueError('The production does not belong to the grammar.')
         c = copy(self)
-        c.stack = copy(c.stack)
         children = [c.stack.pop() for _ in P.rhs][::-1]
         for X, T in zip(P.rhs, children):
           if X != T.root: raise ValueError('The rhs does not correspond to the symbols on the stack.')

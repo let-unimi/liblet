@@ -1,6 +1,8 @@
+from copy import copy
 import unittest
 
 from liblet import Automaton, Transition, Grammar, Item, TopDownInstantaneousDescription
+from liblet.automaton import InstantaneousDescription, TopDownInstantaneousDescription, BottomUpInstantaneousDescription
 from liblet.grammar import Production
 
 
@@ -160,7 +162,24 @@ class TestAutomaton(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r'states {C} in F are not states'):
             Automaton({'A', 'B'}, {'b', 'c'}, tuple(), 'A', {'B', 'C'})
 
-    def test_instantaneousdescription_init(self):
+    def test_ID_done(self):
+        self.assertFalse(InstantaneousDescription(Grammar.from_string('S -> s')).is_done())
+
+    def test_TDID_copy(self):
+        i = TopDownInstantaneousDescription(Grammar.from_string('S -> s'))
+        c = copy(i)
+        i.stack.push(1)
+        c.stack.push(2)
+        self.assertEqual(i.stack.pop(), 1)
+
+    def test_BUID_copy(self):
+        i = BottomUpInstantaneousDescription(Grammar.from_string('S -> s'))
+        c = copy(i)
+        i.stack.push(1)
+        c.stack.push(2)
+        self.assertEqual(i.stack.pop(), 1)
+
+    def test_TDID_init(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -169,14 +188,21 @@ class TestAutomaton(unittest.TestCase):
         i = TopDownInstantaneousDescription(G, 'aaba')
         self.assertEqual('(), S＃, a̲aba＃', str(i))
 
-    def test_instantaneousdescription_init_exception(self):
+    def test_BUID_init(self):
         G = Grammar.from_string("""
-            S -> ＃
+            S -> A C
+            A -> a b
+            C -> c
         """)
+        i = BottomUpInstantaneousDescription(G, 'abc')
+        self.assertEqual('(), , a̲bc', str(i))
+
+    def test_TDID_init_exception(self):
+        G = Grammar.from_string('S -> ＃')
         with self.assertRaisesRegex(ValueError, r'.*＃.*belong to terminal'):
             TopDownInstantaneousDescription(G, 'aaba')
 
-    def test_instantaneousdescription_predict(self):
+    def test_TDID_predict(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -186,7 +212,7 @@ class TestAutomaton(unittest.TestCase):
         i = i.predict(G.P[0])
         self.assertEqual('(S -> a B C,), aBC＃, a̲aba＃', str(i))
 
-    def test_instantaneousdescription_predict_exception0(self):
+    def test_TDID_predict_exception0(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -196,7 +222,7 @@ class TestAutomaton(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r'.*top of the stack.*production'):
             i = i.predict(Production('X', ('Y', )))
 
-    def test_instantaneousdescription_predict_exception1(self):
+    def test_TDID_predict_exception1(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -206,7 +232,37 @@ class TestAutomaton(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r'.*top of the stack.*production'):
             i = i.predict(G.P[1])
 
-    def test_instantaneousdescription_match(self):
+    def test_BUID_reduce(self):
+        G = Grammar.from_string("""
+            S -> A C
+            A -> a b
+            C -> c
+        """)
+        i = BottomUpInstantaneousDescription(G, 'abc')
+        i = i.shift().shift().reduce(G.P[1])
+        self.assertEqual('(A -> a b,), (A: (a), (b)), abc̲', str(i))
+
+    def test_BUID_reduce_exception0(self):
+        G = Grammar.from_string("""
+            S -> A C
+            A -> a b
+            C -> c
+        """)
+        i = BottomUpInstantaneousDescription(G, 'abc')
+        with self.assertRaisesRegex(ValueError, r'rhs does not correspond to the symbols on the stack'):
+          i.shift().shift().reduce(G.P[0])
+
+    def test_BUID_reduce_exception1(self):
+        G = Grammar.from_string("""
+            S -> A C
+            A -> a b
+            C -> c
+        """)
+        i = BottomUpInstantaneousDescription(G, 'abc')
+        with self.assertRaisesRegex(ValueError, r'production does not belong to the grammar'):
+          i.reduce(Production('X', ('y', )))
+
+    def test_TDID_match(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -216,7 +272,7 @@ class TestAutomaton(unittest.TestCase):
         i = i.predict(G.P[0]).match()
         self.assertEqual('(S -> a B C,), BC＃, aa̲ba＃', str(i))
 
-    def test_instantaneousdescription_match_exception(self):
+    def test_TDID_match_exception(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -226,7 +282,17 @@ class TestAutomaton(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r'.*top of the stack.*head symbol'):
             i = i.match()
 
-    def test_instantaneousdescription_done(self):
+    def test_BUID_shift(self):
+        G = Grammar.from_string("""
+            S -> A C
+            A -> a b
+            C -> c
+        """)
+        i = BottomUpInstantaneousDescription(G, 'abc')
+        i = i.shift()
+        self.assertEqual('(), (a), ab̲c', str(i))
+
+    def test_TDID_done(self):
         G = Grammar.from_string("""
             S -> a B C
             B -> a B | b
@@ -234,6 +300,16 @@ class TestAutomaton(unittest.TestCase):
         """)
         i = TopDownInstantaneousDescription(G, 'aaba')
         i = i.predict(G.P[0]).match().predict(G.P[1]).match().predict(G.P[2]).match().predict(G.P[3]).match()
+        self.assertTrue(i.is_done())
+
+    def test_BUID_done(self):
+        G = Grammar.from_string("""
+            S -> A C
+            A -> a b
+            C -> c
+        """)
+        i = BottomUpInstantaneousDescription(G, 'abc')
+        i = i.shift().shift().reduce(G.P[1]).shift().reduce(G.P[2]).reduce(G.P[0])
         self.assertTrue(i.is_done())
 
 if __name__ == '__main__': unittest.main()
