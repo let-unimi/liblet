@@ -156,18 +156,35 @@ the reading head.
 
 .. autoclass:: InstantaneousDescription
 
-   The class is immutable, few methods can be used to inspect its content, or to get
-   a new instantaneous description corresponding to a *match* or *predict* move.
+   This is the superclass describing an instantaneous description of an automata; it
+   comprises a *tape* and the *head_pos*ition, a *sack* and a sequence of *steps* that
+   have taken the automaton to the current configuration. It is immutable, subclasses
+   define how to obtain a new description given a move (that in general differ for
+   *top-down* and *bottom-up* parsers).
 
    .. automethod:: head
 
    .. automethod:: top
 
-   .. automethod:: match
+.. autoclass:: TopDownInstantaneousDescription
 
-   .. automethod:: predict
+   This class represents an instantaneous description of an automata performing
+   *top-down* parsing; elements on the stack are symbols from the grammar, an
+   extra `＃` is added at the bottom of the stack and the end of the tape to
+   make it easier to determine if the input word has been accepted.
 
+    .. automethod:: match
 
+    .. automethod:: predict
+
+.. autoclass:: BottomUpInstantaneousDescription
+
+   This class represents an instantaneous description of an automata performing
+   *bottom-down* parsing; elements on the stack are the trees of the parsing forest.
+
+    .. automethod:: shift
+
+    .. automethod:: reduce
 
 ANTLR support
 -------------
