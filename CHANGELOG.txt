@@ -1,6 +1,18 @@
 Changelog
 =========
 
+v1.3.1-alpha (2021-04-11)
+-------------------------
+
+- InstantaneousDescription has been subclassed in two specilized classes:
+  TopDownInstantaneousDescription and BottomUpInstantaneousDescription.
+- Stack and Queues copy method has been deprecated in favor of more
+  standard use of the copy module (the shallow copy obtains a separate
+  storage by overriding __copy__).
+- InstantaneousDescription and its subclasses shallow copies don't share
+  the stack with the original object (obtained by overriding __copy__).
+- Improved deprecations (now the warning module is used instead of raise).
+
 v1.3.0-alpha (2021-04-10)
 -------------------------
 
