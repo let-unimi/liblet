@@ -24,4 +24,5 @@
         "*_test.py"
     ],
     "restructuredtext.languageServer.disabled": true,
+    "restructuredtext.linter.disabled": true,
 }
