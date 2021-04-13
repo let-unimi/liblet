@@ -150,14 +150,14 @@ Instantaneous Descriptions
 
 During the analysis of some parsing algorithms can be convenient to keep track
 of the computation of the related (*nondeterministic*) *pushdown automata*. The
-following class serves the purpose to represent an *instantaneous description*
+following classes have the purpose to represent an *instantaneous description*
 of the automaton given by its stack and, the tape content and the position of
 the reading head.
 
 .. autoclass:: InstantaneousDescription
 
    This is the superclass describing an instantaneous description of an automata; it
-   comprises a *tape* and the *head_pos*ition, a *sack* and a sequence of *steps* that
+   comprises a *tape* and the *head_pos*, a *stack* and a sequence of *steps* that
    have taken the automaton to the current configuration. It is immutable, subclasses
    define how to obtain a new description given a move (that in general differ for
    *top-down* and *bottom-up* parsers).
@@ -180,7 +180,7 @@ the reading head.
 .. autoclass:: BottomUpInstantaneousDescription
 
    This class represents an instantaneous description of an automata performing
-   *bottom-down* parsing; elements on the stack are the trees of the parsing forest.
+   *bottom-down* parsing; elements on the stack are the :class:`trees <liblet.display.Tree>` of the parsing forest.
 
     .. automethod:: shift
 

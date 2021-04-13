@@ -95,7 +95,7 @@ class Transition:
 
             frm, label, to
 
-        where the parts are strings not containing spaces.s
+        where the parts are strings not containing spaces.
         """
         res = []
         for t in transitions.splitlines():
@@ -227,7 +227,7 @@ class InstantaneousDescription(object):
         return self.tape[self.head_pos]
 
     def top(self):
-        """Returns the symbol at the (root of the Tree at the) top of the stack."""
+        """Returns the symbol at the (root of the :class:`~liblet.display.Tree` at the) top of the stack."""
         t = self.stack.peek()
         return t.root if isinstance(t, Tree) else t
 
