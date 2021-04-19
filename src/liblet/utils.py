@@ -7,6 +7,10 @@ from warnings import warn as wwarn
 
 from IPython.display import HTML
 
+def suffixes(α):
+    for i in range(len(α)):
+        yield α[i:]
+
 def warn(msg):
     """Emits a string on the *standard error*."""
     stderr.write(msg + '\n')
