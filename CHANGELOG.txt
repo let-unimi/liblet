@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.3.2-alpha (2021-04-19)
+-------------------------
+
+- Now TopDownInstantaneousDescription.match skips epsilon on the stack.
+- Added the suffixes commodity function in utlis package.
+- Minimal docs improvements.
+
+
 v1.3.1-alpha (2021-04-11)
 -------------------------
 
