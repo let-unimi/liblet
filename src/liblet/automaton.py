@@ -258,11 +258,11 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
 
     def match(self):
         """Attempts a match move and returns the corresponding new instantaneous description."""
-        if self.top() in self.G.T and self.top() == self.head():
+        if (self.top() == ε) or (self.top() in self.G.T and self.top() == self.head()):
             c = copy(self)
             c.stack = copy(c.stack)
             c.stack.pop()
-            c.head_pos += 1
+            if self.top() != ε: c.head_pos += 1
             return c
         raise ValueError('The top of the stack and tape head symbol are not equal.')
 
