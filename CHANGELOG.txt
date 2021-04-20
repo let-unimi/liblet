@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.3.3-alpha (2021-04-20)
+-------------------------
+
+- The display.side_by_side now accepts a single argument (and iterates
+  over it).
+
 v1.3.2-alpha (2021-04-19)
 -------------------------
 

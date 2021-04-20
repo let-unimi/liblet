@@ -380,6 +380,7 @@ def __bordered_table__(content):
 
 
 def side_by_side(*iterable):
+    if len(iterable) == 1: iterable = iterable[0]
     return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
 
 def iter2table(it):
