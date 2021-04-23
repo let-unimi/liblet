@@ -464,7 +464,7 @@ class Derivation:
           P = derivation.G.P[prod].as_type0()
           if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
           copy = Derivation(derivation.G)
-          copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != 'ε')
+          copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != ε)
           copy._steps = derivation._steps + ((prod, pos), )
           copy._repr = derivation._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
           return copy

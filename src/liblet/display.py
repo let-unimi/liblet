@@ -9,6 +9,7 @@ from IPython.display import HTML
 from graphviz import Digraph as gvDigraph
 from ipywidgets import interactive, IntSlider
 
+from . import ε
 from .utils import letstr
 from .grammar import _letlrhstostr, HAIR_SPACE, Derivation
 
@@ -238,7 +239,7 @@ class ProductionGraph(BaseGraph):
         )
 
         def remove_ε(sentence):
-            return tuple(_ for _ in sentence if _[0] != 'ε')
+            return tuple(_ for _ in sentence if _[0] != ε)
 
         sentence = ((derivation.G.S, 0, 0), )
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
