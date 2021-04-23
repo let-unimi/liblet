@@ -241,7 +241,7 @@ class ProductionGraph(BaseGraph):
         def remove_ε(sentence):
             return tuple(_ for _ in sentence if _[0] != ε)
 
-        sentence = ((derivation.G.S, 0, 0), )
+        sentence = ((derivation.start, 0, 0), )
         for step, (rule, pos) in enumerate(derivation.steps(), 1):
             lhs, rhs = derivation.G.P[rule].as_type0()
             rhsn = tuple((X, step, p) for p, X in enumerate(rhs))
@@ -250,7 +250,7 @@ class ProductionGraph(BaseGraph):
 
         use_levels = not self.compact
 
-        sentence = ((derivation.G.S, 0, 0), )
+        sentence = ((derivation.start, 0, 0), )
         with G.subgraph(graph_attr = {'rank': 'same'}) as S:
             if use_levels: prev_level = self.node(S, ('LevelNode', 0), gv_args = {'style': 'invis'})
             self.node(S, sentence[0][0], hash(sentence[0]))

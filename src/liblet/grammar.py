@@ -340,22 +340,25 @@ class Derivation:
 
     Args:
         G (:class:`~liblet.grammar.Grammar`): the grammar to which the derivations refers to.
-
+        start (str): the start nonterminal symbol of the derivation.
     """
 
-    def __init__(self, G):
+    def __init__(self, G, start = None):
         self.G = G
+        if start is None: start = G.S
+        if start not in G.N: raise ValueError('The start symbol must be a nonterminal')
+        self.start = start
         self._steps = tuple()
         # the following attrs are computed
-        self._sf = (G.S, )
-        self._repr = G.S
+        self._sf = (self.start, )
+        self._repr = self.start
 
     def __eq__(self, other):
         if not isinstance(other, Derivation): return False
-        return (self.G, self._steps) == (other.G, other._steps)
+        return (self.G, self.start, self._steps) == (other.G, other.start, other._steps)
 
     def __hash__(self):
-        return hash((self.G, self._steps))
+        return hash((self.G, self.start, self._steps))
 
     def __repr__(self):
         return self._repr
@@ -463,7 +466,7 @@ class Derivation:
           prod = self.__ensure_prod_idx__(prod)
           P = derivation.G.P[prod].as_type0()
           if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
-          copy = Derivation(derivation.G)
+          copy = Derivation(derivation.G, self.start)
           copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != ε)
           copy._steps = derivation._steps + ((prod, pos), )
           copy._repr = derivation._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
