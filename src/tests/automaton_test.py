@@ -186,7 +186,7 @@ class TestAutomaton(unittest.TestCase):
             C -> a
         """)
         i = TopDownInstantaneousDescription(G, 'aaba')
-        self.assertEqual('(), S＃, a̲aba＃', str(i))
+        self.assertEqual('(), S♯, a̲aba♯', str(i))
 
     def test_BUID_init(self):
         G = Grammar.from_string("""
@@ -198,8 +198,8 @@ class TestAutomaton(unittest.TestCase):
         self.assertEqual('(), , a̲bc', str(i))
 
     def test_TDID_init_exception(self):
-        G = Grammar.from_string('S -> ＃')
-        with self.assertRaisesRegex(ValueError, r'.*＃.*belong to terminal'):
+        G = Grammar.from_string('S -> ♯')
+        with self.assertRaisesRegex(ValueError, r'.*♯.*belong to terminal'):
             TopDownInstantaneousDescription(G, 'aaba')
 
     def test_TDID_predict(self):
@@ -210,7 +210,7 @@ class TestAutomaton(unittest.TestCase):
         """)
         i = TopDownInstantaneousDescription(G, 'aaba')
         i = i.predict(G.P[0])
-        self.assertEqual('(S -> a B C,), aBC＃, a̲aba＃', str(i))
+        self.assertEqual('(S -> a B C,), aBC♯, a̲aba♯', str(i))
 
     def test_TDID_predict_exception0(self):
         G = Grammar.from_string("""
@@ -270,7 +270,7 @@ class TestAutomaton(unittest.TestCase):
         """)
         i = TopDownInstantaneousDescription(G, 'aaba')
         i = i.predict(G.P[0]).match()
-        self.assertEqual('(S -> a B C,), BC＃, aa̲ba＃', str(i))
+        self.assertEqual('(S -> a B C,), BC♯, aa̲ba♯', str(i))
 
     def test_TDID_match_exception(self):
         G = Grammar.from_string("""

@@ -170,7 +170,7 @@ the reading head.
 
    This class represents an instantaneous description of an automata performing
    *top-down* parsing; elements on the stack are symbols from the grammar, an
-   extra `＃` is added at the bottom of the stack and the end of the tape to
+   extra `♯` is added at the bottom of the stack and the end of the tape to
    make it easier to determine if the input word has been accepted.
 
     .. automethod:: match

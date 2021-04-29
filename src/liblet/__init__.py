@@ -7,7 +7,7 @@ __version__ = '1.3.3-alpha'
 
 ε = 'ε'
 DIAMOND = '◇'
-HASH = '＃'
+HASH = '♯'
 
 from .decorators import closure, show_calls
 from .display import Tree, Graph, StateTransitionGraph, ProductionGraph, side_by_side, dod2table, iter2table, cyk2table, prods2table, dict2table, ff2table, animate_derivation

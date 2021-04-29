@@ -253,7 +253,7 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
             self.stack = Stack([HASH, G.S])
 
     def is_done(self):
-        """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `＃`."""
+        """Returns `True` if the computation is done, that is if the top of the stack and the symbol under the tape head are both equal to `♯`."""
         return self.top() == self.head() == HASH
 
     def match(self):
