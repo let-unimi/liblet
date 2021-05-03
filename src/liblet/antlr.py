@@ -151,6 +151,7 @@ class ANTLR:
         - ``name``: the *rule label* or *token name* (or the rule name if it has no label: or, similarly, the token itself if it has no name),
         - ``value``: the *token* value (only present for *tokens* named in the *lexer* part of the grammar),
         - ``rule``: the *rule* name (only present for *rules*, will be different from ``name`` for labelled rules).
+        - ``src``: the first (and last token, in case of a rule), corredponding to the node.
 
         Note that the values are strings (so if the *value* is a number, it should be converted before usage).
 
@@ -172,7 +173,7 @@ class ANTLR:
                 name = ctx.__class__.__name__
                 name = name[:-7] # remove trailing 'Context'
                 name = name[0].lower() + name[1:]
-                return {'type': 'rule', 'name': name, 'rule': rule}
+                return {'type': 'rule', 'name': name, 'rule': rule, 'src': ctx.getSourceInterval()}
 
         def _token(token):
             ts = token.symbol
@@ -186,7 +187,7 @@ class ANTLR:
                     name = '<INVALID>'
                 if name == '<INVALID>':
                     name = self.Parser.literalNames[ts.type][1:-1]
-                return {'type': 'token', 'name': name, 'value': text}
+                return {'type': 'token', 'name': name, 'value': text, 'src': token.symbol.tokenIndex}
 
         class TreeVisitor(ParseTreeVisitor):
             def visitTerminal(self, t):
