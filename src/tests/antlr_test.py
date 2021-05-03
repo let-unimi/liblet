@@ -20,7 +20,7 @@ class TestGenerationAndParsing(unittest.TestCase):
             args, kwargs = mock_warn.call_args
         self.assertTrue('reference to undefined rule' in args[0])
 
-    def test_tokens(self): 
+    def test_tokens(self):
         Tk = ANTLR(r"""
             grammar Tk ;
             start: ID+ ;
@@ -67,7 +67,7 @@ class TestGenerationAndParsing(unittest.TestCase):
             ID: [a-z];
         """)
         tree = str(Bad.tree('z-a+a*x', 'start'))
-        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'ID', 'value': 'z'})), ({'type': 'token', 'name': 'OP', 'value': '-'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': 'OP', 'value': '+'}), ({'type': 'token', 'name': 'ID', 'value': 'a'})), ({'type': 'token', 'name': '*', 'value': '*'}), ({'type': 'token', 'name': 'ID', 'value': 'x'})))")
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 6)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 6)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 4)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 2)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0)}: ({'type': 'token', 'name': 'ID', 'value': 'z', 'src': 0})), ({'type': 'token', 'name': 'OP', 'value': '-', 'src': 1}), ({'type': 'token', 'name': 'ID', 'value': 'a', 'src': 2})), ({'type': 'token', 'name': 'OP', 'value': '+', 'src': 3}), ({'type': 'token', 'name': 'ID', 'value': 'a', 'src': 4})), ({'type': 'token', 'name': '*', 'value': '*', 'src': 5}), ({'type': 'token', 'name': 'ID', 'value': 'x', 'src': 6})))")
 
     def test_nolexersym(self):
         NoSym = ANTLR(r"""
@@ -77,7 +77,7 @@ class TestGenerationAndParsing(unittest.TestCase):
             expr: 'a';
         """)
         tree = str(NoSym.tree('aa', 'start'))
-        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})))")
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 1)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 0})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (1, 1)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 1})))")
 
     def test_eof(self):
         NoSym = ANTLR(r"""
@@ -87,7 +87,7 @@ class TestGenerationAndParsing(unittest.TestCase):
             expr: 'a';
         """)
         tree = str(NoSym.tree('aa', 'start'))
-        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start'}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr'}: ({'type': 'token', 'name': 'a', 'value': 'a'})))")
+        self.assertEqual(tree, r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 1)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 0})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (1, 1)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 1})))")
 
     def test_diag(self):
         with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
@@ -139,7 +139,7 @@ class TestGenerationAndParsing(unittest.TestCase):
 
     def test_atw_text_ca(self):
         at = Tree({'key': 'a'}, [Tree({'key': 'b'}), Tree({'key': 'c'})])
-        w = AnnotatedTreeWalker('key', AnnotatedTreeWalker.TEXT_CATCHALL) 
+        w = AnnotatedTreeWalker('key', AnnotatedTreeWalker.TEXT_CATCHALL)
         with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
             res = w(at)
         self.assertEqual(res, "{'key': 'a'}\n\t{'key': 'b'}\n\t{'key': 'c'}")
