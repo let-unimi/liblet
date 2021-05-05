@@ -115,7 +115,7 @@ class Tree(BaseGraph):
             if isinstance(node, dict):
                 return ''.join(
                     ['<<FONT POINT-SIZE="12"><TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">'] +
-                    ['<TR><TD>{}</TD><TD>{}</TD></TR>'.format(k, _escape(v)) for k, v in node.items()] +
+                    ['<TR><TD>{}</TD><TD>{}</TD></TR>'.format(k, _escape(v)) for k, v in node.items() if not k.startswith('_thread_')] +
                     ['</TABLE></FONT>>'])
             return str(node)
         def walk(T):
