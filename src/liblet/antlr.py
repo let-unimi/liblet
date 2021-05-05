@@ -1,13 +1,16 @@
 from contextlib import redirect_stderr
 from importlib import util as imputil
 from io import StringIO
+from marshal import dumps, loads
 from os import environ
-from os.path import join as pjoin, exists
+from os.path import exists
+from os.path import join as pjoin
 from re import findall
 from subprocess import run
 from sys import modules
 from tempfile import TemporaryDirectory
 from textwrap import indent
+from types import FunctionType
 
 from antlr4.atn.PredictionMode import PredictionMode
 from antlr4.CommonTokenStream import CommonTokenStream
@@ -23,8 +26,6 @@ if not 'READTHEDOCS' in environ: # pragma: nocover
         raise ImportError('Please define the ANTLR4_JAR environment variable')
     if not exists(environ['ANTLR4_JAR']):
         raise ImportError('The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR']))
-
-# Consider refactoring in .parse_tree returning antlr context object and .tree returning a Tree
 
 class ANTLR:
     """An utility class representing an ANTLR (v4) grammar and code generated from it.
@@ -81,6 +82,23 @@ class ANTLR:
                 spec.loader.exec_module(module)
                 modules[qn] = module
                 setattr(self, suffix, getattr(module, qn))
+
+    def save(self, path):
+        """Saves this grammar to file.
+
+        Args:
+            path (str): the path of the file where to save the grammar.
+        """
+        with open(path, 'tw') as ouf: ouf.write(self.grammar)
+
+    @classmethod
+    def load(cls, path):
+        """Loads a grammar from file.
+
+        Args:
+            path (str): the path of the file where the grammar was saved.
+        """
+        with open(path, 'tr') as inf: return cls(inf.read())
 
     def print_grammar(self, number_lines = True): # pragma: nocover
         """Prints the grammar (with line numbers)
@@ -256,10 +274,41 @@ class AnnotatedTreeWalker:
         warn('TEXT_CATCHALL: {}'.format(tree.root))
         return '{}'.format(tree.root) + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')
 
-    def __init__(self, key, catchall = None):
+    def __init__(self, key, catchall = None, dispatch_table = None):
         self.key = key
-        self._catchall = catchall if catchall is not None else AnnotatedTreeWalker.TREE_CATCHALL
-        self.DT = {}
+        self.catchall = catchall if catchall is not None else AnnotatedTreeWalker.TREE_CATCHALL
+        self.DT = {} if dispatch_table is None else dispatch_table
+
+    def save(self, path):
+        """Saves this walker to file.
+
+        Args:
+            path (str): the path of the file where to save the walker.
+        """
+        with open(path, 'bw') as ouf:
+            ouf.write(dumps({
+              'key': self.key,
+              'catchall': self.catchall.__code__,
+              'DT': [(name, func.__code__) for name, func in self.DT.items()]
+            }))
+
+    @classmethod
+    def load(cls, path, globals_dict = None):
+        """Loads a walker from a file.
+
+        Args:
+            path (str): the path of the file where the walker was saved.
+            globals_dict (dict): the globals that will be used by the functions registered in the walker.
+
+
+        """
+        if globals_dict is None: globals_dict = globals()
+        with open(path, 'rb') as inf: dct = loads(inf.read())
+        return cls(
+          dct['key'],
+          FunctionType(dct['catchall'], globals_dict),
+          {name: FunctionType(code, globals_dict) for name, code in dct['DT']}
+        )
 
     def catchall(self, func):
         """A :term:`decorator` used to register a *catchall* function.
@@ -267,7 +316,7 @@ class AnnotatedTreeWalker:
         The decorated function must have two arguments: the first will be always an instance of this object, the
         second the annotate tree on which to operate. The previous registered *catchall* function will be overwritten.
         """
-        self._catchall = func
+        self.catchall = func
 
     def register(self, func):
         """A :term:`decorator` used to register a function.
@@ -280,4 +329,4 @@ class AnnotatedTreeWalker:
 
     def __call__(self, tree):
         key = tree.root[self.key]
-        return self.DT[key](self.__call__, tree) if key in self.DT else self._catchall(self.__call__, tree)
+        return self.DT[key](self.__call__, tree) if key in self.DT else self.catchall(self.__call__, tree)
