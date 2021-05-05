@@ -1,3 +1,5 @@
+import ast
+
 from abc import ABC, abstractmethod
 from collections import OrderedDict, defaultdict
 from collections.abc import Set
@@ -361,6 +363,18 @@ class StateTransitionGraph(BaseGraph):
             )
         self.G = G
         return G
+
+# Python AST stuff
+
+def pyast2tree(node):
+    if not isinstance(node, ast.AST):
+        return Tree({'type': 'token', 'value': node})
+    else:
+        return Tree({'type': 'ast', 'name': node.__class__.__name__},
+            [ Tree(name, [pyast2tree(v) for v in (value if isinstance(value, list) else [value])])
+                for name, value in ast.iter_fields(node) if not name in {'type_ignores', 'type_comment'}
+            ]
+        )
 
 # Jupyter Widgets sfuff
 
