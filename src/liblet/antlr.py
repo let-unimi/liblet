@@ -274,9 +274,9 @@ class AnnotatedTreeWalker:
         warn('TEXT_CATCHALL: {}'.format(tree.root))
         return '{}'.format(tree.root) + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')
 
-    def __init__(self, key, catchall = None, dispatch_table = None):
+    def __init__(self, key, catchall_func = None, dispatch_table = None):
         self.key = key
-        self.catchall = catchall if catchall is not None else AnnotatedTreeWalker.TREE_CATCHALL
+        self.catchall_func = catchall_func if catchall_func is not None else AnnotatedTreeWalker.TREE_CATCHALL
         self.DT = {} if dispatch_table is None else dispatch_table
 
     def save(self, path):
@@ -288,7 +288,7 @@ class AnnotatedTreeWalker:
         with open(path, 'bw') as ouf:
             ouf.write(dumps({
               'key': self.key,
-              'catchall': self.catchall.__code__,
+              'catchall_func': self.catchall_func.__code__,
               'DT': [(name, func.__code__) for name, func in self.DT.items()]
             }))
 
@@ -306,7 +306,7 @@ class AnnotatedTreeWalker:
         with open(path, 'rb') as inf: dct = loads(inf.read())
         return cls(
           dct['key'],
-          FunctionType(dct['catchall'], globals_dict),
+          FunctionType(dct['catchall_func'], globals_dict),
           {name: FunctionType(code, globals_dict) for name, code in dct['DT']}
         )
 
@@ -316,7 +316,7 @@ class AnnotatedTreeWalker:
         The decorated function must have two arguments: the first will be always an instance of this object, the
         second the annotate tree on which to operate. The previous registered *catchall* function will be overwritten.
         """
-        self.catchall = func
+        self.catchall_func = func
 
     def register(self, func):
         """A :term:`decorator` used to register a function.
@@ -329,4 +329,4 @@ class AnnotatedTreeWalker:
 
     def __call__(self, tree):
         key = tree.root[self.key]
-        return self.DT[key](self.__call__, tree) if key in self.DT else self.catchall(self.__call__, tree)
+        return self.DT[key](self.__call__, tree) if key in self.DT else self.catchall_func(self.__call__, tree)

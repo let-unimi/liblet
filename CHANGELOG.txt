@@ -1,7 +1,7 @@
 Changelog
 =========
 
-v1.3.7-alpha (2021-05-06)
+v1.3.8-alpha (2021-05-06)
 --------------------
 
 - The ANTLR and AnnotatedTreeWalker object can be serialized (suing the
