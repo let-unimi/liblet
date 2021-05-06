@@ -263,7 +263,11 @@ class AnnotatedTreeWalker:
         a :meth:`~liblet.utils.warn` and returning a tree with the same root of the given tree
         and having as children the recursively visited children of the given tree."""
         warn('TREE_CATCHALL: {}'.format(tree.root))
-        return Tree(tree.root, [visit(child) for child in tree.children])
+        trees = []
+        for child in tree.children:
+            t = visit(child)
+            if t is not None: trees.append(t)
+        return Tree(tree.root, trees)
 
     @staticmethod
     def TEXT_CATCHALL(visit, tree):
@@ -277,7 +281,7 @@ class AnnotatedTreeWalker:
     def __init__(self, key, catchall_func = None, dispatch_table = None):
         self.key = key
         self.catchall_func = catchall_func if catchall_func is not None else AnnotatedTreeWalker.TREE_CATCHALL
-        self.DT = {} if dispatch_table is None else dispatch_table
+        self.dispatch_table = {} if dispatch_table is None else dispatch_table
 
     def save(self, path):
         """Saves this walker to file.
@@ -289,7 +293,7 @@ class AnnotatedTreeWalker:
             ouf.write(dumps({
               'key': self.key,
               'catchall_func': self.catchall_func.__code__,
-              'DT': [(name, func.__code__) for name, func in self.DT.items()]
+              'DT': [(name, func.__code__) for name, func in self.dispatch_table.items()]
             }))
 
     @classmethod
@@ -321,12 +325,15 @@ class AnnotatedTreeWalker:
     def register(self, func):
         """A :term:`decorator` used to register a function.
 
-        The function will be registered with his name (possibly replacing a previous registration).
+        The function will be registered with his name (possibly replacing a previous registration, and
+        omitting the trailing ``_`` that can be used to avoid conflicts with builtins).
         The decorated function must have two arguments: the first will be always an instance of this object, the
         second the annotate tree on which to operate.
         """
-        self.DT[func.__name__] = func
+        name = func.__name__
+        if name.endswith('_'): name = name[:-1]
+        self.dispatch_table[name] = func
 
     def __call__(self, tree):
         key = tree.root[self.key]
-        return self.DT[key](self.__call__, tree) if key in self.DT else self.catchall_func(self.__call__, tree)
+        return self.dispatch_table[key](self.__call__, tree) if key in self.dispatch_table else self.catchall_func(self.__call__, tree)
