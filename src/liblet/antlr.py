@@ -5,7 +5,7 @@ from marshal import dumps, loads
 from os import environ
 from os.path import exists
 from os.path import join as pjoin
-from re import findall
+from re import A, findall
 from subprocess import run
 from sys import modules
 from tempfile import TemporaryDirectory
@@ -111,7 +111,7 @@ class ANTLR:
         else:
             print(self.grammar)
 
-    def context(self, text, symbol, trace = False, diag = False, build_parse_trees = True, as_string = False, fail_on_error = False):
+    def context(self, text, symbol, trace = False, diag = False, build_parse_trees = True, as_string = False, fail_on_error = False, antlr_hook = None):
         """Returns an object subclass of a ``antlr4.ParserRuleContext`` corresponding to the specified symbol (possibly as a string).
 
         Args:
@@ -122,6 +122,7 @@ class ANTLR:
             build_parse_trees (bool): if ``False`` the field ``antlr4.Parser.buildParseTrees`` will be set to ``False`` so that no trees will be generated.
             as_string (bool): if ``True`` the method will return the string representation of the context obtained using its ``toStringTree`` method.
             fail_on_error (bool): if ``True`` the method will return ``None`` in case of paring errors.
+            antlr_hook (function): if not ``None`` will be called with the lexer and parser as arguments to further configure them before use
 
         Returns:
             A parser context, in case of parsing errors the it can be used to investigate the errors (unless ``fail_on_error`` is ``True`` in what case this method returns ``None``).
@@ -134,6 +135,7 @@ class ANTLR:
             parser.addErrorListener(DiagnosticErrorListener())
             parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
         parser.buildParseTrees = build_parse_trees
+        if antlr_hook is not None: antlr_hook(lexer, parser)
         buf = StringIO()
         with redirect_stderr(buf):
             ctx = getattr(parser, symbol)()
@@ -159,7 +161,7 @@ class ANTLR:
         stream.fill()
         return stream.tokens
 
-    def tree(self, text, symbol, simple = False):
+    def tree(self, text, symbol, simple = False, antlr_hook = None):
         """Returns an *annotated* :class:`~liblet.display.Tree` representing the parse tree (derived from the parse context).
 
         Unless a *simple* tree is required, the returned is an *annotated* tree whose nodes store
@@ -179,6 +181,7 @@ class ANTLR:
             text (str): the text to be parsed.
             symbol (str): the symbol (rule name) the parse should start at.
             simple (bool): if ``True`` the returned tree nodes will be strings (with no context information).
+            antlr_hook (function): if not ``None`` will be called with the lexer and parser as arguments to further configure them before use
         Returns:
             :class:`liblet.display.Tree` the (possibly annotated) parse tree, or ``None`` in case of parsing errors.
         """
@@ -219,7 +222,7 @@ class ANTLR:
             def visitChildren(self, ctx):
                 return Tree(_rule(ctx), super().visitChildren(ctx))
 
-        ctx = self.context(text, symbol, fail_on_error = True)
+        ctx = self.context(text, symbol, fail_on_error = True, antlr_hook = antlr_hook)
         if ctx is None: return None
         return TreeVisitor().visit(ctx)
 
