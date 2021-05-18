@@ -325,15 +325,15 @@ class AnnotatedTreeWalker:
         """
         self.catchall_func = func
 
-    def register(self, func):
+    def register(self, func, name = None):
         """A :term:`decorator` used to register a function.
 
-        The function will be registered with his name (possibly replacing a previous registration, and
+        The function will be registered with his (or the given) name (possibly replacing a previous registration, and
         omitting the trailing ``_`` that can be used to avoid conflicts with builtins).
         The decorated function must have two arguments: the first will be always an instance of this object, the
         second the annotate tree on which to operate.
         """
-        name = func.__name__
+        if name is None: name = func.__name__
         if name.endswith('_'): name = name[:-1]
         self.dispatch_table[name] = func
 
