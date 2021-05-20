@@ -61,6 +61,8 @@ class Queue(object):
         return Queue(self.Q, self.Q.maxlen)
     def __iter__(self):
         return iter(self.Q)
+    def __reversed__(self):
+      return reversed(self.Q)
     def __repr__(self):
         el = ', '.join(map(repr, self.Q))
         return 'Queue({})'.format('← {} ←'.format(el) if el else '')
@@ -84,6 +86,8 @@ class Stack(object):
         return Stack(self.S, self.S.maxlen)
     def __iter__(self):
         return iter(self.S)
+    def __reversed__(self):
+      return reversed(self.S)
     def __repr__(self):
         el = ', '.join(map(repr, self.S))
         return 'Stack({})'.format('{} ↔'.format(el) if el else '')
