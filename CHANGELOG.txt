@@ -1,8 +1,23 @@
 Changelog
 =========
 
+v1.4.0-alpha (2021-05-28)
+-------------------------
+
+- Added an experimental LLVM module to support IR code generation.
+- AnnotatedTreeWalker.TREE_CATCHALL does not collect None subtrees.
+- AnnotatedTreeWalker.register decorator trims ending _ (to allow builtin named
+  keys).
+- AnnotatedTreeWalker.register optionally takes the function name.
+- Annotated trees now have an attr attribute defined as a AttrDict wrapping the
+  root dict.
+- Added AttrDict in liblet.utils.
+- ANTLR.context and ANTLR.tree accept a antlr_hook parameter that allows
+  complete configuration of the underlying lexer and parser.
+- Stack and Queue now support reversed iteration.
+
 v1.3.8-alpha (2021-05-06)
---------------------
+-------------------------
 
 - The ANTLR and AnnotatedTreeWalker object can be serialized (suing the
   load/save methods).
