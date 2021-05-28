@@ -95,6 +95,12 @@ class Stack(object):
         return len(self.S)
 
 class AttrDict(MutableMapping):
+    """A :class:`~collections.abc.MutableMapping` implementation that wraps
+       a given mapping ``d`` so that if ``ad = AttrDict(d)`` it will then
+       become completely equivalent to write ``d['key']``, ``ad['key']``
+       or ``ad.key``.
+    """
+
     def __init__(self, mapping):
         object.__setattr__(self, '_AttrDict__store', mapping)
 

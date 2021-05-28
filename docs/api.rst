@@ -238,6 +238,7 @@ Utilities and decorators
 .. autoclass:: Queue
 .. autoclass:: Stack
 .. autoclass:: Table
+.. autoclass:: AttrDict
 .. autofunction:: warn
 .. autofunction:: peek
 .. autofunction:: union_of

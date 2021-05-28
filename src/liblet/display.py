@@ -51,10 +51,15 @@ class BaseGraph(ABC):
 class Tree(BaseGraph):
     """A *n-ary tree* with ordered children.
 
-    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name. If
-    the tree root is a :obj:`dict` the tree is an *annotated* tree. This kind of trees
-    arise from parsing, for example using the :meth:`~liblet.antlr.ANTLR.tree` method of the
-    :class:`~liblet.antlr.ANTLR` class.
+    The tree stores its :attr:`root` and :attr:`children` in two fields of the same name.
+
+    If the tree root is a :obj:`dict` the tree is an *annotated* tree. Such kind
+    of trees arise from parsing, for example using the
+    :meth:`~liblet.antlr.ANTLR.tree` method of the :class:`~liblet.antlr.ANTLR`
+    class; these trees are automatically endowed with an :attr:`attr` attribute
+    defined as an :class:`~liblet.utils.AttrDict` wrapping the :attr:`root`, so
+    that, for an annotated tree ``t``, it is completely equivalent to write
+    ``t.root['key']`` or ``t.attr.key`` (both for reading, and writing).
 
     A tree is represented as a string as a ``(<root>: <children>)`` where ``<root>``
     is the string representation of the root node content and ``<children>`` is the
