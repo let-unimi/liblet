@@ -62,9 +62,13 @@ class LLVM:
         if isinstance(code, str): code = dedent(code).splitlines()
         self.code.extend(filter(lambda _: _.strip() != '', code))
 
+    def print_code(self):
+        """Prints the unwrapped source collected code."""
+        print('\n'.join(self.code))
+
     def write_and_compile(self):
         """Wraps the code in some boilerplate, writes it to disk and compiles it."""
-        code = '\n' + indent(dedent('\n'.join(self.code)), 16 * ' ') + '\n'
+        code = '\n' + indent('\n'.join(self.code), 16 * ' ') + '\n'
         wrapped = WRAPPING_CODE.format(name = self.name, code = code)
         Path(self.name).with_suffix('.ll').write_text(dedent(wrapped))
         Path(self.name).unlink(missing_ok = True)
@@ -79,6 +83,6 @@ class LLVM:
         run('opt-10 -analyze -o /dev/null -dot-cfg {name}.ll'.format(name = self.name).split())
         return Source(Path('.main.dot').read_text())
 
-    def mem2reg(self, name):
+    def mem2reg(self):
         """Outputs the result of `mem2reg` optimization."""
         return run('opt-10 -mem2reg -S {name}.ll'.format(name = self.name).split(), stdout = PIPE).stdout.decode('utf8')
