@@ -189,7 +189,7 @@ the reading head.
 ANTLR support
 -------------
 
-This library provides a commodity class to deal with `ANTLR <https://www.antlr.org/>`_ for the Python 3 *target*.
+This module provides a commodity class to deal with `ANTLR <https://www.antlr.org/>`_ for the Python 3 *target*.
 
 .. currentmodule:: liblet.antlr
 
@@ -208,6 +208,21 @@ This library provides a commodity class to deal with `ANTLR <https://www.antlr.o
    .. automethod:: TREE_CATCHALL
    .. automethod:: TEXT_CATCHALL
 
+LLVM support
+------------
+
+This *very experimental* module provides a commodity class to play with `LLVM <https://llvm.org/>`_ IR language.
+
+.. currentmodule:: liblet.llvm
+
+.. autoclass:: LLVM
+
+   .. automethod:: new_variable
+   .. automethod:: new_label
+   .. automethod:: append_code
+   .. automethod:: write_and_compile
+   .. automethod:: control_flow_graph
+   .. automethod:: mem2reg
 
 Rich display
 ------------

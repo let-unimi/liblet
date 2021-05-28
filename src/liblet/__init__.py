@@ -15,6 +15,7 @@ from .grammar import Production, Item, Grammar, Derivation
 from .automaton import Transition, Automaton, TopDownInstantaneousDescription, BottomUpInstantaneousDescription
 from .utils import first, peek, union_of, letstr, Stack, Queue, Table, warn, uc, suffixes
 from .antlr import ANTLR, AnnotatedTreeWalker
+from .llvm import LLVM
 
 if 'LIBLET_NOBEACON' not in environ and 'READTHEDOCS' not in environ:
     try:
