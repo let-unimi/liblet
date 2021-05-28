@@ -2,7 +2,7 @@ import ast
 
 from abc import ABC, abstractmethod
 from collections import OrderedDict, defaultdict
-from collections.abc import Set
+from collections.abc import Set, MutableMapping
 from html import escape
 from itertools import chain
 from re import sub
@@ -12,7 +12,7 @@ from graphviz import Digraph as gvDigraph
 from ipywidgets import interactive, IntSlider
 
 from . import ε
-from .utils import letstr
+from .utils import letstr, AttrDict
 from .grammar import _letlrhstostr, HAIR_SPACE, Derivation
 
 # graphviz stuff
@@ -60,7 +60,7 @@ class Tree(BaseGraph):
     is the string representation of the root node content and ``<children>`` is the
     recursively obtained string representation of its children.
 
-    It also as a representation as a graph; in such case, if the tree is annotated it
+    It also has a representation as a graph; in such case, if the tree is annotated it
     will be rendered by Graphviz using `HTML-Like Labels <https://www.graphviz.org/doc/info/shapes.html#html>`__
     built as a table where each dictionary item corresponds to a row with two columns containing the
     key and value pair of such item.
@@ -73,6 +73,7 @@ class Tree(BaseGraph):
     def __init__(self, root, children = None):
         self.root = root
         self.children = list(children) if children else []
+        if isinstance(root, MutableMapping): self.attr = AttrDict(root)
 
     @classmethod
     def from_lol(cls, lol):
