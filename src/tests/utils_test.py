@@ -1,9 +1,10 @@
 from copy import copy
 
 import unittest
+from unittest.case import expectedFailure
 import unittest.mock
 
-from liblet.utils import first, union_of, letstr, Stack, Queue, warn
+from liblet.utils import first, union_of, letstr, Stack, Queue, warn, AttrDict, suffixes
 
 
 class UtilsTest(unittest.TestCase):
@@ -80,6 +81,11 @@ class UtilsTest(unittest.TestCase):
         expected = [1, 2, 3]
         self.assertEqual(expected, actual)
 
+    def test_stack_reversed(self):
+        actual = list(reversed(Stack([1, 2, 3])))
+        expected = [3, 2, 1]
+        self.assertEqual(expected, actual)
+
     def test_empty_stack(self):
         self.assertEqual('Stack()', str(Stack()))
 
@@ -119,6 +125,11 @@ class UtilsTest(unittest.TestCase):
         expected = [1, 2, 3]
         self.assertEqual(expected, actual)
 
+    def test_queue_reversed(self):
+        actual = list(reversed(Queue([1, 2, 3])))
+        expected = [3, 2, 1]
+        self.assertEqual(expected, actual)
+
     def test_empty_queue(self):
         self.assertEqual('Queue()', str(Queue()))
 
@@ -137,5 +148,30 @@ class UtilsTest(unittest.TestCase):
         with unittest.mock.patch('liblet.utils.stderr') as stderr_mock:
             warn('this is a test')
             stderr_mock.write.assert_called_with('this is a test\n')
+
+    def test_suffixes(self):
+        actual = list(suffixes('atest'))
+        expected = ['atest', 'test', 'est', 'st', 't']
+        self.assertEqual(expected, actual)
+
+    def test_attrdict_get(self):
+        d = dict(x = 1)
+        ad = AttrDict(d)
+        self.assertEqual(d['x'], ad.x)
+
+    def test_attrdict_set(self):
+        d = dict()
+        ad = AttrDict(d)
+        ad.x = 1
+        self.assertEqual(d['x'], ad.x)
+
+    def test_attrict_rest(self):
+        d = dict(x = 1, y = 2)
+        ad = AttrDict(d)
+        ad['z'] = 3
+        del ad['x']
+        self.assertEqual(d['y'], ad['y'])
+        self.assertEqual(len(d), len(ad))
+        self.assertEqual(list(d), list(ad))
 
 if __name__ == '__main__': unittest.main()

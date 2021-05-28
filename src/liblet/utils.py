@@ -1,6 +1,6 @@
 from functools import partial
 from collections import deque, defaultdict, OrderedDict
-from collections.abc import Set
+from collections.abc import Set, MutableMapping
 from itertools import chain
 from sys import stderr
 from warnings import warn as wwarn
@@ -19,7 +19,7 @@ def first(s):
     """Returns the fist element of the given :obj:`set`."""
     return next(iter(s)) if s else None
 
-def peek(s):
+def peek(s): # pragma: nocover
     """Deprecated. Use first"""
     wwarn('The function "peek" is now deprecated, please use "first" instead.', DeprecationWarning)
     return first(s)
@@ -54,7 +54,7 @@ class Queue(object):
         self.Q.append(item)
     def dequeue(self):
         return self.Q.popleft()
-    def copy(self):
+    def copy(self): # pragma: nocover
         wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning)
         return self.__copy__()
     def __copy__(self):
@@ -79,7 +79,7 @@ class Stack(object):
         return self.S[-1]
     def pop(self):
         return self.S.pop()
-    def copy(self):
+    def copy(self): # pragma: nocover
         wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning)
         return self.__copy__()
     def __copy__(self):
@@ -93,6 +93,31 @@ class Stack(object):
         return 'Stack({})'.format('{} ↔'.format(el) if el else '')
     def __len__(self):
         return len(self.S)
+
+class AttrDict(MutableMapping):
+    def __init__(self, mapping):
+        object.__setattr__(self, '_AttrDict__store', mapping)
+
+    def __getattr__(self, key):
+        return self.__store[key]
+
+    def __setattr__(self, key, val):
+        self.__store[key] = val
+
+    def __getitem__(self, key):
+        return self.__store[key]
+
+    def __setitem__(self, key, value):
+        self.__store[key] = value
+
+    def __delitem__(self, key):
+        del self.__store[key]
+
+    def __iter__(self):
+        return iter(self.__store)
+
+    def __len__(self):
+        return len(self.__store)
 
 class Table(object):
     """A one or two-dimensional *table* able to detect conflicts and with a nice HTML representation, based on :obj:`~collections.defaultdict`."""
@@ -197,7 +222,7 @@ class Table(object):
             if self.fmt['rows_sort']: rows = sorted(rows)
             return _table('\n'.join('<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(letstr(r, self.fmt['rows_sep']), letstr(self.data[r], self.fmt['elem_sep'], remove_outer = True)) for r in rows))
 
-def uc(s, c = ''):
+def uc(s, c = ''): # pragma: nocover
     return ''.join(map(lambda _: _ + c, s))
 
 uc.dot = partial(uc, c = '\u0307')
