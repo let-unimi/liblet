@@ -1,10 +1,14 @@
 dist: xenial
 language: python
-python: 3.7
+python:
+  - 3.7
+  - 3.8
+  - 3.9
 install:
+  - pip install tox-travis
   - pip install -e .[test]
   - install_antlrjar
 script:
-  - export LIBLET_NOBEACON=1 ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.9.1-complete.jar" && ./bin/tests
+  - export LIBLET_NOBEACON=1 ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.9.1-complete.jar" && tox
 after_success:
   - codecov
