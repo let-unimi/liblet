@@ -2,6 +2,7 @@ __pycache__/
 .coverage
 .envrc
 .ipynb_checkpoints
+.tox/
 .vscode/ipch
 binder/jupyter/migrated
 build/
