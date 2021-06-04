@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v1.4.1-alpha (2021-06-04)
+-------------------------
+
+- Added installation instructions related to the new LLVM module.
+- Completely removed *beaconing*.
+- Added support for tox testing (with Python 3.7, 3.8, and 3.9).
+
 v1.4.0-alpha (2021-05-28)
 -------------------------
 
