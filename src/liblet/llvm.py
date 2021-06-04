@@ -7,6 +7,25 @@ from graphviz import Source
 
 from . import warn
 
+from os import environ
+
+LLVM_VERSION = environ.get('LLVM_VERSION')
+if LLVM_VERSION is not None:
+    OPT_EXECUTABLE = 'opt-{}'.format(LLVM_VERSION)
+    CLANG_EXECUTABLE = 'clang-{}'.format(LLVM_VERSION)
+
+def _run_clang(*args, **kwargs):
+  try:
+      return run(CLANG_EXECUTABLE + args, **kwargs)
+  except:
+      raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(CLANG_EXECUTABLE, LLVM_VERSION))
+
+def _run_opt(*args, **kwargs):
+    try:
+        return run(OPT_EXECUTABLE + args, **kwargs)
+    except:
+        raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(OPT_EXECUTABLE, LLVM_VERSION))
+
 WRAPPING_CODE = r"""
     ; ModuleID = '{name}.ll'
     source_filename = "{name}.ll"
@@ -73,16 +92,16 @@ class LLVM:
         Path(self.name).with_suffix('.ll').write_text(dedent(wrapped))
         Path(self.name).unlink(missing_ok = True)
         try:
-            run('clang-10 -Wno-override-module -o {name} {name}.ll'.format(name = self.name).split(), check = True, stdout = PIPE, stderr = PIPE)
+            _run_clang('-Wno-override-module -o {name} {name}.ll'.format(name = self.name).split(), check = True, stdout = PIPE, stderr = PIPE)
         except CalledProcessError as e:
             warn(e.stderr.decode('utf8'))
 
     def control_flow_graph(self):
         """Returns the control flow graph."""
         self.write_and_compile()
-        run('opt-10 -analyze -o /dev/null -dot-cfg {name}.ll'.format(name = self.name).split())
+        _run_opt('-analyze -o /dev/null -dot-cfg {name}.ll'.format(name = self.name).split())
         return Source(Path('.main.dot').read_text())
 
     def mem2reg(self):
         """Outputs the result of `mem2reg` optimization."""
-        return run('opt-10 -mem2reg -S {name}.ll'.format(name = self.name).split(), stdout = PIPE).stdout.decode('utf8')
+        return _run_opt('-mem2reg -S {name}.ll'.format(name = self.name).split(), stdout = PIPE).stdout.decode('utf8')

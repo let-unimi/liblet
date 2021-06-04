@@ -3,9 +3,9 @@
 Installation
 ============
 
-We recommend using the latest version of Python 3, LibLET is tested under Python 3.7
-and newer. These packages (and the related dependencies) will be installed automatically when installing
-LibLET:
+We recommend using the latest version of Python 3, LibLET is tested under Python
+3.7 and newer. These packages (and the related dependencies) will be installed
+automatically when installing LibLET:
 
 * `antlr4-python3-runtime`_ the runtime of `ANTLR 4`_ for Python 3;
 * `jupyter`_ a web application to create documents that contain live
@@ -74,11 +74,15 @@ Install the external dependencies
 
 To use LibLET you also need to manually install:
 
-* the `Graphviz`_ visualization software, and
-* the **ANTLR Tool**, that is `antlr-4.7.2-complete.jar <https://www.antlr.org/download/antlr-4.7.2-complete.jar>`_.
+* the `Graphviz`_ visualization software,
+* the **ANTLR Tool**, that is `antlr-4.7.2-complete.jar <https://www.antlr.org/download/antlr-4.7.2-complete.jar>`_, and
+* the **LLVM toolchain** in case you want to use the :class:`~liblet.llvm.LLVM`
+  helper class (present code is tested with version 10 of the toolchain).
 
-Follow the installation instruction on the `Graphviz`_ site according to your
-operating system and package manager.
+Follow the installation instruction on the `Graphviz`_ and `LLVM`_ sites
+according to your operating system and package manager.
+
+.. _LLVM: https://llvm.org/
 
 To install the **ANTLR Tool**, you can use the :command:`install_antlrjar`
 command provided by LibLET as:
@@ -88,5 +92,7 @@ command provided by LibLET as:
     $ install_antlrjar
 
 and set the :envvar:`ANTLR4_JAR` *environment variable* to the full path of the
-downloaded jar as advised.
+downloaded jar as advised. Finally, if you plan to use the
+:class:`~liblet.llvm.LLVM` helper class, set the :envvar:`LLVM_VERSION`
+*environment variable* to the installed toolchain version.
 
