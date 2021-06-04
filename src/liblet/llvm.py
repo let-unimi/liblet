@@ -14,17 +14,19 @@ if LLVM_VERSION is not None:
     OPT_EXECUTABLE = 'opt-{}'.format(LLVM_VERSION)
     CLANG_EXECUTABLE = 'clang-{}'.format(LLVM_VERSION)
 
-def _run_clang(*args, **kwargs):
-  try:
-      return run(CLANG_EXECUTABLE + args, **kwargs)
-  except:
-      raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(CLANG_EXECUTABLE, LLVM_VERSION))
-
-def _run_opt(*args, **kwargs):
+def _run_clang(args, *, _ = None, **kwargs):
+    if LLVM_VERSION is None: raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
     try:
-        return run(OPT_EXECUTABLE + args, **kwargs)
-    except:
-        raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(OPT_EXECUTABLE, LLVM_VERSION))
+        return run([CLANG_EXECUTABLE] + args, **kwargs)
+    except FileNotFoundError:
+        raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(CLANG_EXECUTABLE, LLVM_VERSION)) from None
+
+def _run_opt(args, *, _ = None, **kwargs):
+    if LLVM_VERSION is None: raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
+    try:
+        return run([OPT_EXECUTABLE] + args, **kwargs)
+    except FileNotFoundError:
+        raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(OPT_EXECUTABLE, LLVM_VERSION)) from None
 
 WRAPPING_CODE = r"""
     ; ModuleID = '{name}.ll'
