@@ -6,7 +6,7 @@ v1.4.2-alpha (2021-06-04)
 
 - Emergency fix fort LLVM toolchain detection code.
 
-v1.4.2-alpha (2021-06-04)
+v1.4.1-alpha (2021-06-04)
 -------------------------
 
 - Added installation instructions related to the new LLVM module.
