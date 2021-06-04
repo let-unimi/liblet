@@ -16,26 +16,3 @@ from .automaton import Transition, Automaton, TopDownInstantaneousDescription, B
 from .utils import first, peek, union_of, letstr, Stack, Queue, Table, warn, uc, suffixes
 from .antlr import ANTLR, AnnotatedTreeWalker
 from .llvm import LLVM
-
-if 'LIBLET_NOBEACON' not in environ and 'READTHEDOCS' not in environ:
-    try:
-        if 'playground' in environ.get('PYTHONPATH', ''):
-            ea = 'playground'
-        elif 'handouts' in environ.get('PYTHONPATH', ''):
-            ea = 'handouts'
-        else:
-            ea = 'direct'
-        request.urlopen('https://www.google-analytics.com/collect', data = parse.urlencode({
-            'v': 1,
-            'tid': 'UA-377250-25',
-            'aip': 1,
-            'ds': 'lib',
-            'cid': getnode(),
-            't': 'event',
-            'ec': 'liblet',
-            'ea': ea,
-            'el': __version__,
-            'ev': 1
-        }).encode()).read()
-    except URLError:
-        pass

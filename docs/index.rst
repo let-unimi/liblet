@@ -24,13 +24,6 @@ Get started with :ref:`installation` and then get an overview with the
 :ref:`examples`. The rest of the docs describe each component of LibLET in
 detail, with a full reference in the :ref:`API` section.
 
-.. note::
-
-    Please observe that this library uses a **beaconing** mechanism based on the
-    `Google Analytics Measurement Protocol
-    <https://developers.google.com/analytics/devguides/collection/protocol/v1/>`__,
-    see the :ref:`installation` on how to **disable** it.
-
 
 User's Guide
 ------------
