@@ -34,3 +34,4 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         flags: unittests # optional
         verbose: true # optional (default = false)
+        files: /home/runner/work/liblet/liblet/coverage.xml
