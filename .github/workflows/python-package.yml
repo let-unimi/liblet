@@ -29,3 +29,7 @@ jobs:
     - name: Test with coverage/unittest
       run: |
         export ANTLR4_JAR="/home/runner/work/liblet/liblet/jars/antlr-4.9.3-complete.jar" && tox4
+    - uses: codecov/codecov-action@v2
+      with:
+        flags: unittests
+        verbose: true
