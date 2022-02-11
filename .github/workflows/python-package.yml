@@ -28,4 +28,4 @@ jobs:
         install_antlrjar
     - name: Test with coverage/unittest
       run: |
-        export ANTLR4_JAR="/home/travis/build/let-unimi/liblet/jars/antlr-4.9.3-complete.jar" && tox
+        export ANTLR4_JAR="/home/runner/work/liblet/liblet/jars/antlr-4.9.3-complete.jar" && tox
