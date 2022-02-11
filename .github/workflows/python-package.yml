@@ -31,5 +31,6 @@ jobs:
         export ANTLR4_JAR="/home/runner/work/liblet/liblet/jars/antlr-4.9.3-complete.jar" && tox4
     - uses: codecov/codecov-action@v2
       with:
-        flags: unittests
-        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: unittests # optional
+        verbose: true # optional (default = false)

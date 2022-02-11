@@ -5,7 +5,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2619588.svg)](https://doi.org/10.5281/zenodo.2619588)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/let-unimi/liblet/master?filepath=Playground.ipynb)
 
-[![BuildStatus](https://travis-ci.org/let-unimi/liblet.svg?branch=master)](https://travis-ci.org/let-unimi/liblet)
 [![Coverage Status](https://codecov.io/gh/let-unimi/liblet/branch/master/graph/badge.svg)](https://codecov.io/gh/let-unimi/liblet)
 [![DocumentationStatus](https://readthedocs.org/projects/liblet/badge/?version=latest)](https://liblet.readthedocs.io/en/latest/?badge=latest)
 [![PyPI](https://img.shields.io/pypi/v/liblet.svg?color=brightgreen&logo=python&logoColor=white)](https://pypi.org/project/liblet/)
