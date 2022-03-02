@@ -5,7 +5,7 @@ from marshal import dumps, loads
 from os import environ
 from os.path import exists
 from os.path import join as pjoin
-from re import A, findall
+from re import findall
 from subprocess import run
 from sys import modules
 from tempfile import TemporaryDirectory
