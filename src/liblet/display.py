@@ -46,7 +46,7 @@ class BaseGraph(ABC):
         G.edge(str(src), str(dst), **label_param)
 
     def _repr_svg_(self):
-        return self._gvgraph_()._repr_svg_()
+        return self._gvgraph_()._repr_image_svg_xml()
 
 class Tree(BaseGraph):
     """A *n-ary tree* with ordered children.
