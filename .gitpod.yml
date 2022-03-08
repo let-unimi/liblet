@@ -2,9 +2,5 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - name: Install liblet
-    init: |
-      pip install antlr4-python3-runtime graphviz liblet==1.5.1a0
-      /home/gitpod/.pyenv/shims/install_antlrjar
-    env:
-      ANTLR4_JAR: "/workspace/liblet/jars/antlr-4.9.3-complete.jar"
+  - name: Install ANTLR jars
+    before: /home/gitpod/.pyenv/shims/install_antlrjar
