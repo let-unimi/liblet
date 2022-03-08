@@ -1,4 +1,0 @@
-liblet
-antlr4-python3-runtime
-graphviz
-jupyter-full-width

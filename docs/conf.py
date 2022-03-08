@@ -4,7 +4,6 @@
 
 from os import path
 from io import open
-import re
 
 from pallets_sphinx_themes import ProjectLink, get_version
 
@@ -17,7 +16,7 @@ def read(*parts):
 # -- Project information
 
 project = 'LibLET'
-copyright = '2019, Massimo Santini'
+copyright = '2021, Massimo Santini'
 author = 'Massimo Santini'
 relase, version = get_version('liblet')
 
@@ -43,7 +42,7 @@ pygments_style = None
 add_module_names = False
 
 
-# -- Options for intersphinx extension 
+# -- Options for intersphinx extension
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),

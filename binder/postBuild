@@ -1,6 +1,0 @@
-export JUPYTER_CONFIG_DIR=$HOME/binder/jupyter
-jupyter nbextension install full_width --user --py 
-jupyter nbextension enable full_width --user --py
-jupyter trust Playground.ipynb
-rm -rf conda-bld
-install_antlrjar
