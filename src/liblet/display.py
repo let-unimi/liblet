@@ -7,7 +7,7 @@ from html import escape
 from itertools import chain
 from re import sub
 
-from IPython.display import HTML
+from IPython.display import HTML, display
 from graphviz import Digraph as gvDigraph
 from ipywidgets import interactive, IntSlider
 
