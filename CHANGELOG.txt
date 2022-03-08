@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v1.5.1-alpha (2022-03-08)
+-------------------------
+
+- From binder to gitpod.
+- Updated to the new graphviz api.
+- Now sing GitHub Actions to run tests (instead of Travis).
+
 v1.5.0-alpha (2022-02-11)
 -------------------------
 
