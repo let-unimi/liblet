@@ -8,6 +8,7 @@ from itertools import chain
 from re import sub
 
 from IPython.display import HTML, display
+from attr import frozen
 from graphviz import Digraph as gvDigraph
 from ipywidgets import interactive, IntSlider
 
@@ -79,6 +80,9 @@ class Tree(BaseGraph):
         self.root = root
         self.children = list(children) if children else []
         if isinstance(root, MutableMapping): self.attr = AttrDict(root)
+
+    def __iter__(self):
+        return iter([self.root] + self.children)
 
     @classmethod
     def from_lol(cls, lol):
@@ -201,10 +205,27 @@ class Graph(BaseGraph):
 
     def __init__(self, arcs, sep = None):
         self.G = gvDigraph(graph_attr = {'size': '8', 'rankdir': 'LR'})
-        for src, dst in arcs: self.G.edge(letstr(src, sep = sep), letstr(dst, sep = sep))
+        self.adj = dict()
+        for src, dst in arcs:
+          self.adj[src] = self.adj.get(src, set()) | {dst}
+          self.adj[dst] = self.adj.get(dst, set())
+          self.G.edge(letstr(src, sep = sep), letstr(dst, sep = sep))
+
+    def neighbors(self, src):
+        """Returns (a set containing) the neighbors of the given node.
+
+        Args:
+            src: the node.
+        """
+        return frozenset(self.adj[src])
 
     @classmethod
     def from_adjdict(cls, adjdict):
+        """Builds a graph given its adjacency structure.
+
+        Args:
+            adjdict (dict): a dictionary where keys are source nodes and values are an iterable of destination nodes.
+        """
         return cls((src, dst) for src, dsts in adjdict.items() for dst in dsts)
 
     def _gvgraph_(self):
