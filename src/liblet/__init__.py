@@ -1,8 +1,3 @@
-from os import environ
-from urllib import request, parse
-from urllib.error import URLError
-from uuid import getnode
-
 __version__ = '1.5.1-alpha'
 
 ε = 'ε'
