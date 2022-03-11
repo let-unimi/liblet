@@ -1,6 +1,18 @@
 Changelog
 =========
 
+v1.5.2-alpha (2022-03-11)
+-------------------------
+
+- A new Productions class has been introduced to allow a nicer HTML
+  representation of grammar productions.
+- Added the Graph.neighbors method (to iterate on adjacency lists).
+- Made Tree iterable (to allow for root and children unpakcing).
+- Major code reformatting (now 2 spaces are used instead of 4).
+- Cosmetic fixes (removing some stale imports and commited files).
+- Now docs point to Gitpod (Binder is completely gone).
+
+
 v1.5.1-alpha (2022-03-08)
 -------------------------
 

@@ -99,7 +99,7 @@ class Production:
 
       .. doctest::
 
-        >>> prods = Production.from_string("A -> B C\\nB -> b\\nC -> D")
+        >>> prods = Productions.from_string("A -> B C\\nB -> b\\nC -> D")
         >>> list(filter(Production.such_that(lhs = 'B'), prods))
         [B -> b]
         >>> list(filter(Production.such_that(rhs = ['B', 'C']), prods))
@@ -300,7 +300,7 @@ class Grammar:
       prods (str): a string describing the productions.
       context_free (bool): if ``True`` the grammar is expected to be context-free.
 
-    Once the *productions* are determined via a call to :func:`Production.from_string`,
+    Once the *productions* are determined via a call to :func:`Productions.from_string`,
     the remaining defining elements of the grammar are obtained as follows:
 
     * if the grammar is *not* context-free the *nonterminals* is the set of symbols,
@@ -312,7 +312,7 @@ class Grammar:
       in a left-hand side of any production, the *terminals* are the remaining symbols. The
       *start* symbol is the left-hand side of the first production.
     """
-    P = Production.from_string(prods, context_free)
+    P = Productions.from_string(prods, context_free)
     if context_free:
       S = P[0].lhs
       N = set(map(attrgetter('lhs'), P))

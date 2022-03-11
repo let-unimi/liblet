@@ -1,6 +1,6 @@
 import unittest
 
-from liblet import Production, Item, Grammar, Derivation, ε
+from liblet import Production, Productions, Item, Grammar, Derivation, ε
 
 
 class TestGrammar(unittest.TestCase):
@@ -52,7 +52,7 @@ class TestGrammar(unittest.TestCase):
 
   def test_production_from_string_cf(self):
     with self.assertRaisesRegex(ValueError, 'forbidden in a context-free'):
-      Production.from_string("A B -> c", True)
+      Productions.from_string("A B -> c", True)
 
   def test_production_such_that_lhs(self):
     self.assertTrue(Production.such_that(lhs = 'X')(Production('X', ('x', ))))

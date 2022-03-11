@@ -46,6 +46,10 @@ The basic building block of a *grammar* is a *production* represented by the fol
    In order to find productions satisfying a set of properties, a convenience method
    to build a predicate from a set of keyword arguments is provided.
 
+   .. testsetup:: *
+
+      from liblet import Productions
+
    .. automethod:: such_that
 
 .. autoclass:: Productions
@@ -73,7 +77,7 @@ given the usual formal definition of a grammar as a tuple.
 
    Even in the case of grammars, a convenience method is provided to build a
    grammar from a suitable string representation. Once the productions are obtained
-   with :func:`Production.from_string`, the remaining parameters are
+   with :func:`Productions.from_string`, the remaining parameters are
    conventionally inferred as detailed below.
 
    .. automethod:: from_string
