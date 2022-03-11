@@ -1,6 +1,7 @@
 from functools import total_ordering
-from itertools import chain
+from itertools import chain, groupby
 from operator import attrgetter
+from warnings import warn as wwarn
 
 from . import ε
 from .utils import letstr
@@ -72,38 +73,9 @@ class Production:
 
   @classmethod
   def from_string(cls, prods, context_free = True):
-    """Builds a tuple of *productions* obtained from the given string.
-
-    Args:
-      prods (str): a string representing the set of productions.
-      context_free (bool): if ``True`` all the left-hand sides will be strings (not tuples).
-
-    The string must be a sequence of lines of the form::
-
-      lhs -> alternatives
-
-    where ``alternatives`` is a list of ``rhs`` strings (possibly separated by ``|``)
-    and ``lhs`` and ``rhs`` are space separated strings that will be used as left-hand and
-    right-hand sides of the returned productions; for example::
-
-      S -> ( S ) | x T y
-      x T y -> t
-
-    Raises:
-      ValueError: in case the productions are declared as ``context_free`` but one of
-            them has more than one symbol on the right-hand side.
-    """
-    P = []
-    for p in prods.splitlines():
-      if not p.strip(): continue
-      lh, rha = p.split('->')
-      lhs = tuple(lh.split())
-      if context_free:
-        if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as left-hand side, that is forbidden in a context-free grammar.'.format(p))
-        lhs = lhs[0]
-      for rh in rha.split('|'):
-        P.append(cls(lhs, tuple(rh.split())))
-    return tuple(P)
+    """Deprecated. Use Productions.from_string"""
+    wwarn('The function "from_string" has been moved to Productions.', DeprecationWarning)
+    return Productions.from_string(prods, context_free)
 
   @classmethod
   def such_that(cls, **kwargs):
@@ -153,6 +125,57 @@ class Production:
   def as_type0(self):
     if isinstance(self.lhs, tuple): return self
     return Production((self.lhs, ), self.rhs)
+
+class Productions(tuple):
+  """A sequence (tuple) of productions.
+
+  The main purpose of this class is to allow a nicer HTML representation of the grammar productions.
+  """
+
+  @classmethod
+  def from_string(cls, prods, context_free = True):
+    """Builds a tuple of *productions* obtained from the given string.
+
+    Args:
+      prods (str): a string representing the set of productions.
+      context_free (bool): if ``True`` all the left-hand sides will be strings (not tuples).
+
+    The string must be a sequence of lines of the form::
+
+      lhs -> alternatives
+
+    where ``alternatives`` is a list of ``rhs`` strings (possibly separated by ``|``)
+    and ``lhs`` and ``rhs`` are space separated strings that will be used as left-hand and
+    right-hand sides of the returned productions; for example::
+
+      S -> ( S ) | x T y
+      x T y -> t
+
+    Raises:
+      ValueError: in case the productions are declared as ``context_free`` but one of
+            them has more than one symbol on the right-hand side.
+    """
+    P = []
+    for p in prods.splitlines():
+      if not p.strip(): continue
+      lh, rha = p.split('->')
+      lhs = tuple(lh.split())
+      if context_free:
+        if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as left-hand side, that is forbidden in a context-free grammar.'.format(p))
+        lhs = lhs[0]
+      for rh in rha.split('|'):
+        P.append(Production(lhs, tuple(rh.split())))
+    return cls(P)
+
+  def _repr_html_(self):
+    rows = []
+    for lhs, rhs in groupby(enumerate(self), lambda _: _[1].lhs):
+      rows.append(
+        '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(
+          _letlrhstostr(lhs),
+          ' | '.join(map(lambda _: '{}<sub>({})</sub>'.format(_letlrhstostr(_[1].rhs), _[0]), rhs))
+      ))
+    return '<style>td, th {border: 1pt solid lightgray !important ;}</style><table><tr>'+ '<tr>'.join(rows) + '</table>'
 
 @total_ordering
 class Item(Production):
@@ -248,7 +271,7 @@ class Grammar:
   def __init__(self, N, T, P, S):
     self.N = frozenset(N)
     self.T = frozenset(T)
-    self.P = tuple(P)
+    self.P = Productions(P)
     self.S = S
     self.is_context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
     if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common.'.format(set(self.N & self.T)))
@@ -281,13 +304,13 @@ class Grammar:
     the remaining defining elements of the grammar are obtained as follows:
 
     * if the grammar is *not* context-free the *nonterminals* is the set of symbols,
-     appearing in (the left-hand, or right-hand side of) any production, beginning with
-     an uppercase letter, the *terminals* are the remaining symbols. The *start* symbol
-     is the left-hand side of the first production;
+      appearing in (the left-hand, or right-hand side of) any production, beginning with
+      an uppercase letter, the *terminals* are the remaining symbols. The *start* symbol
+      is the left-hand side of the first production;
 
     * if the grammar is *context-free* the *nonterminals* is the set of symbols appearing
-     in a left-hand side of any production, the *terminals* are the remaining symbols. The
-     *start* symbol is the left-hand side of the first production.
+      in a left-hand side of any production, the *terminals* are the remaining symbols. The
+      *start* symbol is the left-hand side of the first production.
     """
     P = Production.from_string(prods, context_free)
     if context_free:

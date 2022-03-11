@@ -6,6 +6,7 @@ from collections.abc import Set, MutableMapping
 from html import escape
 from itertools import chain, groupby
 from re import sub
+from warnings import warn as wwarn
 
 from IPython.display import HTML, display
 from attr import frozen
@@ -14,7 +15,7 @@ from ipywidgets import interactive, IntSlider
 
 from . import ε
 from .utils import letstr, AttrDict
-from .grammar import _letlrhstostr, HAIR_SPACE, Derivation
+from .grammar import Productions, HAIR_SPACE, Derivation
 
 # graphviz stuff
 
@@ -457,14 +458,9 @@ def cyk2table(TABLE):
     )
 
 def prods2table(G):
-  rows = []
-  for lhs, rhs in groupby(enumerate(G.P), lambda _: _[1].lhs):
-    rows.append(
-      '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(
-        _letlrhstostr(lhs),
-        ' | '.join(map(lambda _: '{}<sub>({})</sub>'.format(_letlrhstostr(_[1].rhs), _[0]), rhs))
-    ))
-  return __bordered_table__('<tr>' + '<tr>'.join(rows) + '</table>')
+  """Deprecated. Use Productions instead"""
+  wwarn('The function "prods2table" has been absorbed in Productions.', DeprecationWarning)
+  return HTML(Productions(G.P)._repr_html_())
 
 def ff2table(G, FIRST, FOLLOW):
   return dod2table({N: {'First': ' '.join(FIRST[(N, )]), 'Follow': ' '.join(FOLLOW[N])} for N in G.N})

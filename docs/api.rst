@@ -43,15 +43,17 @@ The basic building block of a *grammar* is a *production* represented by the fol
 
 .. autoclass:: Production
 
-   A convenience method is provided to obtain productions from a suitable string
-   representation of them.
-
-   .. automethod:: from_string
-
    In order to find productions satisfying a set of properties, a convenience method
    to build a predicate from a set of keyword arguments is provided.
 
    .. automethod:: such_that
+
+.. autoclass:: Productions
+
+   A convenience method is provided to obtain productions from a suitable string
+   representation of them.
+
+   .. automethod:: from_string
 
 For the purpose of presenting the `Knuth Automaton <https://en.wikipedia.org/wiki/LR_parser#Finite_state_machine>`__
 in the context of LR(0) parsing,  productions are extended to include a dot in the following class.
@@ -231,6 +233,7 @@ Rich display
 
 .. autoclass:: Graph
 
+   .. automethod:: neighbors
    .. automethod:: from_adjdict
 
 .. autoclass:: Tree
