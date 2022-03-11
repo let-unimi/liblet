@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict, defaultdict
 from collections.abc import Set, MutableMapping
 from html import escape
-from itertools import chain
+from itertools import chain, groupby
 from re import sub
 
 from IPython.display import HTML, display
@@ -457,8 +457,13 @@ def cyk2table(TABLE):
     )
 
 def prods2table(G):
-  to_row = lambda N: '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(N, ' | '.join(map(_letlrhstostr, sorted(G.alternatives(N)))))
-  rows = [to_row(G.S)] + [to_row(N) for N in sorted(G.N - {G.S})]
+  rows = []
+  for lhs, rhs in groupby(enumerate(G.P), lambda _: _[1].lhs):
+    rows.append(
+      '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(
+        _letlrhstostr(lhs),
+        ' | '.join(map(lambda _: '{}<sub>({})</sub>'.format(_letlrhstostr(_[1].rhs), _[0]), rhs))
+    ))
   return __bordered_table__('<tr>' + '<tr>'.join(rows) + '</table>')
 
 def ff2table(G, FIRST, FOLLOW):
