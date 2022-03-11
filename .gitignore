@@ -7,6 +7,7 @@ __pycache__/
 binder/jupyter/migrated
 build/
 conf/
+coverage.xml
 dist/
 jars/
 liblet.egg-info/
