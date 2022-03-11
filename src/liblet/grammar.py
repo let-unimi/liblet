@@ -169,13 +169,16 @@ class Productions(tuple):
 
   def _repr_html_(self):
     rows = []
-    for lhs, rhs in groupby(enumerate(self), lambda _: _[1].lhs):
-      rows.append(
+    klhs = lambda _: _[1].lhs
+    for lhs, rhss in groupby(sorted(enumerate(self), key = klhs), klhs):
+      rhss = list(rhss) # it's used by min and map in format
+      rows.append((
+        min(map(lambda _:_[0], rhss)),
         '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(
           _letlrhstostr(lhs),
-          ' | '.join(map(lambda _: '{}<sub>({})</sub>'.format(_letlrhstostr(_[1].rhs), _[0]), rhs))
-      ))
-    return '<style>td, th {border: 1pt solid lightgray !important ;}</style><table><tr>'+ '<tr>'.join(rows) + '</table>'
+          ' | '.join(map(lambda _: '{}<sub>({})</sub>'.format(_letlrhstostr(_[1].rhs), _[0]), rhss))
+      )))
+    return '<style>td, th {border: 1pt solid lightgray !important ;}</style><table><tr>'+ '<tr>'.join(map(lambda _: _[1], sorted(rows))) + '</table>'
 
 @total_ordering
 class Item(Production):
