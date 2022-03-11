@@ -72,7 +72,7 @@ class Production:
     return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
 
   @classmethod
-  def from_string(cls, prods, context_free = True):
+  def from_string(cls, prods, context_free = True): # pragma: no cover
     """Deprecated. Use Productions.from_string"""
     wwarn('The function "from_string" has been moved to Productions.', DeprecationWarning)
     return Productions.from_string(prods, context_free)
@@ -167,7 +167,7 @@ class Productions(tuple):
         P.append(Production(lhs, tuple(rh.split())))
     return cls(P)
 
-  def _repr_html_(self):
+  def _repr_html_(self): # pragma: no cover
     rows = []
     klhs = lambda _: _[1].lhs
     for lhs, rhss in groupby(sorted(enumerate(self), key = klhs), klhs):
@@ -389,15 +389,15 @@ class Derivation:
   def __repr__(self):
     return self._repr
 
-  def __ensure_prod_idx__(self, prod):
-   if isinstance(prod, int):
-    if 0 <= prod < len(self.G.P): return prod
-    raise ValueError('There is no production of index {} in G'.format(prod))
-   if isinstance(prod, Production):
-    if prod in self.G.P: return self.G.P.index(prod)
-    raise ValueError('Production {} does not belong to G'.format(prod))
-   else:
-    raise ValueError('The argument is not a production or an integer')
+  def __ensure_prod_idx__(self, prod): # pragma: no cover
+    if isinstance(prod, int):
+      if 0 <= prod < len(self.G.P): return prod
+      raise ValueError('There is no production of index {} in G'.format(prod))
+    if isinstance(prod, Production):
+      if prod in self.G.P: return self.G.P.index(prod)
+      raise ValueError('Production {} does not belong to G'.format(prod))
+    else:
+      raise ValueError('The argument is not a production or an integer')
 
   def leftmost(self, prod):
     """Performs a *leftmost* derivation step.
