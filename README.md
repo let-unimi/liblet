@@ -4,7 +4,7 @@
 [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-blue.svg)](http://creativecommons.org/licenses/by-sa/4.0/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2619588.svg)](https://doi.org/10.5281/zenodo.2619588)
 
-[![Coverage Status](https://codecov.io/gh/let-unimi/liblet/branch/master/graph/badge.svg)](https://codecov.io/gh/let-unimi/liblet)
+[![Coverage Status](https://coveralls.io/repos/github/let-unimi/liblet/badge.svg?branch=master)](https://coveralls.io/github/let-unimi/liblet?branch=master)
 [![DocumentationStatus](https://readthedocs.org/projects/liblet/badge/?version=latest)](https://liblet.readthedocs.io/en/latest/?badge=latest)
 [![PyPI](https://img.shields.io/pypi/v/liblet.svg?color=brightgreen&logo=python&logoColor=white)](https://pypi.org/project/liblet/)
 
