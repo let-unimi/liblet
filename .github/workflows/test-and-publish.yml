@@ -1,4 +1,4 @@
-name: Test and release
+name: Test and publish
 
 on:
   push:
@@ -17,23 +17,23 @@ jobs:
         python-version: ["3.7", "3.8", "3.9"]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip tox-gh
-        python -m pip install -e .[test]
-        install_antlrjar
-    - name: Test with coverage/unittest
-      run: |
-        export ANTLR4_JAR="/home/runner/work/liblet/liblet/jars/antlr-4.9.3-complete.jar" && tox4
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip tox-gh
+          python -m pip install -e .[test]
+          install_antlrjar
+      - name: Test with coverage/unittest
+        run: |
+          export ANTLR4_JAR="/home/runner/work/liblet/liblet/jars/antlr-4.9.3-complete.jar" && tox4
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
 
@@ -41,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
       - name: Install pypa/build
         run: python -m pip install build
       - name: Build the binary wheel and source tarball
