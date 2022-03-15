@@ -4,6 +4,11 @@ Changelog
 v1.5.3-alpha (2022-03-15)
 -------------------------
 
+- Automating the publish/release via GitHub Actions.
+
+v1.5.3-alpha (2022-03-15)
+-------------------------
+
 - Productions now sorts the table rows (in production order).
 - Updated examples to use Productions instead prods2table (now deprecated).
 - Testing coverage is reported using Coveralls (instead of Codecov).
