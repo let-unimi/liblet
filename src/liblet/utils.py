@@ -5,8 +5,6 @@ from itertools import chain
 from sys import stderr
 from warnings import warn as wwarn
 
-from IPython.display import HTML
-
 def suffixes(α):
   for i in range(len(α)):
     yield α[i:]
@@ -159,16 +157,10 @@ class Table(object):
     if self.ndim == 2:
       if not (isinstance(key, tuple) and len(key) == 2): raise ValueError('Index is not a pair of values')
       r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
-      try:
-        return self.data[r][c]
-      except KeyError:
-        return element()
+      return self.data[r][c]
     else:
       r = Table._make_hashable(key)
-      try:
-        return self.data[r]
-      except KeyError:
-        return element()
+      return self.data[r]
 
   def __setitem__(self, key, value):
     if self.ndim == 2:
