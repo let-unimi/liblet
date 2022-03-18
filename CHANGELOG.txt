@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.5.4-alpha (2022-03-18)
+-------------------------
+
+- Introduced CYKTable (and deprecated cyk2table).
+
 v1.5.3-alpha (2022-03-15)
 -------------------------
 
