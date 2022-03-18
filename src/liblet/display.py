@@ -14,7 +14,7 @@ from graphviz import Digraph as gvDigraph
 from ipywidgets import interactive, IntSlider
 
 from . import ε
-from .utils import letstr, AttrDict
+from .utils import CYKTable, letstr, AttrDict
 from .grammar import Productions, HAIR_SPACE, Derivation
 
 # graphviz stuff
@@ -421,7 +421,6 @@ def animate_derivation(d, height = '300px'):
 def __bordered_table__(content):
   return HTML('<style>td, th {border: 1pt solid lightgray !important ;}</style><table>'+ content + '</table>')
 
-
 def side_by_side(*iterable):
   if len(iterable) == 1: iterable = iterable[0]
   return HTML('<div>{}</div>'.format(' '.join(item._repr_svg_() for item in iterable)))
@@ -447,15 +446,11 @@ def dod2table(dod, sort = False, sep = None):
   return __bordered_table__('{}\n{}\n'.format(head, body))
 
 def cyk2table(TABLE):
-  I, L = max(TABLE.keys())
-  # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
-  # (otherwise i <= N); in any case the lengths range in [N, L - 1)
-  N = I - 1 if L == 0 else I
-  return __bordered_table__('<tr>' +
-    '<tr>'.join('<td style="text-align:left"><pre>' + '</pre></td><td style="text-align:left"><pre>'.join(
-        (letstr(TABLE[(i, l)], sep = '\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
-      ) + '</pre></td>' for l in range(N, L - 1, -1))
-    )
+  """Deprecated. Use CYKTable instead."""
+  wwarn('The function "cyk2table" has been absorbed in CYKTable.', DeprecationWarning)
+  t = CYKTable()
+  for il, v in TABLE.items(): t[il] = v
+  return HTML(t._repr_html_())
 
 def prods2table(G):
   """Deprecated. Use Productions instead"""

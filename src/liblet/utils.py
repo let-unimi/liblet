@@ -220,6 +220,21 @@ class Table(object):
       if self.fmt['rows_sort']: rows = sorted(rows)
       return _table('\n'.join('<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(letstr(r, self.fmt['rows_sep']), letstr(self.data[r], self.fmt['elem_sep'], remove_outer = True)) for r in rows))
 
+class CYKTable(Table):
+  def __init__(self):
+    super().__init__(ndim = 2)
+  def _repr_html_(self):
+    TABLE = {(i, l): v for i, row in self.data.items() for l, v in row.items()}
+    I, L = max(TABLE.keys())
+    # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
+    # (otherwise i <= N); in any case the lengths range in [N, L - 1)
+    N = I - 1 if L == 0 else I
+    return '<style>td, th {border: 1pt solid lightgray !important ;}</style><table>' + ('<tr>' +
+      '<tr>'.join('<td style="text-align:left"><pre>' + '</pre></td><td style="text-align:left"><pre>'.join(
+          (letstr(TABLE[(i, l)], sep = '\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
+        ) + '</pre></td>' for l in range(N, L - 1, -1))
+      ) + '</table>'
+
 def uc(s, c = ''): # pragma: nocover
   return ''.join(map(lambda _: _ + c, s))
 
