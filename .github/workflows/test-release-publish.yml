@@ -24,7 +24,7 @@ jobs:
           install_antlrjar
       - name: Test with coverage/unittest
         run: |
-          export ANTLR4_JAR="/home/runner/work/liblet/liblet/jars/antlr-4.9.3-complete.jar" && tox4
+          export ANTLR4_JAR="$GITHUB_WORKSPACE/jars/antlr-4.9.3-complete.jar" && tox4
       - name: Publish to Coveralls
         uses: coverallsapp/github-action@master
         with:
