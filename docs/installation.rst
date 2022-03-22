@@ -75,9 +75,9 @@ Install the external dependencies
 To use LibLET you also need to manually install:
 
 * the `Graphviz`_ visualization software,
-* the **ANTLR Tool**, that is `antlr-4.7.2-complete.jar <https://www.antlr.org/download/antlr-4.7.2-complete.jar>`_, and
+* the **ANTLR Tool**, and
 * the **LLVM toolchain** in case you want to use the :class:`~liblet.llvm.LLVM`
-  helper class (present code is tested with version 10 of the toolchain).
+  helper class (present code is tested with version 11 of the toolchain).
 
 Follow the installation instruction on the `Graphviz`_ and `LLVM`_ sites
 according to your operating system and package manager.
