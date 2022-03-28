@@ -45,7 +45,7 @@ setup(
     python_requires='>=3.7',
     install_requires = ['antlr4-python3-runtime==4.9.3', 'jupyter', 'graphviz', 'ipywidgets'],
     extras_require = {
-        'dev': ['bumpversion', 'sphinx', 'twine', 'Pallets-Sphinx-Themes', 'gitchangelog', 'pystache'],
+        'dev': ['bump2version', 'sphinx', 'twine', 'Pallets-Sphinx-Themes', 'gitchangelog', 'pystache'],
         'test': ['coverage', 'codecov'],
     },
     entry_points={  # Optional
