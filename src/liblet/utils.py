@@ -222,7 +222,7 @@ class Table(object):
 
 class CYKTable(Table):
   def __init__(self):
-    super().__init__(ndim = 2)
+    super().__init__(ndim = 2, element = set)
   def _repr_html_(self):
     TABLE = {(i, l): v for i, row in self.data.items() for l, v in row.items()}
     I, L = max(TABLE.keys())
