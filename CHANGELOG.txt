@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v1.5.5-alpha (2022-03-18)
+-------------------------
+
+- The base element of a CYKTable is a set.
+- Added installation of LLVM 11 to the gitpod Dockerfile.
+- Updated documentation to the actually used versions of dependencies.
+- CYKTable replaces cyk2table in documentation examples.
+- Using GITHUB_WORKSPACE instead of hard wiring the path in GitHub workflow.
+
+
 v1.5.4-alpha (2022-03-18)
 -------------------------
 
