@@ -262,6 +262,7 @@ Utilities and decorators
 .. autoclass:: Table
 .. autoclass:: AttrDict
 .. autofunction:: warn
+.. autofunction:: first
 .. autofunction:: peek
 .. autofunction:: union_of
 
