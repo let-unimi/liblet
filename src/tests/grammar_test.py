@@ -131,7 +131,7 @@ class TestGrammar(unittest.TestCase):
     self.assertEqual(1, len(S))
 
   def test_grammar_nondisjoint(self):
-    with self.assertRaisesRegex(ValueError, "not disjoint.*\{'A'\}"):
+    with self.assertRaisesRegex(ValueError, r"not disjoint.*\{'A'\}"):
       Grammar({'S', 'A'},{'A', 'a'}, (), 'S')
 
   def test_grammar_wrongstart(self):
@@ -147,7 +147,7 @@ class TestGrammar(unittest.TestCase):
     self.assertFalse(G.is_context_free)
 
   def test_grammar_wrong_cf(self):
-    with self.assertRaisesRegex(ValueError, 'not a nonterminal.*\(T -> s,\)'):
+    with self.assertRaisesRegex(ValueError, r'not a nonterminal.*\(T -> s,\)'):
       Grammar(
         {'S'}, {'s'}, (
           Production('S', ('s', )),
@@ -156,7 +156,7 @@ class TestGrammar(unittest.TestCase):
       )
 
   def test_grammar_extrasymbol(self):
-    with self.assertRaisesRegex(ValueError, 'neither terminals or nonterminals.*\(S -> s t,\)'):
+    with self.assertRaisesRegex(ValueError, r'neither terminals or nonterminals.*\(S -> s t,\)'):
       Grammar(
         {'S'}, {'s'}, (
           Production('S', ('s', )),
