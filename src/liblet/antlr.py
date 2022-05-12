@@ -68,9 +68,9 @@ class ANTLR:
         '-listener', '-visitor',
         '{}.g'.format(name)
       ], capture_output = True, cwd = tmpdir)
-      if res.returncode:
-        warn(res.stderr.decode('utf-8'))
-        return
+      stderr = res.stderr.decode("utf-8").strip()
+      if stderr: warn(stderr)
+      if res.returncode: return
 
       for suffix in 'Lexer', 'Parser', 'Visitor', 'Listener': # the order is crucial, due to the module loading/execution sequence
         qn = '{}{}'.format(name, suffix)
