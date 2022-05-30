@@ -1,6 +1,18 @@
 Changelog
 =========
 
+v1.5.6-alpha (2022-05-30)
+-------------------------
+
+- Added html escamping to cell contents in Table.
+- Added warning reporting when generating ANTLR files from grammar.
+- Fixed a deprecation warning in some of the regexp.
+- Added first to API documentation.
+- Using tox instead of tox4.
+- Updated antlr to 4.10.
+- Using bump2version instead of the deprecated bumpversion.
+
+
 v1.5.5-alpha (2022-03-18)
 -------------------------
 
