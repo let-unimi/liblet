@@ -1,6 +1,7 @@
 from functools import partial
 from collections import deque, defaultdict, OrderedDict
 from collections.abc import Set, MutableMapping
+from html import escape
 from itertools import chain
 from sys import stderr
 from warnings import warn as wwarn
@@ -203,7 +204,7 @@ class Table(object):
       if not c in self.data[r]: return '&nbsp;'
       elem = self.data[r][c]
       if elem is None: return '&nbsp;'
-      return '<pre>{}</pre>'.format(letstr(elem, self.fmt['elem_sep'], remove_outer = True))
+      return '<pre>{}</pre>'.format(escape(letstr(elem, self.fmt['elem_sep'], remove_outer = True)), quote = True)
     if self.ndim == 2:
       rows = list(self.data.keys())
       if self.fmt['rows_sort']: rows = sorted(rows)
