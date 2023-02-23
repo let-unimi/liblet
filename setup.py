@@ -43,7 +43,7 @@ setup(
     packages = find_packages('src', exclude = ['tests']),
     py_modules = ['scripts'],
     python_requires='>=3.7',
-    install_requires = ['antlr4-python3-runtime==4.10', 'jupyter', 'graphviz', 'ipywidgets'],
+    install_requires = ['antlr4-python3-runtime==4.12.0', 'jupyter', 'graphviz', 'ipywidgets'],
     extras_require = {
         'dev': ['bump2version', 'sphinx', 'twine', 'Pallets-Sphinx-Themes', 'gitchangelog', 'pystache'],
         'test': ['coverage', 'codecov'],
