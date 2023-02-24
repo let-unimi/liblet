@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./bin/tests && coverage html -d ./build/coverage && coverage xml

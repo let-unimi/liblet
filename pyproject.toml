@@ -75,5 +75,11 @@ dependencies = [
 build = [ "./bin/docs" ]
 changelog = [ "gitchangelog" ]
 [tool.hatch.envs.tests.scripts]
-run = [ "./bin/tests" ]
-reports = [ "./bin/reports" ]
+run = [ 
+  "coverage run --branch --source liblet --omit '*/__init__.py','*/display.py','*/llvm.py' -m unittest discover discover -s src/tests -p '*_test.py'",
+  "coverage lcov -o ./coverage/lcov.info"
+]
+reports = [ 
+  "coverage html -d ./build/coverage", 
+  "coverage xml" 
+]
