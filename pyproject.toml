@@ -58,7 +58,7 @@ include = [
 ]
 [tool.hatch.build.targets.sdist]
 sources = [ "." ]
-include = [ "src/", "docs/"]
+include = [ "src/", "docs/", "bin/" ]
 [tool.hatch.envs.docs]
 dependencies = [
   "sphinx",

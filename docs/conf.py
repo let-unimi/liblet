@@ -16,7 +16,7 @@ def read(*parts):
 # -- Project information
 
 project = 'LibLET'
-copyright = '2021, Massimo Santini'
+copyright = '2023, Massimo Santini'
 author = 'Massimo Santini'
 relase, version = get_version('liblet')
 
