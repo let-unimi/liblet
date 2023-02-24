@@ -47,6 +47,12 @@ Changelog = "https://github.com/let-unimi/liblet/blob/master/CHANGELOG.txt"
 "Bug Tracker" = "https://github.com/let-unimi/liblet/issues"
 [project.scripts]
 install_antlrjar = "scripts:install_antlrjar"
+[project.optional-dependencies]
+docs = [
+  "sphinx",
+  "Pallets-Sphinx-Themes",
+  "pystache"
+]
 [tool.hatch.version]
 source = "regex_commit"
 path = "src/liblet/__init__.py"
@@ -58,14 +64,10 @@ include = [
 ]
 [tool.hatch.build.targets.sdist]
 sources = [ "." ]
-include = [ "src/", "docs/", "bin/" ]
+include = [ "src/", "docs/" ]
 [tool.hatch.envs.docs]
-dependencies = [
-  "sphinx",
-  "Pallets-Sphinx-Themes",
-  "gitchangelog", 
-  "pystache"
-]
+features = [ "docs" ]
+dependencies = [ "gitchangelog" ]
 [tool.hatch.envs.tests]
 dependencies = [
   "coverage",
