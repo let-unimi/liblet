@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [ -z "$1" ]; then
-    twine upload -r testpypi ./build/dist/*
-else
-    twine upload ./build/dist/*
-fi

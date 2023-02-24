@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.5.7-alpha (2023-02-24)
+-------------------------
+
+- Migrated to Hatch (and pyproject.toml from setup.py).
+- Updated to ANTLR to 4.12.0.
+- Added GitHub Actions Status badge.
+- Added testing for python 3.10.
+
 v1.5.7-alpha (2022-05-30)
 -------------------------
 
