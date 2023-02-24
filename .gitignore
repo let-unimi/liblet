@@ -2,7 +2,6 @@ __pycache__/
 .coverage
 .envrc
 .ipynb_checkpoints
-.tox/
 .vscode/ipch
 binder/jupyter/migrated
 build/
@@ -11,5 +10,4 @@ coverage.xml
 coverage/
 dist/
 jars/
-liblet.egg-info/
 Scratch.ipynb

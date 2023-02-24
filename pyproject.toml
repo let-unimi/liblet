@@ -58,7 +58,7 @@ include = [
 ]
 [tool.hatch.build.targets.sdist]
 sources = [ "." ]
-include = [ "src/", "docs/", "tox.ini"]
+include = [ "src/", "docs/"]
 [tool.hatch.envs.docs]
 dependencies = [
   "sphinx",
