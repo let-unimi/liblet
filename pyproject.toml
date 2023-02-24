@@ -83,3 +83,5 @@ reports = [
   "coverage html -d ./build/coverage", 
   "coverage xml" 
 ]
+[[tool.hatch.envs.tests.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10"]
