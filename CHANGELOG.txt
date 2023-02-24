@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v1.5.7-alpha (2023-02-24)
--------------------------
+v1.6.0a (2023-02-24)
+--------------------
 
 - Migrated to Hatch (and pyproject.toml from setup.py).
 - Updated to ANTLR to 4.12.0.
