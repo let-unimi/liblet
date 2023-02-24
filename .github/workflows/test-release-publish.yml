@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip tox-gh
-          python -m pip install -e .[test]
+          python -m pip install -e .
           install_antlrjar
       - name: Test with coverage/unittest
         run: |
