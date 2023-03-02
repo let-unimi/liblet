@@ -1,21 +1,20 @@
 [build-system]
 requires = ["hatchling", "hatch-regex-commit"]
 build-backend = "hatchling.build"
+
 [project]
 name = "liblet"
 description = "A teaching aid library for formal languages and compiler courses."
 readme = "README.md"
 requires-python = ">=3.7"
 license-files = { paths = ["LICENSE-GPL.txt", "LICENSE-CC.txt"] }
-authors = [
-  { name = "Massimo Santini", email = "massimo.santini@unimi.it" }
-]
+authors = [{ name = "Massimo Santini", email = "massimo.santini@unimi.it" }]
 keywords = [
-  "automata", 
-  "formal", 
-  "grammar", 
-  "graph", 
-  "language", 
+  "automata",
+  "formal",
+  "grammar",
+  "graph",
+  "language",
   "parser",
   "parsing",
   "tree"
@@ -40,50 +39,50 @@ dependencies = [
   "ipywidgets"
 ]
 dynamic = ["version"]
+
 [project.urls]
 Documentation = "https://liblet.readthedocs.io/"
 "Source code" = "https://github.com/let-unimi/liblet"
 Changelog = "https://github.com/let-unimi/liblet/blob/master/CHANGELOG.txt"
 "Bug Tracker" = "https://github.com/let-unimi/liblet/issues"
+
 [project.scripts]
 install_antlrjar = "scripts:install_antlrjar"
+
 [project.optional-dependencies]
-docs = [
-  "sphinx",
-  "Pallets-Sphinx-Themes",
-  "pystache"
-]
+docs = ["sphinx", "Pallets-Sphinx-Themes", "pystache"]
+
 [tool.hatch.version]
 source = "regex_commit"
 path = "src/liblet/__init__.py"
+
 [tool.hatch.build]
-sources = [ "src" ]
-include = [
-  "src/liblet/*.py",
-  "src/*.py",
-]
+sources = ["src"]
+include = ["src/liblet/*.py", "src/*.py"]
+
 [tool.hatch.build.targets.sdist]
-sources = [ "." ]
-include = [ "src/", "docs/" ]
+sources = ["."]
+include = ["src/", "docs/"]
+
+[tool.hatch.envs.devel]
+dependencies = ["gitchangelog", "pyupgrade"]
+
 [tool.hatch.envs.docs]
-features = [ "docs" ]
-dependencies = [ "gitchangelog" ]
+features = ["docs"]
+
 [tool.hatch.envs.tests]
-dependencies = [
-  "coverage",
-  "codecov"
-]
+dependencies = ["coverage", "codecov"]
+
 [tool.hatch.envs.docs.scripts]
-build = [ "./bin/docs" ]
-changelog = [ "gitchangelog" ]
+build = ["./bin/docs"]
+changelog = ["gitchangelog"]
+
 [tool.hatch.envs.tests.scripts]
-run = [ 
+run = [
   "coverage run --branch --source liblet --omit '*/__init__.py','*/display.py','*/llvm.py' -m unittest discover discover -s src/tests -p '*_test.py'",
   "coverage lcov -o ./coverage/lcov.info"
 ]
-reports = [ 
-  "coverage html -d ./build/coverage", 
-  "coverage xml" 
-]
+reports = ["coverage html -d ./build/coverage", "coverage xml"]
+
 [[tool.hatch.envs.tests.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10"]
