@@ -203,7 +203,7 @@ class TestGrammar(unittest.TestCase):
       E -> T | E + T
       T -> i | ( E )
     """).alternatives('E'))
-    expected = set([('T',), ('E', '+', 'T')])
+    expected = {('T',), ('E', '+', 'T')}
     self.assertEqual(expected, actual)
 
   def test_derivation_repr(self):

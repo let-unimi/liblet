@@ -11,22 +11,22 @@ from os import environ
 
 LLVM_VERSION = environ.get('LLVM_VERSION')
 if LLVM_VERSION is not None:
-  OPT_EXECUTABLE = 'opt-{}'.format(LLVM_VERSION)
-  CLANG_EXECUTABLE = 'clang-{}'.format(LLVM_VERSION)
+  OPT_EXECUTABLE = f'opt-{LLVM_VERSION}'
+  CLANG_EXECUTABLE = f'clang-{LLVM_VERSION}'
 
 def _run_clang(args, *, _ = None, **kwargs):
   if LLVM_VERSION is None: raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
   try:
     return run([CLANG_EXECUTABLE] + args, **kwargs)
   except FileNotFoundError:
-    raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(CLANG_EXECUTABLE, LLVM_VERSION)) from None
+    raise FileNotFoundError(f'Executable {CLANG_EXECUTABLE} not found, LLVM_VERSION is {LLVM_VERSION}') from None
 
 def _run_opt(args, *, _ = None, **kwargs):
   if LLVM_VERSION is None: raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
   try:
     return run([OPT_EXECUTABLE] + args, **kwargs)
   except FileNotFoundError:
-    raise FileNotFoundError('Executable {} not found, LLVM_VERSION is {}'.format(OPT_EXECUTABLE, LLVM_VERSION)) from None
+    raise FileNotFoundError(f'Executable {OPT_EXECUTABLE} not found, LLVM_VERSION is {LLVM_VERSION}') from None
 
 WRAPPING_CODE = r"""
   ; ModuleID = '{name}.ll'
@@ -72,11 +72,11 @@ class LLVM:
 
   def new_variable(self):
     """Returns a new identifier for a variable."""
-    return '%v{}'.format(next(self._variable))
+    return f'%v{next(self._variable)}'
 
   def new_label(self):
     """Returns a new identifier for a label."""
-    return 'l{}'.format(next(self._label))
+    return f'l{next(self._label)}'
 
   def append_code(self, code):
     """Appends the given code."""
@@ -101,9 +101,9 @@ class LLVM:
   def control_flow_graph(self):
     """Returns the control flow graph."""
     self.write_and_compile()
-    _run_opt('-analyze -o /dev/null -dot-cfg {name}.ll'.format(name = self.name).split())
+    _run_opt(f'-analyze -o /dev/null -dot-cfg {self.name}.ll'.split())
     return Source(Path('.main.dot').read_text())
 
   def mem2reg(self):
     """Outputs the result of `mem2reg` optimization."""
-    return _run_opt('-mem2reg -S {name}.ll'.format(name = self.name).split(), stdout = PIPE).stdout.decode('utf8')
+    return _run_opt(f'-mem2reg -S {self.name}.ll'.split(), stdout = PIPE).stdout.decode('utf8')

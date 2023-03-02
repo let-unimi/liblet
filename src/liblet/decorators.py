@@ -30,15 +30,15 @@ def closure(f):
 
   Notes:
 
-    More formally, consider a function :math:`f : \mathfrak{D}\\times \mathfrak{X} \\to \mathfrak{D}`
-    where :math:`\mathfrak{D}` is a domain of interest and :math:`\mathfrak{X}` is the (possibly
+    More formally, consider a function :math:`f : \\mathfrak{D}\\times \\mathfrak{X} \\to \\mathfrak{D}`
+    where :math:`\\mathfrak{D}` is a domain of interest and :math:`\\mathfrak{X}` is the (possibly
     empty) domain of extra parameters. Define as usual the iterated application of :math:`f` as
     :math:`f^{(n + 1)}(D, X) = f(f^{(n)}(D, X), X)`, where :math:`f^{(0)}(D, X) = f(D, X)`. Then
     :math:`F = \\textit{closure}(f)` is the function
-    :math:`F: \mathfrak{D}\\times \mathfrak{X} \\to \mathfrak{D}` defined as
-    :math:`F(D, X) = f^{(\hat{n})}(D, X)` where :math:`\hat{n}` is the minimum
+    :math:`F: \\mathfrak{D}\\times \\mathfrak{X} \\to \\mathfrak{D}` defined as
+    :math:`F(D, X) = f^{(\\hat{n})}(D, X)` where :math:`\\hat{n}` is the minimum
     :math:`n` (depending on :math:`D` and :math:`X`) such that
-    :math:`f^{(\hat{n} + 1)}(D, X) = f^{(\hat{n})}(D, X)`.
+    :math:`f^{(\\hat{n} + 1)}(D, X) = f^{(\\hat{n})}(D, X)`.
 
   """
   @wraps(f)
@@ -89,7 +89,7 @@ def show_calls(show_retval = False):
     @wraps(f)
     def wrapper(*args, **kwds):
       f.depth += 1
-      fargs = ', '.join(['{!r}'.format(a) for a in args] + ['{} = {!r}'.format(k, v) for k, v in kwds.items()])
+      fargs = ', '.join([f'{a!r}' for a in args] + [f'{k} = {v!r}' for k, v in kwds.items()])
       if show_retval: print('{}┌{}({})'.format('│' * (f.depth - 1), f.__name__, fargs))
       else: print('{}{}({})'.format(' ' * (f.depth - 1), f.__name__, fargs))
       ret = f(*args, **kwds)

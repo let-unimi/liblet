@@ -20,7 +20,7 @@ from .grammar import Productions, HAIR_SPACE, Derivation
 # graphviz stuff
 
 def _escape(label):
-  return sub('\]', '&#93;', sub('\[', '&#91;', escape(str(label))))
+  return sub(r'\]', '&#93;', sub(r'\[', '&#91;', escape(str(label))))
 
 class BaseGraph(ABC):
 
@@ -114,7 +114,7 @@ class Tree(BaseGraph):
 
   def __repr__(self):
     def walk(T):
-      return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else '({})'.format(T.root)
+      return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else f'({T.root})'
     return walk(self)
 
   def _gvgraph_(self):
@@ -128,7 +128,7 @@ class Tree(BaseGraph):
       if isinstance(node, dict):
         return ''.join(
           ['<<FONT POINT-SIZE="12"><TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">'] +
-          ['<TR><TD>{}</TD><TD>{}</TD></TR>'.format(k, _escape(v)) for k, v in node.items() if not k.startswith('_thread_')] +
+          [f'<TR><TD>{k}</TD><TD>{_escape(v)}</TD></TR>' for k, v in node.items() if not k.startswith('_thread_')] +
           ['</TABLE></FONT>>'])
       return str(node)
     def walk(T):
@@ -244,7 +244,7 @@ class ProductionGraph(BaseGraph):
     self.G = None
 
   def __repr__(self):
-    return 'ProductionGraph({})'.format(self.derivation)
+    return f'ProductionGraph({self.derivation})'
 
   def _gvgraph_(self):
     if self.G is not None: return self.G
@@ -436,14 +436,14 @@ def dod2table(dod, sort = False, sep = None):
     if not c in dod[r]: return '&nbsp;'
     elem = dod[r][c]
     if elem is None: return '&nbsp;'
-    return '<pre>{}</pre>'.format(letstr(elem, sep))
+    return f'<pre>{letstr(elem, sep)}</pre>'
   rows = list(dod.keys())
   if sort: rows = sorted(rows)
   cols = list(OrderedDict.fromkeys(chain.from_iterable(dod[x].keys() for x in dod)))
   if sort: cols = sorted(cols)
   head = '<tr><td>&nbsp;<th style="text-align:left">' + '<th style="text-align:left">'.join(cols)
   body = '\n'.join('<tr><th style="text-align:left"><pre>{}</pre><td style="text-align:left">{}'.format(letstr(r, sep), '<td style="text-align:left">'.join(fmt(r, c) for c in cols)) for r in rows)
-  return __bordered_table__('{}\n{}\n'.format(head, body))
+  return __bordered_table__(f'{head}\n{body}\n')
 
 def cyk2table(TABLE):
   """Deprecated. Use CYKTable instead."""

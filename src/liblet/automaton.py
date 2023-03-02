@@ -82,7 +82,7 @@ class Transition:
     return iter((self.frm, self.label, self.to))
 
   def __repr__(self):
-    return '{}-{}->{}'.format(letstr(self.frm), self.label, letstr(self.to))
+    return f'{letstr(self.frm)}-{self.label}->{letstr(self.to)}'
 
   @classmethod
   def from_string(cls, transitions):
@@ -105,7 +105,7 @@ class Transition:
     return tuple(res)
 
 
-class Automaton(object):
+class Automaton:
   """An automaton.
 
     This class represents a (*nondeterministic*) *finite automaton*.
@@ -126,11 +126,11 @@ class Automaton(object):
     self.transitions = tuple(transitions)
     self.q0 = q0
     self.F = set(F)
-    if self.N & self.T: raise ValueError('The set of states and input symbols are not disjoint, but have {} in common.'.format(letstr(set(self.N & self.T))))
-    if not self.q0 in self.N: raise ValueError('The specified q0 ({}) is not a state.'.format(letstr(q0)))
-    if not self.F <= self.N: raise ValueError('The accepting states {} in F are not states.'.format(letstr(self.F - self.N)))
+    if self.N & self.T: raise ValueError(f'The set of states and input symbols are not disjoint, but have {letstr(set(self.N & self.T))} in common.')
+    if not self.q0 in self.N: raise ValueError(f'The specified q0 ({letstr(q0)}) is not a state.')
+    if not self.F <= self.N: raise ValueError(f'The accepting states {letstr(self.F - self.N)} in F are not states.')
     bad_trans = tuple(t for t in transitions if not t.frm in self.N or not t.to in self.N or not t.label in (self.T | {ε}))
-    if bad_trans: raise ValueError('The following transitions contain states or symbols that are neither states nor input symbols: {}.'.format(bad_trans))
+    if bad_trans: raise ValueError(f'The following transitions contain states or symbols that are neither states nor input symbols: {bad_trans}.')
 
   def δ(self, X, x):
     """The transition function.
@@ -146,7 +146,7 @@ class Automaton(object):
     return {Z for Y, y, Z in self.transitions if Y == X and y == x}
 
   def __repr__(self):
-    return 'Automaton(N={}, T={}, transitions={}, F={}, q0={})'.format(letstr(self.N), letstr(self.T), self.transitions, letstr(self.F), letstr(self.q0))
+    return f'Automaton(N={letstr(self.N)}, T={letstr(self.T)}, transitions={self.transitions}, F={letstr(self.F)}, q0={letstr(self.q0)})'
 
   @classmethod
   def from_string(cls, transitions, F = None, q0 = None):
@@ -180,10 +180,10 @@ class Automaton(object):
     """
     res = []
     for P in G.P:
-      if len(P.rhs) > 2: raise ValueError('Production {} has more than two symbols on the left-hand side'.format(P))
+      if len(P.rhs) > 2: raise ValueError(f'Production {P} has more than two symbols on the left-hand side')
       if len(P.rhs) == 2:
         A, (a, B) = P
-        if not (a in G.T and B in G.N): raise ValueError('Production {} right-hand side is not of the aB form'.format(P))
+        if not (a in G.T and B in G.N): raise ValueError(f'Production {P} right-hand side is not of the aB form')
         res.append(Transition(A, a, B))
       elif P.rhs[0] in G.N:
         res.append(Transition(*((P.lhs, ) + (ε, ) + P.rhs)))
@@ -191,7 +191,7 @@ class Automaton(object):
         res.append(Transition(*((P.lhs, ) + P.rhs + (DIAMOND,))))
     return cls(G.N | {DIAMOND}, G.T, tuple(res), G.S, {DIAMOND})
 
-class InstantaneousDescription(object):
+class InstantaneousDescription:
   """An Instantaneous Description.
 
     This class represents a *instantaneous description* of a *pushdown* auotmata.

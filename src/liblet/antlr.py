@@ -66,17 +66,17 @@ class ANTLR:
         'java', '-jar', environ['ANTLR4_JAR'],
         '-Dlanguage=Python3',
         '-listener', '-visitor',
-        '{}.g'.format(name)
+        f'{name}.g'
       ], capture_output = True, cwd = tmpdir)
       stderr = res.stderr.decode("utf-8").strip()
       if stderr: warn(stderr)
       if res.returncode: return
 
       for suffix in 'Lexer', 'Parser', 'Visitor', 'Listener': # the order is crucial, due to the module loading/execution sequence
-        qn = '{}{}'.format(name, suffix)
+        qn = f'{name}{suffix}'
         if qn in modules: del modules[qn]
         src_path = pjoin(tmpdir, qn) + '.py'
-        with open(src_path, 'r') as inf: self.source[suffix] = inf.read()
+        with open(src_path) as inf: self.source[suffix] = inf.read()
         spec = imputil.spec_from_file_location(qn, src_path)
         module = imputil.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -89,7 +89,7 @@ class ANTLR:
     Args:
       path (str): the path of the file where to save the grammar.
     """
-    with open(path, 'tw') as ouf: ouf.write(self.grammar)
+    with open(path, 'w') as ouf: ouf.write(self.grammar)
 
   @classmethod
   def load(cls, path):
@@ -98,7 +98,7 @@ class ANTLR:
     Args:
       path (str): the path of the file where the grammar was saved.
     """
-    with open(path, 'tr') as inf: return cls(inf.read())
+    with open(path) as inf: return cls(inf.read())
 
   def print_grammar(self, number_lines = True): # pragma: nocover
     """Prints the grammar (with line numbers)
@@ -107,7 +107,7 @@ class ANTLR:
       number_lines (bool): if ``False`` line numbers will not be printed.
     """
     if number_lines:
-      print('\n'.join(map(lambda n_r: '{:3}:\t{}'.format(n_r[0], n_r[1]), enumerate(self.grammar.splitlines(), 1))))
+      print('\n'.join(map(lambda n_r: f'{n_r[0]:3}:\t{n_r[1]}', enumerate(self.grammar.splitlines(), 1))))
     else:
       print(self.grammar)
 
@@ -265,7 +265,7 @@ class AnnotatedTreeWalker:
     """A default *catchall* that will invoke the recursion on all the subtrees, emitting
     a :meth:`~liblet.utils.warn` and returning a tree with the same root of the given tree
     and having as children the recursively visited children of the given tree."""
-    warn('TREE_CATCHALL: {}'.format(tree.root))
+    warn(f'TREE_CATCHALL: {tree.root}')
     trees = []
     for child in tree.children:
       t = visit(child)
@@ -278,8 +278,8 @@ class AnnotatedTreeWalker:
     a :meth:`~liblet.utils.warn` and returning a string with the same root of the given tree
     and having as children the (indented string representation of the) recursively visited
     children of the given tree."""
-    warn('TEXT_CATCHALL: {}'.format(tree.root))
-    return '{}'.format(tree.root) + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')
+    warn(f'TEXT_CATCHALL: {tree.root}')
+    return f'{tree.root}' + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')
 
   def __init__(self, key, catchall_func = None, dispatch_table = None):
     self.key = key

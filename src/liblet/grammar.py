@@ -69,7 +69,7 @@ class Production:
     return iter((self.lhs, self.rhs))
 
   def __repr__(self):
-    return '{} -> {}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs))
+    return f'{_letlrhstostr(self.lhs)} -> {_letlrhstostr(self.rhs)}'
 
   @classmethod
   def from_string(cls, prods, context_free = True): # pragma: no cover
@@ -161,7 +161,7 @@ class Productions(tuple):
       lh, rha = p.split('->')
       lhs = tuple(lh.split())
       if context_free:
-        if len(lhs) != 1: raise ValueError('Production "{}" has more than one symbol as left-hand side, that is forbidden in a context-free grammar.'.format(p))
+        if len(lhs) != 1: raise ValueError(f'Production "{p}" has more than one symbol as left-hand side, that is forbidden in a context-free grammar.')
         lhs = lhs[0]
       for rh in rha.split('|'):
         P.append(Production(lhs, tuple(rh.split())))
@@ -176,7 +176,7 @@ class Productions(tuple):
         min(map(lambda _:_[0], rhss)),
         '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(
           _letlrhstostr(lhs),
-          ' | '.join(map(lambda _: '{}<sub>({})</sub>'.format(_letlrhstostr(_[1].rhs), _[0]), rhss))
+          ' | '.join(map(lambda _: f'{_letlrhstostr(_[1].rhs)}<sub>({_[0]})</sub>', rhss))
       )))
     return '<style>td, th {border: 1pt solid lightgray !important ;}</style><table><tr>'+ '<tr>'.join(map(lambda _: _[1], sorted(rows))) + '</table>'
 
@@ -231,7 +231,7 @@ class Item(Production):
     return iter((self.lhs, self.rhs, self.pos))
 
   def __repr__(self):
-    return '{} -> {}•{}'.format(_letlrhstostr(self.lhs), _letlrhstostr(self.rhs[:self.pos]), _letlrhstostr(self.rhs[self.pos:]))
+    return f'{_letlrhstostr(self.lhs)} -> {_letlrhstostr(self.rhs[:self.pos])}•{_letlrhstostr(self.rhs[self.pos:])}'
 
   def symbol_after_dot(self):
     """Returns the symbol after the dot.
@@ -254,7 +254,7 @@ class Item(Production):
 
 
 class Grammar:
-  """A grammar.
+  r"""A grammar.
 
   This class represents a formal grammar, that is a tuple :math:`(N, T, P, S)` where
   :math:`N` is the finite set of *nonterminals* or *variables* symbols, :math:`T` is the
@@ -277,13 +277,13 @@ class Grammar:
     self.P = Productions(P)
     self.S = S
     self.is_context_free = all(map(lambda _: isinstance(_.lhs, str), self.P))
-    if self.N & self.T: raise ValueError('The set of terminals and nonterminals are not disjoint, but have {} in common.'.format(set(self.N & self.T)))
+    if self.N & self.T: raise ValueError(f'The set of terminals and nonterminals are not disjoint, but have {set(self.N & self.T)} in common.')
     if not self.S in self.N: raise ValueError('The start symbol is not a nonterminal.')
     if self.is_context_free:
       bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
-      if bad_prods: raise ValueError('The following productions have a left-hand side that is not a nonterminal: {}.'.format(bad_prods))
+      if bad_prods: raise ValueError(f'The following productions have a left-hand side that is not a nonterminal: {bad_prods}.')
     bad_prods = tuple(P for P in self.P if not (set(P.as_type0().lhs) | set(P.rhs)).issubset(self.N | self.T | {ε}))
-    if bad_prods: raise ValueError('The following productions contain symbols that are neither terminals or nonterminals: {}.'.format(bad_prods))
+    if bad_prods: raise ValueError(f'The following productions contain symbols that are neither terminals or nonterminals: {bad_prods}.')
 
   def __eq__(self, other):
     if not isinstance(other, Grammar): return NotImplemented
@@ -293,7 +293,7 @@ class Grammar:
     return hash((self.N, self.T, tuple(sorted(self.P)), self.S))
 
   def __repr__(self):
-    return 'Grammar(N={}, T={}, P={}, S={})'.format(letstr(self.N), letstr(self.T), self.P, letstr(self.S))
+    return f'Grammar(N={letstr(self.N)}, T={letstr(self.T)}, P={self.P}, S={letstr(self.S)})'
 
   @classmethod
   def from_string(cls, prods, context_free = True):
@@ -319,11 +319,11 @@ class Grammar:
     if context_free:
       S = P[0].lhs
       N = set(map(attrgetter('lhs'), P))
-      T = set((chain.from_iterable(map(attrgetter('rhs'), P)))) - N - {ε}
+      T = set(chain.from_iterable(map(attrgetter('rhs'), P))) - N - {ε}
     else:
       S = P[0].lhs[0]
       symbols = set(chain.from_iterable(map(attrgetter('lhs'), P))) | set(chain.from_iterable(map(attrgetter('rhs'), P)))
-      N = set(_ for _ in symbols if _[0].isupper())
+      N = {_ for _ in symbols if _[0].isupper()}
       T = symbols - N - {ε}
     G = cls(N, T, P, S)
     if context_free: # pragma: no cover
@@ -392,10 +392,10 @@ class Derivation:
   def __ensure_prod_idx__(self, prod): # pragma: no cover
     if isinstance(prod, int):
       if 0 <= prod < len(self.G.P): return prod
-      raise ValueError('There is no production of index {} in G'.format(prod))
+      raise ValueError(f'There is no production of index {prod} in G')
     if isinstance(prod, Production):
       if prod in self.G.P: return self.G.P.index(prod)
-      raise ValueError('Production {} does not belong to G'.format(prod))
+      raise ValueError(f'Production {prod} does not belong to G')
     else:
       raise ValueError('The argument is not a production or an integer')
 
@@ -421,9 +421,9 @@ class Derivation:
          if derivation.G.P[prod].lhs == symbol:
            return derivation.step(prod, pos)
          else:
-           raise ValueError('Cannot apply {}: the leftmost nonterminal of {} is {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf), symbol))
+           raise ValueError(f'Cannot apply {derivation.G.P[prod]}: the leftmost nonterminal of {HAIR_SPACE.join(derivation._sf)} is {symbol}.')
      else:
-       raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
+       raise ValueError(f'Cannot apply {derivation.G.P[prod]}: there are no nonterminals in {HAIR_SPACE.join(derivation._sf,)}.')
 
     if not self.G.is_context_free: raise ValueError('Cannot perform a leftmost derivation on a non context-free grammar')
     if isinstance(prod, int) or isinstance(prod, Production):
@@ -457,9 +457,9 @@ class Derivation:
          if derivation.G.P[prod].lhs == symbol:
            return derivation.step(prod, pos)
          else:
-           raise ValueError('Cannot apply {}: the rightmost nonterminal of {} is {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf), symbol))
+           raise ValueError(f'Cannot apply {derivation.G.P[prod]}: the rightmost nonterminal of {HAIR_SPACE.join(derivation._sf)} is {symbol}.')
      else:
-       raise ValueError('Cannot apply {}: there are no nonterminals in {}.'.format(derivation.G.P[prod], HAIR_SPACE.join(derivation._sf,)))
+       raise ValueError(f'Cannot apply {derivation.G.P[prod]}: there are no nonterminals in {HAIR_SPACE.join(derivation._sf,)}.')
 
     if not self.G.is_context_free: raise ValueError('Cannot perform a rightmost derivation on a non context-free grammar')
     if isinstance(prod, int) or isinstance(prod, Production):
@@ -491,7 +491,7 @@ class Derivation:
      sf = derivation._sf
      prod = self.__ensure_prod_idx__(prod)
      P = derivation.G.P[prod].as_type0()
-     if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError('Cannot apply {} at position {} of {}.'.format(P, pos, HAIR_SPACE.join(sf)))
+     if sf[pos: pos + len(P.lhs)] != P.lhs: raise ValueError(f'Cannot apply {P} at position {pos} of {HAIR_SPACE.join(sf)}.')
      copy = Derivation(derivation.G, self.start)
      copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs):] if _ != ε)
      copy._steps = derivation._steps + ((prod, pos), )

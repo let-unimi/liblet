@@ -45,7 +45,7 @@ def letstr(obj, sep = None, sort = True, remove_outer = False):
       return fs.format(sep.join(sorted(map(_ls, obj)) if sort else list(map(_ls, obj))))
   return _ls(obj)
 
-class Queue(object):
+class Queue:
   """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue``, and ``copy`` methods."""
   def __init__(self, iterable = None, maxlen = None):
     self.Q = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
@@ -64,11 +64,11 @@ class Queue(object):
    return reversed(self.Q)
   def __repr__(self):
     el = ', '.join(map(repr, self.Q))
-    return 'Queue({})'.format('← {} ←'.format(el) if el else '')
+    return 'Queue({})'.format(f'← {el} ←' if el else '')
   def __len__(self):
     return len(self.Q)
 
-class Stack(object):
+class Stack:
   """A convenience implementation of a *stack* providing the usual ``push``, ``pop``, ``peek``, and ``copy`` methods."""
   def __init__(self, iterable = None, maxlen = None):
     self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen = maxlen)
@@ -89,7 +89,7 @@ class Stack(object):
    return reversed(self.S)
   def __repr__(self):
     el = ', '.join(map(repr, self.S))
-    return 'Stack({})'.format('{} ↔'.format(el) if el else '')
+    return 'Stack({})'.format(f'{el} ↔' if el else '')
   def __len__(self):
     return len(self.S)
 
@@ -124,7 +124,7 @@ class AttrDict(MutableMapping):
   def __len__(self):
     return len(self.__store)
 
-class Table(object):
+class Table:
   """A one or two-dimensional *table* able to detect conflicts and with a nice HTML representation, based on :obj:`~collections.defaultdict`."""
 
   DEFAULT_FORMAT = {
@@ -168,7 +168,7 @@ class Table(object):
       if not (isinstance(key, tuple) and len(key) == 2): raise ValueError('Index is not a pair of values')
       r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
       if self.no_reassign and c in self.data[r]:
-        warn('Table already contains value {} for ({}, {})'.format(self.data[r][c], r, c))
+        warn(f'Table already contains value {self.data[r][c]} for ({r}, {c})')
       else:
         self.data[r][c] = value
     else:
@@ -215,7 +215,7 @@ class Table(object):
           '<tr><th><pre>{}<pre><td>'.format(letstr(r, self.fmt['rows_sep']))
             + '<td>'.join(_fmt(r, c) for c in cols)
         for r in rows)
-      return _table('{}\n{}\n'.format(head, body))
+      return _table(f'{head}\n{body}\n')
     else:
       rows = list(self.data.keys())
       if self.fmt['rows_sort']: rows = sorted(rows)

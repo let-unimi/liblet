@@ -54,7 +54,7 @@ class UtilsTest(unittest.TestCase):
     s.push(3)
     n = len(s)
     out = s.pop()
-    actual = '{} {} {}'.format(n, out, s)
+    actual = f'{n} {out} {s}'
     expected = '3 3 Stack(1, 2 ↔)'
     self.assertEqual(expected, actual)
 
@@ -63,7 +63,7 @@ class UtilsTest(unittest.TestCase):
     s.push(1)
     s.push(2)
     p = s.peek()
-    actual = '{} {}'.format(p, s)
+    actual = f'{p} {s}'
     expected = '2 Stack(1, 2 ↔)'
     self.assertEqual(expected, actual)
 
@@ -72,7 +72,7 @@ class UtilsTest(unittest.TestCase):
     c = copy(s)
     s.push(4)
     c.push(5)
-    actual = '{} {}'.format(s, c)
+    actual = f'{s} {c}'
     expected = 'Stack(1, 2, 3, 4 ↔) Stack(1, 2, 3, 5 ↔)'
     self.assertEqual(expected, actual)
 
@@ -96,7 +96,7 @@ class UtilsTest(unittest.TestCase):
     s.push(3)
     n = len(s)
     out = s.pop()
-    actual = '{} {} {}'.format(n, out, s)
+    actual = f'{n} {out} {s}'
     expected = '2 3 Stack(2 ↔)'
     self.assertEqual(expected, actual)
 
@@ -107,7 +107,7 @@ class UtilsTest(unittest.TestCase):
     q.enqueue(3)
     n = len(q)
     out = q.dequeue()
-    actual = '{} {} {}'.format(n, out, q)
+    actual = f'{n} {out} {q}'
     expected = '3 1 Queue(← 2, 3 ←)'
     self.assertEqual(expected, actual)
 
@@ -116,7 +116,7 @@ class UtilsTest(unittest.TestCase):
     c = copy(q)
     q.enqueue(4)
     c.enqueue(5)
-    actual = '{} {}'.format(q, c)
+    actual = f'{q} {c}'
     expected = 'Queue(← 1, 2, 3, 4 ←) Queue(← 1, 2, 3, 5 ←)'
     self.assertEqual(expected, actual)
 
@@ -140,7 +140,7 @@ class UtilsTest(unittest.TestCase):
     q.enqueue(3)
     n = len(q)
     out = q.dequeue()
-    actual = '{} {} {}'.format(n, out, q)
+    actual = f'{n} {out} {q}'
     expected = '2 2 Queue(← 3 ←)'
     self.assertEqual(expected, actual)
 
