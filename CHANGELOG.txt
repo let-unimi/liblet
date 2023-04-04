@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.6.2a (2023-04-04)
+--------------------
+
+- Removed a spurious sort in Talbe (columns), that induced an 
+  apparent error in FIRST/FOLLOW tables computation.
+
 v1.6.2a (2023-02-25)
 --------------------
 
