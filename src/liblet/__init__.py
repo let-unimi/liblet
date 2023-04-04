@@ -1,4 +1,4 @@
-__version__ = '1.6.2a0'
+__version__ = '1.6.2a1'
 
 ε = 'ε'
 DIAMOND = '◇'
