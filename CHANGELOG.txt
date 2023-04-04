@@ -1,7 +1,7 @@
 Changelog
 =========
 
-v1.6.2a (2023-04-04)
+v1.6.3a (2023-04-04)
 --------------------
 
 - Removed a spurious sort in Talbe (columns), that induced an 
