@@ -130,7 +130,7 @@ class Table:
   DEFAULT_FORMAT = {
     'cols_sort': False,
     'rows_sort': False,
-    'elem_sort': False,
+    'letstr_sort': False,
     'cols_sep': ', ',
     'rows_sep': ', ',
     'elem_sep': ', '
@@ -168,12 +168,15 @@ class Table:
       if not (isinstance(key, tuple) and len(key) == 2): raise ValueError('Index is not a pair of values')
       r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
       if self.no_reassign and c in self.data[r]:
-        warn(f'Table already contains value {self.data[r][c]} for ({r}, {c})')
+        warn(f'Table already contains value {self.data[r][c]} for ({r}, {c}), cannot store {value}')
       else:
         self.data[r][c] = value
     else:
       r = Table._make_hashable(key)
-      self.data[r] = value
+      if self.no_reassign and r in self.data:
+        warn(f'Table already contains value {self.data[r]} for {r}, cannot store {value}')
+      else:
+        self.data[r] = value
 
   def __eq__(self, other):
     if not isinstance(other, Table): return False
@@ -204,22 +207,22 @@ class Table:
       if not c in self.data[r]: return '&nbsp;'
       elem = self.data[r][c]
       if elem is None: return '&nbsp;'
-      return '<pre>{}</pre>'.format(escape(letstr(elem, self.fmt['elem_sep'], remove_outer = True)), quote = True)
+      return '<pre>{}</pre>'.format(escape(letstr(elem, self.fmt['elem_sep'], sort = self.fmt['letstr_sort'], remove_outer = True)), quote = True)
     if self.ndim == 2:
       rows = list(self.data.keys())
       if self.fmt['rows_sort']: rows = sorted(rows)
       cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
       if self.fmt['cols_sort']: cols = sorted(cols)
-      head = '<tr><td>&nbsp;<th><pre>' + '</pre><th><pre>'.join(letstr(col, self.fmt['cols_sep']) for col in cols) + '</pre>'
+      head = '<tr><td>&nbsp;<th><pre>' + '</pre><th><pre>'.join(letstr(col, self.fmt['cols_sep'], sort = self.fmt['letstr_sort'], remove_outer = True) for col in cols) + '</pre>'
       body = '\n'.join(
-          '<tr><th><pre>{}<pre><td>'.format(letstr(r, self.fmt['rows_sep']))
+          '<tr><th><pre>{}<pre><td>'.format(letstr(r, self.fmt['rows_sep'], sort = self.fmt['letstr_sort'], remove_outer = True))
             + '<td>'.join(_fmt(r, c) for c in cols)
         for r in rows)
       return _table(f'{head}\n{body}\n')
     else:
       rows = list(self.data.keys())
       if self.fmt['rows_sort']: rows = sorted(rows)
-      return _table('\n'.join('<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(letstr(r, self.fmt['rows_sep']), letstr(self.data[r], self.fmt['elem_sep'], remove_outer = True)) for r in rows))
+      return _table('\n'.join('<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(letstr(r, self.fmt['rows_sep'], sort = self.fmt['letstr_sort'], remove_outer = True), letstr(self.data[r], self.fmt['elem_sep'], sort = self.fmt['letstr_sort'], remove_outer = True)) for r in rows))
 
 class CYKTable(Table):
   def __init__(self):
