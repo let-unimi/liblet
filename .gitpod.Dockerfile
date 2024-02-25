@@ -10,4 +10,4 @@ RUN wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh && chmod u+x /tmp/llvm
 
 RUN pip install antlr4-python3-runtime graphviz liblet
 
-ENV ANTLR4_JAR=/workspace/liblet/jars/antlr-4.12.0-complete.jar
+ENV ANTLR4_JAR=/workspace/liblet/jars/antlr-4.13.1-complete.jar
