@@ -1,4 +1,4 @@
-from collections.abc import Set
+from collections.abc import Set  # noqa: PYI025
 from copy import copy
 from functools import total_ordering
 from operator import attrgetter
@@ -50,9 +50,9 @@ class Transition:
     def _cssos(s):
       if isinstance(s, str) and s:
         return True
-      if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _, s)):
+      if isinstance(s, Set) and s and all(isinstance(_, str) and _ for _ in s):
         return True
-      if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, Item), s)):
+      if isinstance(s, Set) and s and all(isinstance(_, Item) for _ in s):
         return True
       return False
 
@@ -197,18 +197,20 @@ class Automaton:
     and :math:`A\to ε`.
     """
     res = []
+    if not G.is_context_free:
+      raise ValueError('The grammar is not context-free, thus cannot be regular')
     for P in G.P:
-      if len(P.rhs) > 2:
+      if len(P.rhs) > 2:  #  noqa: PLR2004
         raise ValueError(f'Production {P} has more than two symbols on the left-hand side')
-      if len(P.rhs) == 2:
+      if len(P.rhs) == 2:  #  noqa: PLR2004
         A, (a, B) = P
         if not (a in G.T and B in G.N):
           raise ValueError(f'Production {P} right-hand side is not of the aB form')
         res.append(Transition(A, a, B))
       elif P.rhs[0] in G.N:
-        res.append(Transition(*((P.lhs,) + (ε,) + P.rhs)))
+        res.append(Transition(P.lhs, ε, P.rhs[0]))
       else:
-        res.append(Transition(*((P.lhs,) + P.rhs + (DIAMOND,))))
+        res.append(Transition(P.lhs, P.rhs[0], DIAMOND))
     return cls(G.N | {DIAMOND}, G.T, tuple(res), G.S, {DIAMOND})
 
 
@@ -223,9 +225,9 @@ class InstantaneousDescription:
 
   def __init__(self, G):
     self.G = G
-    self.tape = tuple()
+    self.tape = ()
     self.stack = Stack()
-    self.steps = tuple()
+    self.steps = ()
     self.head_pos = 0
 
   def __copy__(self):
@@ -273,7 +275,7 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
     if HASH in (G.N | G.T):
       raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
     if word is not None:
-      self.tape = tuple(word) + (HASH,)
+      self.tape = (*tuple(word), HASH)
       self.stack = Stack([HASH, G.S])
 
   def is_done(self):
@@ -336,9 +338,9 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
       raise ValueError('The production does not belong to the grammar.')
     c = copy(self)
     children = [c.stack.pop() for _ in P.rhs][::-1]
-    for X, T in zip(P.rhs, children):
+    for X, T in zip(P.rhs, children, strict=True):
       if T.root != X:
         raise ValueError('The rhs does not correspond to the symbols on the stack.')
     c.stack.push(Tree(P.lhs, children))
-    c.steps = (P,) + c.steps
+    c.steps = (P, *c.steps)
     return c
