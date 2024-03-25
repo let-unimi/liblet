@@ -1,10 +1,10 @@
 import ast
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from collections.abc import Mapping, Set
+from collections.abc import Mapping, Set  # noqa: PYI025
 from functools import partial
 from html import escape
-from itertools import chain
+from itertools import chain, pairwise
 from re import sub
 from warnings import warn as wwarn
 
@@ -63,7 +63,7 @@ def make_node_wrapper(
     raise ValueError('node_eq must be either "obj", "str" or a callable')
 
   if not callable(default_gv_args):
-    raise ValueError('default_gv_args must be a callable')
+    raise TypeError('default_gv_args must be a callable')
 
   class NodeWrapper:
     def __init__(self, obj):
@@ -105,9 +105,8 @@ class GVWrapper:
       wn._gid = f'N{len(self.wn2gid)}'
       self.wn2gid[wn] = wn._gid
       return (wn, True)
-    else:
-      wn._gid = self.wn2gid[wn]
-      return (wn, False)
+    wn._gid = self.wn2gid[wn]
+    return (wn, False)
 
   def subgraph(self, **args):
     return self.G.subgraph(**args)
@@ -139,7 +138,7 @@ class BaseGraph(ABC):
 
   # letstr(node) is always used as node_label
   # node_id is str(x) where x is id (if not None) or hash(node_label)
-  def node(self, G, node, id=None, sep=None, gv_args=None):
+  def node(self, G, node, id=None, sep=None, gv_args=None):  # noqa: A002
     wwarn('The method "node" is deprecated, use GVWrapper instead of BaseGraph', DeprecationWarning, stacklevel=2)
     if gv_args is None:
       gv_args = {}
@@ -205,7 +204,7 @@ class Tree:
       self.attr = AttrDict(root)
 
   def __iter__(self):
-    return iter([self.root] + self.children)
+    return iter([self.root * self.children])
 
   @classmethod
   def from_lol(cls, lol):
@@ -244,7 +243,7 @@ class Tree:
 
   def _gv_graph_(self):
     G = GVWrapper(
-      dict(
+      dict(  # noqa: C408
         graph_attr={'nodesep': '.25', 'ranksep': '.25'},
         node_attr={'shape': 'box', 'width': '0', 'height': '0', 'style': 'rounded, setlinewidth(.25)'},
         edge_attr={'dir': 'none'},
@@ -258,7 +257,7 @@ class Tree:
         G.edge(curr, (child.root, child))
       if len(T.children) > 1:
         with G.subgraph(edge_attr={'style': 'invis'}, graph_attr={'rank': 'same'}) as S:
-          for f, t in zip(T.children, T.children[1:]):
+          for f, t in pairwise(T.children):
             G.edge((f.root, f), (t.root, t), S)
       for child in T.children:
         walk(child)
@@ -311,10 +310,10 @@ class Tree:
 class Graph:
   def __init__(self, arcs, sep=None):
     self.G = GVWrapper(
-      dict(graph_attr={'size': '8', 'rankdir': 'LR'}, node_attr={'shape': 'oval'}),
+      dict(graph_attr={'size': '8', 'rankdir': 'LR'}, node_attr={'shape': 'oval'}),  # noqa: C408
       make_node_wrapper(other_str=partial(letstr, sep=sep)),
     )
-    self.adj = dict()
+    self.adj = {}
     for src, dst in arcs:
       self.adj[src] = self.adj.get(src, set()) | {dst}
       self.adj[dst] = self.adj.get(dst, set())
@@ -348,7 +347,7 @@ class ProductionGraph:
   def __init__(self, derivation, compact=None):
     self.derivation = derivation
     if compact is None:
-      self.compact = True if derivation.G.is_context_free else False
+      self.compact = derivation.G.is_context_free
     else:
       self.compact = compact
     self.G = None
@@ -361,7 +360,7 @@ class ProductionGraph:
       return self.G
     derivation = self.derivation
     G = GVWrapper(
-      dict(
+      dict(  # noqa: C408
         graph_attr={'nodesep': '.25', 'ranksep': '.25'},
         node_attr={
           'shape': 'box',
@@ -412,7 +411,7 @@ class ProductionGraph:
             gv_args={'style': 'rounded, setlinewidth(1.25)' if node in last_sentence else 'rounded, setlinewidth(.25)'},
           )
 
-        for f, t in zip(rhsn, rhsn[1:]):
+        for f, t in pairwise(rhsn):
           G.edge(f, t, S)
 
       if len(lhs) == 1:
@@ -495,7 +494,7 @@ class StateTransitionGraph:
       return self.G
     sep = '\n' if self.large_labels else None
     G = GVWrapper(
-      dict(
+      dict(  # noqa: C408
         graph_attr={'rankdir': 'LR', 'size': '32'},
         node_attr={'margin': '.05'} if self.large_labels else {},
         engine='dot',
@@ -519,10 +518,8 @@ class StateTransitionGraph:
 
 
 def pyast2tree(node):
-  if not isinstance(node, ast.AST):
-    return Tree({'type': 'token', 'value': node})
-  else:
-    return Tree(
+  return (
+    Tree(
       {'type': 'ast', 'name': node.__class__.__name__},
       [
         Tree(name, [pyast2tree(v) for v in (value if isinstance(value, list) else [value])])
@@ -530,6 +527,9 @@ def pyast2tree(node):
         if name not in {'type_ignores', 'type_comment'}
       ],
     )
+    if isinstance(node, ast.AST)
+    else Tree({'type': 'token', 'value': node})
+  )
 
 
 # Jupyter Widgets sfuff
@@ -546,7 +546,7 @@ def animate_derivation(d, height='300px'):
 # HTML stuff
 
 
-def __bordered_table__(content):
+def __bordered_table__(content):  # noqa: N807
   return HTML('<style>td, th {border: 1pt solid lightgray !important ;}</style><table>' + content + '</table>')
 
 

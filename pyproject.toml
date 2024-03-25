@@ -64,6 +64,18 @@ include = ["src/liblet/*.py", "src/*.py"]
 sources = ["."]
 include = ["src/", "docs/"]
 
+[tool.ruff]
+indent-width = 2
+
+[tool.ruff.lint]
+ignore = ["E501", "E731", "EM101", "EM102", "FBT002", "INP001", "N802", "N803", "N806", "SLF001", "TRY003"]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"src/tests/**" = ["ARG001", "E501", "F841", "N802", "PT009", "PT027", "RUF001"]
+
+[tool.ruff.format]
+quote-style = "single"
+
 [tool.hatch.envs.devel]
 dependencies = ["gitchangelog", "pyupgrade"]
 

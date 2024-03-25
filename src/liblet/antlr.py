@@ -156,7 +156,7 @@ class ANTLR:
     parser.setTrace(trace)
     if diag:
       parser.addErrorListener(DiagnosticErrorListener())
-      parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION  # noqa: SLF001
+      parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
     parser.buildParseTrees = build_parse_trees
     if antlr_hook is not None:
       antlr_hook(lexer, parser)
