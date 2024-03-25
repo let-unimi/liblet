@@ -216,7 +216,7 @@ class InstantaneousDescription:
     return c
 
   def __repr__(self):
-    return '{}, {}, \x1b[48;5;252m{}\x1b[0m{}'.format( # https://www.wikiwand.com/en/ANSI_escape_code#8-bit
+    return '{}, {}, \x1b[48;5;252m{}\x1b[0m{}'.format( # https://en.wikipedia.org/wiki/ANSI_escape_code
       self.steps,
       ''.join(reversed(list(map(str, self.stack)))),
       ''.join(self.tape[:self.head_pos:]), ''.join(self.tape[self.head_pos:])

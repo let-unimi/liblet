@@ -186,7 +186,7 @@ class TestAutomaton(unittest.TestCase):
       C -> a
     """)
     i = TopDownInstantaneousDescription(G, 'aaba')
-    self.assertEqual('(), S♯, a̲aba♯', str(i))
+    self.assertEqual('(), S♯, \x1b[48;5;252m\x1b[0maaba♯', str(i))
 
   def test_BUID_init(self):
     G = Grammar.from_string("""
@@ -195,7 +195,7 @@ class TestAutomaton(unittest.TestCase):
       C -> c
     """)
     i = BottomUpInstantaneousDescription(G, 'abc')
-    self.assertEqual('(), , a̲bc', str(i))
+    self.assertEqual('(), , \x1b[48;5;252m\x1b[0mabc', str(i))
 
   def test_TDID_init_exception(self):
     G = Grammar.from_string('S -> ♯')
@@ -210,7 +210,7 @@ class TestAutomaton(unittest.TestCase):
     """)
     i = TopDownInstantaneousDescription(G, 'aaba')
     i = i.predict(G.P[0])
-    self.assertEqual('(S -> a B C,), aBC♯, a̲aba♯', str(i))
+    self.assertEqual('(S -> a\u200aB\u200aC,), aBC♯, \x1b[48;5;252m\x1b[0maaba♯', str(i))
 
   def test_TDID_predict_exception0(self):
     G = Grammar.from_string("""
@@ -240,7 +240,7 @@ class TestAutomaton(unittest.TestCase):
     """)
     i = BottomUpInstantaneousDescription(G, 'abc')
     i = i.shift().shift().reduce(G.P[1])
-    self.assertEqual('(A -> a b,), (A: (a), (b)), abc̲', str(i))
+    self.assertEqual('(A -> a\u200ab,), (A: (a), (b)), \x1b[48;5;252mab\x1b[0mc', str(i))
 
   def test_BUID_reduce_exception0(self):
     G = Grammar.from_string("""
@@ -270,7 +270,7 @@ class TestAutomaton(unittest.TestCase):
     """)
     i = TopDownInstantaneousDescription(G, 'aaba')
     i = i.predict(G.P[0]).match()
-    self.assertEqual('(S -> a B C,), BC♯, aa̲ba♯', str(i))
+    self.assertEqual('(S -> a\u200aB\u200aC,), BC♯, \x1b[48;5;252ma\x1b[0maba♯', str(i))
 
   def test_TDID_match_exception(self):
     G = Grammar.from_string("""
@@ -290,7 +290,7 @@ class TestAutomaton(unittest.TestCase):
     """)
     i = BottomUpInstantaneousDescription(G, 'abc')
     i = i.shift()
-    self.assertEqual('(), (a), ab̲c', str(i))
+    self.assertEqual('(), (a), \x1b[48;5;252ma\x1b[0mbc', str(i))
 
   def test_TDID_done(self):
     G = Grammar.from_string("""
