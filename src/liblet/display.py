@@ -136,7 +136,7 @@ class Tree(BaseGraph):
       if T.children:
         for child in T.children:
           self.node(G, _tostr(child.root), id(child), gv_args = _gv_args(child.root))
-          self.edge(G, curr, id(child ))
+          self.edge(G, curr, id(child))
         with G.subgraph(edge_attr = {'style': 'invis'}, graph_attr = {'rank': 'same'}) as S:
           for f, t in zip(T.children, T.children[1:]):
             self.edge(S, id(f), id(t))
