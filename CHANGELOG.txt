@@ -1,6 +1,17 @@
 Changelog
 =========
 
+v1.7.0a0 (2024-03-25)
+---------------------
+
+- Removed support for Python < 3.10.
+- All source are clean according to ruff.
+- Big refactoring in liblet.display, favoring composition (with the new
+  GVWrapper) over inheritance (of BaseGraph(ABC)).
+- InstantaneousDescription now uses colors instead of unicode combining
+  characters
+- Minor cleanups and fixes.
+
 v1.6.4a0 (2024-02-25)
 ---------------------
 

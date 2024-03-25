@@ -77,7 +77,7 @@ ignore = ["E501", "E731", "EM101", "EM102", "FBT002", "INP001", "N802", "N803", 
 quote-style = "single"
 
 [tool.hatch.envs.devel]
-dependencies = ["gitchangelog", "pyupgrade"]
+dependencies = ["gitchangelog", "pyupgrade", "pystache"]
 
 [tool.hatch.envs.docs]
 features = ["docs"]
@@ -87,6 +87,8 @@ dependencies = ["coverage", "codecov"]
 
 [tool.hatch.envs.docs.scripts]
 build = ["./bin/docs"]
+
+[tool.hatch.envs.devel.scripts]
 changelog = ["gitchangelog"]
 
 [tool.hatch.envs.tests.scripts]
