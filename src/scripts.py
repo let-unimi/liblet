@@ -7,11 +7,10 @@ def install_antlrjar():
 
   jars = Path('jars')
   jars.mkdir(exist_ok=True)
-  with (jars / FILE).open('wb') as ouf:
-    with urlopen(URL) as inf:
-      ouf.write(inf.read())
+  with (jars / FILE).open('wb') as ouf, urlopen(URL) as inf:  # noqa: S310
+    ouf.write(inf.read())
 
-  print(f'Remember to add set ANTLR4_JAR="{(jars / FILE).resolve()}" in your environment')
+  print(f'Remember to add set ANTLR4_JAR="{(jars / FILE).resolve()}" in your environment')  # noqa: T201
 
 
 if __name__ == '__main__':
