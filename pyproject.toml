@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "liblet"
 description = "A teaching aid library for formal languages and compiler courses."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 license-files = { paths = ["LICENSE-GPL.txt", "LICENSE-CC.txt"] }
 authors = [{ name = "Massimo Santini", email = "massimo.santini@unimi.it" }]
 keywords = [
@@ -27,7 +27,7 @@ classifiers = [
   "Intended Audience :: Education",
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.10",
   "Topic :: Education",
   "Topic :: Scientific/Engineering :: Visualization",
   "Topic :: Software Development :: Compilers"
@@ -85,4 +85,4 @@ run = [
 reports = ["coverage html -d ./build/coverage", "coverage xml"]
 
 [[tool.hatch.envs.tests.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10"]
+python = ["3.10", "3.11", "3.12"]
