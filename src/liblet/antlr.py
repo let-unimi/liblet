@@ -26,7 +26,7 @@ if 'READTHEDOCS' not in environ:  # pragma: nocover
     raise ImportError('Please define the ANTLR4_JAR environment variable')
   if not exists(environ['ANTLR4_JAR']):
     raise ImportError(
-      'The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR'])
+      f'The ANTLR4_JAR environment variable points to "{environ["ANTLR4_JAR"]}" that is not an existing file'
     )
 
 
@@ -58,7 +58,7 @@ class ANTLR:
     try:
       name = findall(r'grammar\s+(\w+)\s*;', grammar)[0]
     except IndexError:
-      raise ValueError('Grammar name not found')
+      raise ValueError('Grammar name not found') from None
     self.name = name
     self.source = {}
 
@@ -66,7 +66,7 @@ class ANTLR:
       with open(pjoin(tmpdir, name) + '.g', 'w') as ouf:
         ouf.write(grammar)
       res = run(
-        ['java', '-jar', environ['ANTLR4_JAR'], '-Dlanguage=Python3', '-listener', '-visitor', f'{name}.g'],
+        ['java', '-jar', environ['ANTLR4_JAR'], '-Dlanguage=Python3', '-listener', '-visitor', f'{name}.g'],  #  noqa: S607
         capture_output=True,
         cwd=tmpdir,
         check=False,
@@ -120,10 +120,9 @@ class ANTLR:
     Args:
       number_lines (bool): if ``False`` line numbers will not be printed.
     """
-    if number_lines:
-      print('\n'.join(map(lambda n_r: f'{n_r[0]:3}:\t{n_r[1]}', enumerate(self.grammar.splitlines(), 1))))
-    else:
-      print(self.grammar)
+    print(  # noqa: T201
+      '\n'.join(f'{n:3}:\t{r}' for n, r in enumerate(self.grammar.splitlines(), 1)) if number_lines else self.grammar
+    )
 
   def context(
     self,
@@ -157,7 +156,7 @@ class ANTLR:
     parser.setTrace(trace)
     if diag:
       parser.addErrorListener(DiagnosticErrorListener())
-      parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
+      parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION  # noqa: SLF001
     parser.buildParseTrees = build_parse_trees
     if antlr_hook is not None:
       antlr_hook(lexer, parser)
@@ -171,8 +170,7 @@ class ANTLR:
         return None
     if as_string:
       return ctx.toStringTree(recog=self.Parser)
-    else:
-      return ctx
+    return ctx
 
   def tokens(self, text):
     """Returns a list of *tokens*.
@@ -216,25 +214,23 @@ class ANTLR:
       rule = self.Parser.ruleNames[ctx.getRuleIndex()]
       if simple:
         return rule
-      else:
-        name = ctx.__class__.__name__
-        name = name[:-7]  # remove trailing 'Context'
-        name = name[0].lower() + name[1:]
-        return {'type': 'rule', 'name': name, 'rule': rule, 'src': ctx.getSourceInterval()}
+      name = ctx.__class__.__name__
+      name = name[:-7]  # remove trailing 'Context'
+      name = name[0].lower() + name[1:]
+      return {'type': 'rule', 'name': name, 'rule': rule, 'src': ctx.getSourceInterval()}
 
     def _token(token):
       ts = token.symbol
       text = r'\\n' if ts.text == '\n' else ts.text
       if simple:
         return text
-      else:
-        try:
-          name = self.Parser.symbolicNames[ts.type]
-        except IndexError:
-          name = '<INVALID>'
-        if name == '<INVALID>':
-          name = self.Parser.literalNames[ts.type][1:-1]
-        return {'type': 'token', 'name': name, 'value': text, 'src': token.symbol.tokenIndex}
+      try:
+        name = self.Parser.symbolicNames[ts.type]
+      except IndexError:
+        name = '<INVALID>'
+      if name == '<INVALID>':
+        name = self.Parser.literalNames[ts.type][1:-1]
+      return {'type': 'token', 'name': name, 'value': text, 'src': token.symbol.tokenIndex}
 
     class TreeVisitor(ParseTreeVisitor):
       def visitTerminal(self, t):
@@ -353,7 +349,7 @@ class AnnotatedTreeWalker:
     if globals_dict is None:
       globals_dict = globals()
     with open(path, 'rb') as inf:
-      dct = loads(inf.read())
+      dct = loads(inf.read())  # noqa: S302
     return cls(
       dct['key'],
       FunctionType(dct['catchall_func'], globals_dict),
