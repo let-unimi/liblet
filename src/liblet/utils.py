@@ -1,5 +1,5 @@
 from collections import OrderedDict, defaultdict, deque
-from collections.abc import MutableMapping, Set
+from collections.abc import MutableMapping, Set  #  noqa: PYI025
 from functools import partial
 from html import escape
 from itertools import chain
@@ -24,7 +24,7 @@ def first(s):
 
 def peek(s):  # pragma: nocover
   """Deprecated. Use first"""
-  wwarn('The function "peek" is now deprecated, please use "first" instead.', DeprecationWarning)
+  wwarn('The function "peek" is now deprecated, please use "first" instead.', DeprecationWarning, stacklevel=2)
   return first(s)
 
 
@@ -49,10 +49,9 @@ def letstr(obj, sep=None, sort=True, remove_outer=False):
       fs = '({})'
     if fs is None:
       return str(obj)
-    else:
-      if sep == '\n' or remove_outer:
-        fs = '{}'
-      return fs.format(sep.join(sorted(map(_ls, obj)) if sort else list(map(_ls, obj))))
+    if sep == '\n' or remove_outer:
+      fs = '{}'
+    return fs.format(sep.join(sorted(map(_ls, obj)) if sort else list(map(_ls, obj))))
 
   return _ls(obj)
 
@@ -70,7 +69,7 @@ class Queue:
     return self.Q.popleft()
 
   def copy(self):  # pragma: nocover
-    wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning)
+    wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning, stacklevel=2)
     return self.__copy__()
 
   def __copy__(self):
@@ -106,7 +105,7 @@ class Stack:
     return self.S.pop()
 
   def copy(self):  # pragma: nocover
-    wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning)
+    wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning, stacklevel=2)
     return self.__copy__()
 
   def __copy__(self):
@@ -161,7 +160,7 @@ class AttrDict(MutableMapping):
 class Table:
   """A one or two-dimensional *table* able to detect conflicts and with a nice HTML representation, based on :obj:`~collections.defaultdict`."""
 
-  DEFAULT_FORMAT = {
+  DEFAULT_FORMAT = {  # noqa: RUF012
     'cols_sort': False,
     'rows_sort': False,
     'letstr_sort': False,
@@ -193,18 +192,17 @@ class Table:
     return idx
 
   def __getitem__(self, key):
-    if self.ndim == 2:
-      if not (isinstance(key, tuple) and len(key) == 2):
+    if self.ndim == 2:  # noqa: PLR2004
+      if not (isinstance(key, tuple) and len(key) == 2):  # noqa: PLR2004
         raise ValueError('Index is not a pair of values')
       r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
       return self.data[r][c]
-    else:
-      r = Table._make_hashable(key)
-      return self.data[r]
+    r = Table._make_hashable(key)
+    return self.data[r]
 
   def __setitem__(self, key, value):
-    if self.ndim == 2:
-      if not (isinstance(key, tuple) and len(key) == 2):
+    if self.ndim == 2:  # noqa: PLR2004
+      if not (isinstance(key, tuple) and len(key) == 2):  # noqa: PLR2004
         raise ValueError('Index is not a pair of values')
       r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
       if self.no_reassign and c in self.data[r]:
@@ -237,7 +235,7 @@ class Table:
         if r in self.data:
           R.data[r] = self.data[r]
     else:
-      if cols is None and self.ndim == 2:
+      if cols is None and self.ndim == 2:  # noqa: PLR2004
         cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
       for r in rows:
         if r not in self.data:
@@ -265,7 +263,7 @@ class Table:
         escape(letstr(elem, self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)),
       )
 
-    if self.ndim == 2:
+    if self.ndim == 2:  # noqa: PLR2004
       rows = list(self.data.keys())
       if self.fmt['rows_sort']:
         rows = sorted(rows)
@@ -287,19 +285,18 @@ class Table:
         for r in rows
       )
       return _table(f'{head}\n{body}\n')
-    else:
-      rows = list(self.data.keys())
-      if self.fmt['rows_sort']:
-        rows = sorted(rows)
-      return _table(
-        '\n'.join(
-          '<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(
-            letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
-            letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
-          )
-          for r in rows
+    rows = list(self.data.keys())
+    if self.fmt['rows_sort']:
+      rows = sorted(rows)
+    return _table(
+      '\n'.join(
+        '<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(
+          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
+          letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
         )
+        for r in rows
       )
+    )
 
 
 class CYKTable(Table):
@@ -307,8 +304,8 @@ class CYKTable(Table):
     super().__init__(ndim=2, element=set)
 
   def _repr_html_(self):
-    TABLE = {(i, l): v for i, row in self.data.items() for l, v in row.items()}
-    I, L = max(TABLE.keys())
+    TABLE = {(i, l): v for i, row in self.data.items() for l, v in row.items()}  # noqa: E741
+    I, L = max(TABLE.keys())  # noqa: E741
     # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
     # (otherwise i <= N); in any case the lengths range in [N, L - 1)
     N = I - 1 if L == 0 else I
@@ -322,7 +319,7 @@ class CYKTable(Table):
             (letstr(TABLE[(i, l)], sep='\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
           )
           + '</pre></td>'
-          for l in range(N, L - 1, -1)
+          for l in range(N, L - 1, -1)  # noqa: E741
         )
       )
       + '</table>'
@@ -330,7 +327,7 @@ class CYKTable(Table):
 
 
 def uc(s, c=''):  # pragma: nocover
-  return ''.join(map(lambda _: _ + c, s))
+  return ''.join(_ + c for _ in s)
 
 
 uc.dot = partial(uc, c='\u0307')
