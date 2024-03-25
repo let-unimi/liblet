@@ -1,32 +1,36 @@
 from itertools import count
+from os import environ
 from pathlib import Path
-from subprocess import run, CalledProcessError, PIPE
+from subprocess import PIPE, CalledProcessError, run
 from textwrap import dedent, indent
 
 from graphviz import Source
 
-from . import warn
-
-from os import environ
+from liblet.utils import warn
 
 LLVM_VERSION = environ.get('LLVM_VERSION')
 if LLVM_VERSION is not None:
   OPT_EXECUTABLE = f'opt-{LLVM_VERSION}'
   CLANG_EXECUTABLE = f'clang-{LLVM_VERSION}'
 
-def _run_clang(args, *, _ = None, **kwargs):
-  if LLVM_VERSION is None: raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
+
+def _run_clang(args, *, _=None, **kwargs):
+  if LLVM_VERSION is None:
+    raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
   try:
     return run([CLANG_EXECUTABLE] + args, **kwargs)
   except FileNotFoundError:
     raise FileNotFoundError(f'Executable {CLANG_EXECUTABLE} not found, LLVM_VERSION is {LLVM_VERSION}') from None
 
-def _run_opt(args, *, _ = None, **kwargs):
-  if LLVM_VERSION is None: raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
+
+def _run_opt(args, *, _=None, **kwargs):
+  if LLVM_VERSION is None:
+    raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
   try:
     return run([OPT_EXECUTABLE] + args, **kwargs)
   except FileNotFoundError:
     raise FileNotFoundError(f'Executable {OPT_EXECUTABLE} not found, LLVM_VERSION is {LLVM_VERSION}') from None
+
 
 WRAPPING_CODE = r"""
   ; ModuleID = '{name}.ll'
@@ -63,7 +67,7 @@ WRAPPING_CODE = r"""
 class LLVM:
   """An utility class to play with LLVM IR language"""
 
-  def __init__(self, name, code = ''):
+  def __init__(self, name, code=''):
     self.name = name
     self._variable = count(0)
     self._label = count(0)
@@ -80,7 +84,8 @@ class LLVM:
 
   def append_code(self, code):
     """Appends the given code."""
-    if isinstance(code, str): code = dedent(code).splitlines()
+    if isinstance(code, str):
+      code = dedent(code).splitlines()
     self.code.extend(filter(lambda _: _.strip() != '', code))
 
   def print_code(self):
@@ -90,11 +95,11 @@ class LLVM:
   def write_and_compile(self):
     """Wraps the code in some boilerplate, writes it to disk and compiles it."""
     code = '\n' + indent('\n'.join(self.code), 16 * ' ') + '\n'
-    wrapped = WRAPPING_CODE.format(name = self.name, code = code)
+    wrapped = WRAPPING_CODE.format(name=self.name, code=code)
     Path(self.name).with_suffix('.ll').write_text(dedent(wrapped))
-    Path(self.name).unlink(missing_ok = True)
+    Path(self.name).unlink(missing_ok=True)
     try:
-      _run_clang('-Wno-override-module -o {name} {name}.ll'.format(name = self.name).split(), check = True, stdout = PIPE, stderr = PIPE)
+      _run_clang(f'-Wno-override-module -o {self.name} {self.name}.ll'.split(), check=True, stdout=PIPE, stderr=PIPE)
     except CalledProcessError as e:
       warn(e.stderr.decode('utf8'))
 
@@ -106,4 +111,4 @@ class LLVM:
 
   def mem2reg(self):
     """Outputs the result of `mem2reg` optimization."""
-    return _run_opt(f'-mem2reg -S {self.name}.ll'.split(), stdout = PIPE).stdout.decode('utf8')
+    return _run_opt(f'-mem2reg -S {self.name}.ll'.split(), stdout=PIPE).stdout.decode('utf8')

@@ -1,19 +1,16 @@
+import unittest
+import unittest.mock
 from copy import copy
 
-import unittest
-from unittest.case import expectedFailure
-import unittest.mock
-
-from liblet.utils import first, union_of, letstr, Stack, Queue, warn, AttrDict, suffixes
+from liblet import AttrDict, Queue, Stack, first, letstr, suffixes, union_of, warn
 
 
 class UtilsTest(unittest.TestCase):
-
   def test_first(self):
     self.assertEqual('a', first({'a'}))
 
   def test_unionof(self):
-    self.assertEqual({'a', 'b'}, union_of([{'a'},{'b'}]))
+    self.assertEqual({'a', 'b'}, union_of([{'a'}, {'b'}]))
 
   def test_str(self):
     self.assertEqual('test', letstr('test'))
@@ -22,6 +19,7 @@ class UtilsTest(unittest.TestCase):
     class AClass:
       def __repr__(self):
         return 'AClass'
+
     self.assertEqual('AClass', letstr(AClass()))
 
   def test_emptyset(self):
@@ -40,12 +38,7 @@ class UtilsTest(unittest.TestCase):
     self.assertEqual('[(d), e, {a, b, c}]', letstr([{'a', 'b', 'c'}, ('d',), 'e']))
 
   def test_sefofsetofstr(self):
-    self.assertEqual(
-        '{{a, b, c}, {d, e}}',
-        letstr(
-          {frozenset({'a', 'b', 'c'}), frozenset({'d', 'e'})}
-        )
-      )
+    self.assertEqual('{{a, b, c}, {d, e}}', letstr({frozenset({'a', 'b', 'c'}), frozenset({'d', 'e'})}))
 
   def test_stack(self):
     s = Stack()
@@ -90,7 +83,7 @@ class UtilsTest(unittest.TestCase):
     self.assertEqual('Stack()', str(Stack()))
 
   def test_bounded_stack(self):
-    s = Stack(maxlen = 2)
+    s = Stack(maxlen=2)
     s.push(1)
     s.push(2)
     s.push(3)
@@ -134,7 +127,7 @@ class UtilsTest(unittest.TestCase):
     self.assertEqual('Queue()', str(Queue()))
 
   def test_bounded_queue(self):
-    q = Queue(maxlen = 2)
+    q = Queue(maxlen=2)
     q.enqueue(1)
     q.enqueue(2)
     q.enqueue(3)
@@ -155,18 +148,18 @@ class UtilsTest(unittest.TestCase):
     self.assertEqual(expected, actual)
 
   def test_attrdict_get(self):
-    d = dict(x = 1)
+    d = {'x': 1}
     ad = AttrDict(d)
     self.assertEqual(d['x'], ad.x)
 
   def test_attrdict_set(self):
-    d = dict()
+    d = {}
     ad = AttrDict(d)
     ad.x = 1
     self.assertEqual(d['x'], ad.x)
 
   def test_attrict_rest(self):
-    d = dict(x = 1, y = 2)
+    d = {'x': 1, 'y': 2}
     ad = AttrDict(d)
     ad['z'] = 3
     del ad['x']
@@ -174,4 +167,6 @@ class UtilsTest(unittest.TestCase):
     self.assertEqual(len(d), len(ad))
     self.assertEqual(list(d), list(ad))
 
-if __name__ == '__main__': unittest.main()
+
+if __name__ == '__main__':
+  unittest.main()

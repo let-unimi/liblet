@@ -18,14 +18,17 @@ from antlr4.error.DiagnosticErrorListener import DiagnosticErrorListener
 from antlr4.InputStream import InputStream
 from antlr4.tree.Tree import ParseTreeVisitor
 
-from .display import Tree
-from .utils import warn
+from liblet.display import Tree
+from liblet.utils import warn
 
-if not 'READTHEDOCS' in environ: # pragma: nocover
+if 'READTHEDOCS' not in environ:  # pragma: nocover
   if 'ANTLR4_JAR' not in environ:
     raise ImportError('Please define the ANTLR4_JAR environment variable')
   if not exists(environ['ANTLR4_JAR']):
-    raise ImportError('The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR']))
+    raise ImportError(
+      'The ANTLR4_JAR environment variable points to "{}" that is not an existing file'.format(environ['ANTLR4_JAR'])
+    )
+
 
 class ANTLR:
   """An utility class representing an ANTLR (v4) grammar and code generated from it.
@@ -47,10 +50,10 @@ class ANTLR:
   Raises:
     ValueError: if the grammar does not contain the name.
   """
+
   __slots__ = ('name', 'Lexer', 'Parser', 'Visitor', 'Listener', 'source', 'grammar')
 
   def __init__(self, grammar):
-
     self.grammar = grammar
     try:
       name = findall(r'grammar\s+(\w+)\s*;', grammar)[0]
@@ -60,23 +63,32 @@ class ANTLR:
     self.source = {}
 
     with TemporaryDirectory() as tmpdir:
+      with open(pjoin(tmpdir, name) + '.g', 'w') as ouf:
+        ouf.write(grammar)
+      res = run(
+        ['java', '-jar', environ['ANTLR4_JAR'], '-Dlanguage=Python3', '-listener', '-visitor', f'{name}.g'],
+        capture_output=True,
+        cwd=tmpdir,
+        check=False,
+      )
+      stderr = res.stderr.decode('utf-8').strip()
+      if stderr:
+        warn(stderr)
+      if res.returncode:
+        return
 
-      with open(pjoin(tmpdir, name) + '.g', 'w') as ouf: ouf.write(grammar)
-      res = run([
-        'java', '-jar', environ['ANTLR4_JAR'],
-        '-Dlanguage=Python3',
-        '-listener', '-visitor',
-        f'{name}.g'
-      ], capture_output = True, cwd = tmpdir)
-      stderr = res.stderr.decode("utf-8").strip()
-      if stderr: warn(stderr)
-      if res.returncode: return
-
-      for suffix in 'Lexer', 'Parser', 'Visitor', 'Listener': # the order is crucial, due to the module loading/execution sequence
+      for suffix in (
+        'Lexer',
+        'Parser',
+        'Visitor',
+        'Listener',
+      ):  # the order is crucial, due to the module loading/execution sequence
         qn = f'{name}{suffix}'
-        if qn in modules: del modules[qn]
+        if qn in modules:
+          del modules[qn]
         src_path = pjoin(tmpdir, qn) + '.py'
-        with open(src_path) as inf: self.source[suffix] = inf.read()
+        with open(src_path) as inf:
+          self.source[suffix] = inf.read()
         spec = imputil.spec_from_file_location(qn, src_path)
         module = imputil.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -89,7 +101,8 @@ class ANTLR:
     Args:
       path (str): the path of the file where to save the grammar.
     """
-    with open(path, 'w') as ouf: ouf.write(self.grammar)
+    with open(path, 'w') as ouf:
+      ouf.write(self.grammar)
 
   @classmethod
   def load(cls, path):
@@ -98,9 +111,10 @@ class ANTLR:
     Args:
       path (str): the path of the file where the grammar was saved.
     """
-    with open(path) as inf: return cls(inf.read())
+    with open(path) as inf:
+      return cls(inf.read())
 
-  def print_grammar(self, number_lines = True): # pragma: nocover
+  def print_grammar(self, number_lines=True):  # pragma: nocover
     """Prints the grammar (with line numbers)
 
     Args:
@@ -111,7 +125,17 @@ class ANTLR:
     else:
       print(self.grammar)
 
-  def context(self, text, symbol, trace = False, diag = False, build_parse_trees = True, as_string = False, fail_on_error = False, antlr_hook = None):
+  def context(
+    self,
+    text,
+    symbol,
+    trace=False,
+    diag=False,
+    build_parse_trees=True,
+    as_string=False,
+    fail_on_error=False,
+    antlr_hook=None,
+  ):
     """Returns an object subclass of a ``antlr4.ParserRuleContext`` corresponding to the specified symbol (possibly as a string).
 
     Args:
@@ -135,16 +159,18 @@ class ANTLR:
       parser.addErrorListener(DiagnosticErrorListener())
       parser._interp.predictionMode = PredictionMode.LL_EXACT_AMBIG_DETECTION
     parser.buildParseTrees = build_parse_trees
-    if antlr_hook is not None: antlr_hook(lexer, parser)
+    if antlr_hook is not None:
+      antlr_hook(lexer, parser)
     buf = StringIO()
     with redirect_stderr(buf):
       ctx = getattr(parser, symbol)()
     errs = buf.getvalue().strip()
     if errs:
       warn(errs)
-      if fail_on_error: return None
+      if fail_on_error:
+        return None
     if as_string:
-      return ctx.toStringTree(recog = self.Parser)
+      return ctx.toStringTree(recog=self.Parser)
     else:
       return ctx
 
@@ -161,7 +187,7 @@ class ANTLR:
     stream.fill()
     return stream.tokens
 
-  def tree(self, text, symbol, simple = False, antlr_hook = None):
+  def tree(self, text, symbol, simple=False, antlr_hook=None):
     """Returns an *annotated* :class:`~liblet.display.Tree` representing the parse tree (derived from the parse context).
 
     Unless a *simple* tree is required, the returned is an *annotated* tree whose nodes store
@@ -192,7 +218,7 @@ class ANTLR:
         return rule
       else:
         name = ctx.__class__.__name__
-        name = name[:-7] # remove trailing 'Context'
+        name = name[:-7]  # remove trailing 'Context'
         name = name[0].lower() + name[1:]
         return {'type': 'rule', 'name': name, 'rule': rule, 'src': ctx.getSourceInterval()}
 
@@ -212,19 +238,26 @@ class ANTLR:
 
     class TreeVisitor(ParseTreeVisitor):
       def visitTerminal(self, t):
-        if t.symbol.type == -1: return None
+        if t.symbol.type == -1:
+          return None
         return Tree(_token(t))
+
       def aggregateResult(self, result, childResult):
-        if result is None: return [childResult]
-        if childResult is None: return result
+        if result is None:
+          return [childResult]
+        if childResult is None:
+          return result
         result.append(childResult)
         return result
+
       def visitChildren(self, ctx):
         return Tree(_rule(ctx), super().visitChildren(ctx))
 
-    ctx = self.context(text, symbol, fail_on_error = True, antlr_hook = antlr_hook)
-    if ctx is None: return None
+    ctx = self.context(text, symbol, fail_on_error=True, antlr_hook=antlr_hook)
+    if ctx is None:
+      return None
     return TreeVisitor().visit(ctx)
+
 
 class AnnotatedTreeWalker:
   """A *dispatch table* based way to recursively walk an annotated tree.
@@ -258,7 +291,8 @@ class AnnotatedTreeWalker:
     """A default *catchall* that will invoke the recursion on all the subtrees;
     this function does not emit any warning and does not return any value.
     """
-    for child in tree.children: visit(child)
+    for child in tree.children:
+      visit(child)
 
   @staticmethod
   def TREE_CATCHALL(visit, tree):
@@ -269,7 +303,8 @@ class AnnotatedTreeWalker:
     trees = []
     for child in tree.children:
       t = visit(child)
-      if t is not None: trees.append(t)
+      if t is not None:
+        trees.append(t)
     return Tree(tree.root, trees)
 
   @staticmethod
@@ -279,9 +314,11 @@ class AnnotatedTreeWalker:
     and having as children the (indented string representation of the) recursively visited
     children of the given tree."""
     warn(f'TEXT_CATCHALL: {tree.root}')
-    return f'{tree.root}' + ('\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else '')
+    return f'{tree.root}' + (
+      '\n' + indent('\n'.join(visit(child) for child in tree.children), '\t') if tree.children else ''
+    )
 
-  def __init__(self, key, catchall_func = None, dispatch_table = None):
+  def __init__(self, key, catchall_func=None, dispatch_table=None):
     self.key = key
     self.catchall_func = catchall_func if catchall_func is not None else AnnotatedTreeWalker.TREE_CATCHALL
     self.dispatch_table = {} if dispatch_table is None else dispatch_table
@@ -293,14 +330,18 @@ class AnnotatedTreeWalker:
       path (str): the path of the file where to save the walker.
     """
     with open(path, 'bw') as ouf:
-      ouf.write(dumps({
-       'key': self.key,
-       'catchall_func': self.catchall_func.__code__,
-       'DT': [(name, func.__code__) for name, func in self.dispatch_table.items()]
-      }))
+      ouf.write(
+        dumps(
+          {
+            'key': self.key,
+            'catchall_func': self.catchall_func.__code__,
+            'DT': [(name, func.__code__) for name, func in self.dispatch_table.items()],
+          }
+        )
+      )
 
   @classmethod
-  def load(cls, path, globals_dict = None):
+  def load(cls, path, globals_dict=None):
     """Loads a walker from a file.
 
     Args:
@@ -309,12 +350,14 @@ class AnnotatedTreeWalker:
 
 
     """
-    if globals_dict is None: globals_dict = globals()
-    with open(path, 'rb') as inf: dct = loads(inf.read())
+    if globals_dict is None:
+      globals_dict = globals()
+    with open(path, 'rb') as inf:
+      dct = loads(inf.read())
     return cls(
-     dct['key'],
-     FunctionType(dct['catchall_func'], globals_dict),
-     {name: FunctionType(code, globals_dict) for name, code in dct['DT']}
+      dct['key'],
+      FunctionType(dct['catchall_func'], globals_dict),
+      {name: FunctionType(code, globals_dict) for name, code in dct['DT']},
     )
 
   def catchall(self, func):
@@ -325,7 +368,7 @@ class AnnotatedTreeWalker:
     """
     self.catchall_func = func
 
-  def register(self, func, name = None):
+  def register(self, func, name=None):
     """A :term:`decorator` used to register a function.
 
     The function will be registered with his (or the given) name (possibly replacing a previous registration, and
@@ -333,10 +376,16 @@ class AnnotatedTreeWalker:
     The decorated function must have two arguments: the first will be always an instance of this object, the
     second the annotate tree on which to operate.
     """
-    if name is None: name = func.__name__
-    if name.endswith('_'): name = name[:-1]
+    if name is None:
+      name = func.__name__
+    if name.endswith('_'):
+      name = name[:-1]
     self.dispatch_table[name] = func
 
   def __call__(self, tree):
     key = tree.root[self.key]
-    return self.dispatch_table[key](self.__call__, tree) if key in self.dispatch_table else self.catchall_func(self.__call__, tree)
+    return (
+      self.dispatch_table[key](self.__call__, tree)
+      if key in self.dispatch_table
+      else self.catchall_func(self.__call__, tree)
+    )

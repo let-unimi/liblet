@@ -22,8 +22,7 @@ def closure(f):
       >>> @closure
       ... def reduce_up_to(S, m):
       ...   return S | {s - 1 for s in S if s > m}
-      ...
-      >>> reduce_up_to({7,5}, 3)
+      >>> reduce_up_to({7, 5}, 3)
       {3, 4, 5, 6, 7}
 
     It is evident that its closure will return the set of values from ``m`` to the largest element in ``S``.
@@ -41,16 +40,20 @@ def closure(f):
     :math:`f^{(\\hat{n} + 1)}(D, X) = f^{(\\hat{n})}(D, X)`.
 
   """
+
   @wraps(f)
   def _closure(*args):
     s, *other = args
     while True:
       n = f(deepcopy(s), *other)
-      if n == s: return n
+      if n == s:
+        return n
       s = n
+
   return _closure
 
-def show_calls(show_retval = False):
+
+def show_calls(show_retval=False):
   """Wraps a function so that it calls (and return values) are printed when invoked.
 
   This decorator takes a function a decorated function that prints every invocation
@@ -69,9 +72,9 @@ def show_calls(show_retval = False):
 
       >>> @show_calls(True)
       ... def fib(n):
-      ...   if n == 0 or n == 1: return 1
+      ...   if n == 0 or n == 1:
+      ...     return 1
       ...   return fib(n - 1) + fib(n - 2)
-      ...
       >>> _ = fib(3)
       ┌fib(3)
       │┌fib(2)
@@ -84,17 +87,24 @@ def show_calls(show_retval = False):
       │└─ 1
       └─ 3
   """
+
   def _show_calls(f):
     f.depth = 0
+
     @wraps(f)
     def wrapper(*args, **kwds):
       f.depth += 1
       fargs = ', '.join([f'{a!r}' for a in args] + [f'{k} = {v!r}' for k, v in kwds.items()])
-      if show_retval: print('{}┌{}({})'.format('│' * (f.depth - 1), f.__name__, fargs))
-      else: print('{}{}({})'.format(' ' * (f.depth - 1), f.__name__, fargs))
+      if show_retval:
+        print('{}┌{}({})'.format('│' * (f.depth - 1), f.__name__, fargs))
+      else:
+        print('{}{}({})'.format(' ' * (f.depth - 1), f.__name__, fargs))
       ret = f(*args, **kwds)
-      if show_retval: print('{}└─ {}'.format('│' * (f.depth - 1), ret))
+      if show_retval:
+        print('{}└─ {}'.format('│' * (f.depth - 1), ret))
       f.depth -= 1
       return ret
+
     return wrapper
+
   return _show_calls

@@ -3,54 +3,57 @@ from copy import copy
 from functools import total_ordering
 from operator import attrgetter
 
-from . import ε, DIAMOND, HASH
-from .utils import letstr, Stack
-from .grammar import Item
-from .display import Tree
+from liblet.const import DIAMOND, HASH, ε
+from liblet.display import Tree
+from liblet.grammar import Item
+from liblet.utils import Stack, letstr
+
 
 @total_ordering
 class Transition:
   """An automaton transition.
 
-    This class represents an automaton transition; it has a `frm` starting
-    *state* and a `to` destination *state* and a `label`, the states can be:
+  This class represents an automaton transition; it has a `frm` starting
+  *state* and a `to` destination *state* and a `label`, the states can be:
 
-    - *nonempty* :obj:`strings <str>`, or
-    - *nonempty* :obj:`sets <set>` of *nonempty* strings, or
-    - *nonempty* :obj:`sets <set>` of :class:`items <liblet.grammar.Item>`,
+  - *nonempty* :obj:`strings <str>`, or
+  - *nonempty* :obj:`sets <set>` of *nonempty* strings, or
+  - *nonempty* :obj:`sets <set>` of :class:`items <liblet.grammar.Item>`,
 
-    whereas the label is a :obj:`str`. A transition is
-    :term:`iterable` and unpacking can be used to obtain its components, so for
-    example
+  whereas the label is a :obj:`str`. A transition is
+  :term:`iterable` and unpacking can be used to obtain its components, so for
+  example
 
-    .. doctest::
+  .. doctest::
 
-      >>> frm, label, to = Transition({'A', 'B'}, 'c', {'D'})
-      >>> sorted(frm)
-      ['A', 'B']
-      >>> label
-      'c'
-      >>> to
-      {'D'}
+    >>> frm, label, to = Transition({'A', 'B'}, 'c', {'D'})
+    >>> sorted(frm)
+    ['A', 'B']
+    >>> label
+    'c'
+    >>> to
+    {'D'}
 
-    Args:
-      frm (:obj:`str` or :obj:`set` of :obj:`str`): The starting state(s) of the transition.
-      label (str): The label of the transition.
-      to (:obj:`str` or :obj:`set` of :obj:`str`): The destination state(s) of the transition.
+  Args:
+    frm (:obj:`str` or :obj:`set` of :obj:`str`): The starting state(s) of the transition.
+    label (str): The label of the transition.
+    to (:obj:`str` or :obj:`set` of :obj:`str`): The destination state(s) of the transition.
 
-    Raises:
-      ValueError: in case the frm or to states are not nonempty strings, or nonempty set
-            of nonempty strings, or the label is not a nonempty string.
+  Raises:
+    ValueError: in case the frm or to states are not nonempty strings, or nonempty set
+          of nonempty strings, or the label is not a nonempty string.
   """
 
   __slots__ = ('frm', 'label', 'to')
 
   def __init__(self, frm, label, to):
-
     def _cssos(s):
-      if isinstance(s, str) and s: return True
-      if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _, s)): return True
-      if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, Item), s)): return True
+      if isinstance(s, str) and s:
+        return True
+      if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, str) and _, s)):
+        return True
+      if isinstance(s, Set) and s and all(map(lambda _: isinstance(_, Item), s)):
+        return True
       return False
 
     if _cssos(frm):
@@ -68,11 +71,13 @@ class Transition:
     self.to = to
 
   def __lt__(self, other):
-    if not isinstance(other, Transition): return NotImplemented
+    if not isinstance(other, Transition):
+      return NotImplemented
     return (self.frm, self.label, self.to) < (other.frm, other.label, other.to)
 
   def __eq__(self, other):
-    if not isinstance(other, Transition): return False
+    if not isinstance(other, Transition):
+      return False
     return (self.frm, self.label, self.to) == (other.frm, other.label, other.to)
 
   def __hash__(self):
@@ -99,7 +104,8 @@ class Transition:
     """
     res = []
     for t in transitions.splitlines():
-      if not t.strip(): continue
+      if not t.strip():
+        continue
       frm, label, to = t.split(',')
       res.append(Transition(frm.strip(), label.strip(), to.strip()))
     return tuple(res)
@@ -108,14 +114,14 @@ class Transition:
 class Automaton:
   """An automaton.
 
-    This class represents a (*nondeterministic*) *finite automaton*.
+  This class represents a (*nondeterministic*) *finite automaton*.
 
-    Args:
-      N (set): The states of the automaton.
-      T (set): The transition labels.
-      transitions (:obj:`set` of :class:`Transition`): The transition of the automata.
-      q0: The starting state of the automaton.
-      F (set): The set of *final* states.
+  Args:
+    N (set): The states of the automaton.
+    T (set): The transition labels.
+    transitions (:obj:`set` of :class:`Transition`): The transition of the automata.
+    q0: The starting state of the automaton.
+    F (set): The set of *final* states.
   """
 
   __slots__ = ('N', 'T', 'transitions', 'q0', 'F')
@@ -126,11 +132,21 @@ class Automaton:
     self.transitions = tuple(transitions)
     self.q0 = q0
     self.F = set(F)
-    if self.N & self.T: raise ValueError(f'The set of states and input symbols are not disjoint, but have {letstr(set(self.N & self.T))} in common.')
-    if not self.q0 in self.N: raise ValueError(f'The specified q0 ({letstr(q0)}) is not a state.')
-    if not self.F <= self.N: raise ValueError(f'The accepting states {letstr(self.F - self.N)} in F are not states.')
-    bad_trans = tuple(t for t in transitions if not t.frm in self.N or not t.to in self.N or not t.label in (self.T | {ε}))
-    if bad_trans: raise ValueError(f'The following transitions contain states or symbols that are neither states nor input symbols: {bad_trans}.')
+    if self.N & self.T:
+      raise ValueError(
+        f'The set of states and input symbols are not disjoint, but have {letstr(set(self.N & self.T))} in common.'
+      )
+    if self.q0 not in self.N:
+      raise ValueError(f'The specified q0 ({letstr(q0)}) is not a state.')
+    if not self.F <= self.N:
+      raise ValueError(f'The accepting states {letstr(self.F - self.N)} in F are not states.')
+    bad_trans = tuple(
+      t for t in transitions if t.frm not in self.N or t.to not in self.N or t.label not in (self.T | {ε})
+    )
+    if bad_trans:
+      raise ValueError(
+        f'The following transitions contain states or symbols that are neither states nor input symbols: {bad_trans}.'
+      )
 
   def δ(self, X, x):
     """The transition function.
@@ -149,7 +165,7 @@ class Automaton:
     return f'Automaton(N={letstr(self.N)}, T={letstr(self.T)}, transitions={self.transitions}, F={letstr(self.F)}, q0={letstr(self.q0)})'
 
   @classmethod
-  def from_string(cls, transitions, F = None, q0 = None):
+  def from_string(cls, transitions, F=None, q0=None):
     """Builds an automaton obtained from the given transitions.
 
     Args:
@@ -161,8 +177,10 @@ class Automaton:
     the starting state (if not specified) is defined as the ``frm`` state of the first transition.
     """
     transitions = Transition.from_string(transitions)
-    if F is None: F = set()
-    if q0 is None: q0 = transitions[0].frm
+    if F is None:
+      F = set()
+    if q0 is None:
+      q0 = transitions[0].frm
     N = set(map(attrgetter('frm'), transitions)) | set(map(attrgetter('to'), transitions))
     T = set(map(attrgetter('label'), transitions)) - {ε}
     return cls(N, T, transitions, q0, F)
@@ -180,24 +198,27 @@ class Automaton:
     """
     res = []
     for P in G.P:
-      if len(P.rhs) > 2: raise ValueError(f'Production {P} has more than two symbols on the left-hand side')
+      if len(P.rhs) > 2:
+        raise ValueError(f'Production {P} has more than two symbols on the left-hand side')
       if len(P.rhs) == 2:
         A, (a, B) = P
-        if not (a in G.T and B in G.N): raise ValueError(f'Production {P} right-hand side is not of the aB form')
+        if not (a in G.T and B in G.N):
+          raise ValueError(f'Production {P} right-hand side is not of the aB form')
         res.append(Transition(A, a, B))
       elif P.rhs[0] in G.N:
-        res.append(Transition(*((P.lhs, ) + (ε, ) + P.rhs)))
+        res.append(Transition(*((P.lhs,) + (ε,) + P.rhs)))
       else:
-        res.append(Transition(*((P.lhs, ) + P.rhs + (DIAMOND,))))
+        res.append(Transition(*((P.lhs,) + P.rhs + (DIAMOND,))))
     return cls(G.N | {DIAMOND}, G.T, tuple(res), G.S, {DIAMOND})
+
 
 class InstantaneousDescription:
   """An Instantaneous Description.
 
-    This class represents a *instantaneous description* of a *pushdown* auotmata.
+  This class represents a *instantaneous description* of a *pushdown* auotmata.
 
-    Args:
-      G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
+  Args:
+    G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
   """
 
   def __init__(self, G):
@@ -216,10 +237,11 @@ class InstantaneousDescription:
     return c
 
   def __repr__(self):
-    return '{}, {}, \x1b[48;5;252m{}\x1b[0m{}'.format( # https://en.wikipedia.org/wiki/ANSI_escape_code
+    return '{}, {}, \x1b[48;5;252m{}\x1b[0m{}'.format(  # https://en.wikipedia.org/wiki/ANSI_escape_code
       self.steps,
       ''.join(reversed(list(map(str, self.stack)))),
-      ''.join(self.tape[:self.head_pos:]), ''.join(self.tape[self.head_pos:])
+      ''.join(self.tape[: self.head_pos :]),
+      ''.join(self.tape[self.head_pos :]),
     )
 
   def head(self):
@@ -235,21 +257,23 @@ class InstantaneousDescription:
     """Used by subclasses to determine if the automata is in an accepting state."""
     return False
 
+
 class TopDownInstantaneousDescription(InstantaneousDescription):
   """An Instantaneous Description for a *top-down* parsing automaton.
 
-    This class represents a *instantaneous description* of a *pushdown* auotmata.
+  This class represents a *instantaneous description* of a *pushdown* auotmata.
 
-    Args:
-      G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
-      word (tuple): The word initially on the tape.
+  Args:
+    G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
+    word (tuple): The word initially on the tape.
   """
 
-  def __init__(self, G, word = None):
+  def __init__(self, G, word=None):
     super().__init__(G)
-    if HASH in (G.N | G.T): raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
+    if HASH in (G.N | G.T):
+      raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
     if word is not None:
-      self.tape = tuple(word) + (HASH, )
+      self.tape = tuple(word) + (HASH,)
       self.stack = Stack([HASH, G.S])
 
   def is_done(self):
@@ -262,7 +286,8 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
       c = copy(self)
       c.stack = copy(c.stack)
       c.stack.pop()
-      if self.top() != ε: c.head_pos += 1
+      if self.top() != ε:
+        c.head_pos += 1
       return c
     raise ValueError('The top of the stack and tape head symbol are not equal.')
 
@@ -272,24 +297,27 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
       c = copy(self)
       c.stack = copy(c.stack)
       c.stack.pop()
-      c.steps += (P, )
-      for X in reversed(P.rhs): c.stack.push(X)
+      c.steps += (P,)
+      for X in reversed(P.rhs):
+        c.stack.push(X)
       return c
     raise ValueError('The top of the stack does not correspond to the production lhs.')
+
 
 class BottomUpInstantaneousDescription(InstantaneousDescription):
   """An Instantaneous Description for a *bottom-up* parsing automaton.
 
-    This class represents a *instantaneous description* of a *pushdown* auotmata.
+  This class represents a *instantaneous description* of a *pushdown* auotmata.
 
-    Args:
-      G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
-      word (tuple): The word initially on the tape.
+  Args:
+    G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
+    word (tuple): The word initially on the tape.
   """
 
-  def __init__(self, G, word = None):
+  def __init__(self, G, word=None):
     super().__init__(G)
-    if word is not None: self.tape = tuple(word)
+    if word is not None:
+      self.tape = tuple(word)
 
   def is_done(self):
     """Returns `True` if the computation is done, that is if the stack contains the a tree rooted in G.S and the head is at the tape end."""
@@ -304,11 +332,13 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
 
   def reduce(self, P):
     """Attempts a reduce move, given the specified production, and returns the corresponding new instantaneous description."""
-    if not P in self.G.P: raise ValueError('The production does not belong to the grammar.')
+    if P not in self.G.P:
+      raise ValueError('The production does not belong to the grammar.')
     c = copy(self)
     children = [c.stack.pop() for _ in P.rhs][::-1]
     for X, T in zip(P.rhs, children):
-     if X != T.root: raise ValueError('The rhs does not correspond to the symbols on the stack.')
+      if T.root != X:
+        raise ValueError('The rhs does not correspond to the symbols on the stack.')
     c.stack.push(Tree(P.lhs, children))
-    c.steps = (P, ) + c.steps
+    c.steps = (P,) + c.steps
     return c
