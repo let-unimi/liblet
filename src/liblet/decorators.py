@@ -96,12 +96,12 @@ def show_calls(show_retval=False):
       f.depth += 1
       fargs = ', '.join([f'{a!r}' for a in args] + [f'{k} = {v!r}' for k, v in kwds.items()])
       if show_retval:
-        print('{}┌{}({})'.format('│' * (f.depth - 1), f.__name__, fargs))
+        print('{}┌{}({})'.format('│' * (f.depth - 1), f.__name__, fargs))  # noqa: T201
       else:
-        print('{}{}({})'.format(' ' * (f.depth - 1), f.__name__, fargs))
+        print('{}{}({})'.format(' ' * (f.depth - 1), f.__name__, fargs))  # noqa: T201
       ret = f(*args, **kwds)
       if show_retval:
-        print('{}└─ {}'.format('│' * (f.depth - 1), ret))
+        print('{}└─ {}'.format('│' * (f.depth - 1), ret))  # noqa: T201
       f.depth -= 1
       return ret
 
