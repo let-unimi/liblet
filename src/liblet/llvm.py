@@ -18,7 +18,7 @@ def _run_clang(args, *, _=None, **kwargs):
   if LLVM_VERSION is None:
     raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
   try:
-    return run([CLANG_EXECUTABLE] + args, **kwargs)
+    return run([CLANG_EXECUTABLE, *args], **kwargs)  # noqa: PLW1510
   except FileNotFoundError:
     raise FileNotFoundError(f'Executable {CLANG_EXECUTABLE} not found, LLVM_VERSION is {LLVM_VERSION}') from None
 
@@ -27,7 +27,7 @@ def _run_opt(args, *, _=None, **kwargs):
   if LLVM_VERSION is None:
     raise FileNotFoundError('Please define the LLVM_VERSION environment variable')
   try:
-    return run([OPT_EXECUTABLE] + args, **kwargs)
+    return run([OPT_EXECUTABLE, *args], **kwargs)  # noqa: PLW1510
   except FileNotFoundError:
     raise FileNotFoundError(f'Executable {OPT_EXECUTABLE} not found, LLVM_VERSION is {LLVM_VERSION}') from None
 
@@ -90,7 +90,7 @@ class LLVM:
 
   def print_code(self):
     """Prints the unwrapped source collected code."""
-    print('\n'.join(self.code))
+    print('\n'.join(self.code))  # noqa: T201
 
   def write_and_compile(self):
     """Wraps the code in some boilerplate, writes it to disk and compiles it."""
