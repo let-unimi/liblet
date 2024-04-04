@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.7.1 (2024-04-04)
+-------------------
+
+- Added resized_svg_repr to liblet.display.
+- Added svglib dependency (needed by resized_svg_repr).
+- Improved GVWrapper in liblet.display.
+- Added compose in liblet.utils.
+
 v1.7.0a0 (2024-03-25)
 ---------------------
 
