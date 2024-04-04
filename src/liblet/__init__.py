@@ -27,7 +27,21 @@ from liblet.display import (
 )
 from liblet.grammar import Derivation, Grammar, Item, Production, Productions
 from liblet.llvm import LLVM
-from liblet.utils import AttrDict, CYKTable, Queue, Stack, Table, first, letstr, peek, suffixes, uc, union_of, warn
+from liblet.utils import (
+  AttrDict,
+  CYKTable,
+  Queue,
+  Stack,
+  Table,
+  compose,
+  first,
+  letstr,
+  peek,
+  suffixes,
+  uc,
+  union_of,
+  warn,
+)
 
 __all__ = [
   '__version__',
@@ -38,6 +52,7 @@ __all__ = [
   'Automaton',
   'BottomUpInstantaneousDescription',
   'closure',
+  'compose',
   'cyk2table',
   'CYKTable',
   'Derivation',

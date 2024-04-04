@@ -1,6 +1,6 @@
 from collections import OrderedDict, defaultdict, deque
 from collections.abc import MutableMapping, Set  #  noqa: PYI025
-from functools import partial
+from functools import partial, reduce
 from html import escape
 from itertools import chain
 from sys import stderr
@@ -31,6 +31,10 @@ def peek(s):  # pragma: nocover
 def union_of(s):
   """Return the set union of its arguments."""
   return set().union(*s)
+
+
+def compose(*funcs):
+  return reduce(lambda f, g: lambda x: f(g(x)), funcs)
 
 
 def letstr(obj, sep=None, sort=True, remove_outer=False):
