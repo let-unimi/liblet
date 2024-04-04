@@ -23,6 +23,7 @@ from liblet.display import (
   iter2table,
   prods2table,
   pyast2tree,
+  resized_svg_repr,
   side_by_side,
 )
 from liblet.grammar import Derivation, Grammar, Item, Production, Productions
@@ -76,6 +77,7 @@ __all__ = [
   'Productions',
   'pyast2tree',
   'Queue',
+  'resized_svg_repr',
   'show_calls',
   'side_by_side',
   'Stack',

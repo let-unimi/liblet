@@ -5,26 +5,25 @@ from collections.abc import Mapping, Set  # noqa: PYI025
 from functools import partial
 from html import escape
 from itertools import chain, pairwise
+from operator import itemgetter
 from re import sub
 from warnings import warn as wwarn
 
+import svgutils.transform as svg_ttransform
 from graphviz import Digraph
-from IPython.display import HTML, display
+from IPython.display import HTML, SVG, display
 from ipywidgets import IntSlider, interactive
 
 from liblet.const import ε
 from liblet.grammar import HAIR_SPACE, Derivation, Productions
-from liblet.utils import AttrDict, CYKTable, letstr
+from liblet.utils import AttrDict, CYKTable, compose, letstr
 
 
 def _escape(label):
   return sub(r'\]', '&#93;', sub(r'\[', '&#91;', escape(str(label))))
 
 
-def make_node_wrapper(
-  node_label='default',  # how to produce the node label from the node object
-  node_eq='obj',  # how to decide equality between nodes
-  default_gv_args=None,  # default gv arguments for nodes
+def make_mapping_aware_str(
   other_str=letstr,  # in mapping_aware_str, how to represent non-mapping objects
   key_str=str,  # in mapping_aware_str, how to represent keys
   value_str=_escape,  # in mapping_aware_str, how to represent values
@@ -41,19 +40,22 @@ def make_node_wrapper(
       )
     return other_str(obj)
 
-  def mapping_aware_gv_args(obj):
-    return {'shape': 'none', 'margin': '0'} if isinstance(obj, Mapping) else {'margin': '.05'}
+  return mapping_aware_str
 
-  if node_label == 'default':
-    node_label = mapping_aware_str
-    if default_gv_args is None:
-      default_gv_args = lambda x: mapping_aware_gv_args(x)
-  elif node_label == 'first':
-    node_label = lambda x: mapping_aware_str(x[0])
-    if default_gv_args is None:
-      default_gv_args = lambda x: mapping_aware_gv_args(x[0])
+
+def mapping_aware_gv_args(obj):
+  return {'shape': 'none', 'margin': '0'} if isinstance(obj, Mapping) else {'margin': '.05'}
+
+
+def make_node_wrapper(
+  node_label=None,  # how to produce the node label from the node object
+  node_eq='obj',  # how to decide equality between nodes
+  default_gv_args=None,  # how to produce the default gv args from the node object
+):
+  if node_label is None:
+    node_label = make_mapping_aware_str()
   elif not callable(node_label):
-    raise ValueError('node_label must be either "default", "first" or a callable')
+    raise ValueError('node_label must be either None or a callable')
 
   if node_eq == 'obj':
     node_eq = lambda x, y: x == y
@@ -62,8 +64,10 @@ def make_node_wrapper(
   elif not callable(node_eq):
     raise ValueError('node_eq must be either "obj", "str" or a callable')
 
-  if not callable(default_gv_args):
-    raise TypeError('default_gv_args must be a callable')
+  if default_gv_args is None:
+    default_gv_args = lambda x: mapping_aware_gv_args(x)
+  elif not callable(default_gv_args):
+    raise ValueError('default_gv_args must be either None or a callable')
 
   class NodeWrapper:
     def __init__(self, obj):
@@ -91,7 +95,11 @@ def make_node_wrapper(
 
 
 class GVWrapper:
-  def __init__(self, gv_graph_args, node_wrapper):
+  def __init__(self, gv_graph_args=None, node_wrapper=None):
+    if gv_graph_args is None:
+      gv_graph_args = {}
+    if node_wrapper is None:
+      node_wrapper = make_node_wrapper()
     self.G = Digraph(**gv_graph_args)
     self.node_wrapper = node_wrapper
     self.wn2gid = {}
@@ -248,7 +256,10 @@ class Tree:
         node_attr={'shape': 'box', 'width': '0', 'height': '0', 'style': 'rounded, setlinewidth(.25)'},
         edge_attr={'dir': 'none'},
       ),
-      make_node_wrapper(node_label='first', node_shape='box'),
+      make_node_wrapper(
+        node_label=compose(make_mapping_aware_str(), itemgetter(0)),
+        default_gv_args=compose(mapping_aware_gv_args, itemgetter(0)),
+      ),
     )
 
     def walk(T):
@@ -311,7 +322,7 @@ class Graph:
   def __init__(self, arcs, sep=None):
     self.G = GVWrapper(
       dict(graph_attr={'size': '8', 'rankdir': 'LR'}, node_attr={'shape': 'oval'}),  # noqa: C408
-      make_node_wrapper(other_str=partial(letstr, sep=sep)),
+      make_node_wrapper(node_label=make_mapping_aware_str(other_str=partial(letstr, sep=sep))),
     )
     self.adj = {}
     for src, dst in arcs:
@@ -371,7 +382,7 @@ class ProductionGraph:
         },
         edge_attr={'dir': 'none', 'penwidth': '.5', 'arrowsize': '.5'},
       ),
-      make_node_wrapper(node_label='first'),
+      make_node_wrapper(node_label=compose(make_mapping_aware_str(), itemgetter(0))),
     )
 
     def remove_ε(sentence):
@@ -500,8 +511,7 @@ class StateTransitionGraph:
         engine='dot',
       ),
       make_node_wrapper(
-        node_label='default',
-        other_str=partial(letstr, sep=sep),
+        node_label=make_mapping_aware_str(other_str=partial(letstr, sep=sep)),
         default_gv_args=lambda X: {'peripheries': '2' if X in self.F else '1'},
       ),
     )
@@ -512,6 +522,9 @@ class StateTransitionGraph:
       G.edge(X, Y, gv_args={'xlabel' if self.large_labels else 'label': x})
     self.G = G
     return G
+
+  def _repr_svg_(self):
+    return self._gv_graph_()._repr_svg_()
 
 
 # Python AST stuff
@@ -543,11 +556,23 @@ def animate_derivation(d, height='300px'):
   return ui
 
 
-# HTML stuff
+# HTML/SVG stuff
 
 
 def __bordered_table__(content):  # noqa: N807
   return HTML('<style>td, th {border: 1pt solid lightgray !important ;}</style><table>' + content + '</table>')
+
+
+def resized_svg_repr(obj, width=800, height=600):
+  if hasattr(obj, '_repr_image_svg_xml'):
+    svg_str = obj._repr_image_svg_xml()
+  elif hasattr(obj, '_repr_svg_'):
+    svg_str = obj._repr_svg_()
+  else:
+    raise TypeError('The given object has no svg representation')
+  svg_figure = svg_ttransform.fromstring(svg_str)
+  svg_figure.set_size((str(width), str(height)))
+  return SVG(svg_figure.to_str())
 
 
 def side_by_side(*iterable):
