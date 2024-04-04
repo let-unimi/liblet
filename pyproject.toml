@@ -33,9 +33,10 @@ classifiers = [
 ]
 dependencies = [
   "antlr4-python3-runtime==4.13.1",
-  "jupyter",
   "graphviz",
-  "ipywidgets"
+  "ipywidgets",
+  "jupyter",
+  "svgutils",
 ]
 dynamic = ["version"]
 
