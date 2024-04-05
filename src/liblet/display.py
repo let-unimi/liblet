@@ -7,6 +7,7 @@ from html import escape
 from itertools import chain, pairwise
 from operator import itemgetter
 from re import sub
+from textwrap import indent
 from warnings import warn as wwarn
 
 import svgutils.transform as svg_ttransform
@@ -23,13 +24,13 @@ def _escape(label):
   return sub(r'\]', '&#93;', sub(r'\[', '&#91;', escape(str(label))))
 
 
-def make_mapping_aware_str(
-  other_str=letstr,  # in mapping_aware_str, how to represent non-mapping objects
-  key_str=str,  # in mapping_aware_str, how to represent keys
-  value_str=_escape,  # in mapping_aware_str, how to represent values
-  key_filter=lambda k: not k.startswith('_thread_'),  # in mapping_aware_str, which keys to show
+def make_mapping_aware_label(
+  other_str=letstr,  # in mapping_aware_label, how to represent non-mapping objects
+  key_str=str,  # in mapping_aware_label, how to represent keys
+  value_str=_escape,  # in mapping_aware_label, how to represent values
+  key_filter=lambda k: not k.startswith('_thread_'),  # in mapping_aware_label, which keys to show
 ):
-  def mapping_aware_str(obj):
+  def mapping_aware_label(obj):
     if obj is None:
       return None
     if isinstance(obj, Mapping):
@@ -40,7 +41,7 @@ def make_mapping_aware_str(
       )
     return other_str(obj)
 
-  return mapping_aware_str
+  return mapping_aware_label
 
 
 def mapping_aware_gv_args(obj):
@@ -53,19 +54,19 @@ def make_node_wrapper(
   default_gv_args=None,  # how to produce the default gv args from the node object
 ):
   if node_label is None:
-    node_label = make_mapping_aware_str()
+    node_label = make_mapping_aware_label()
   elif not callable(node_label):
     raise ValueError('node_label must be either None or a callable')
 
   if node_eq == 'obj':
     node_eq = lambda x, y: x == y
-  elif node_eq == 'str':
+  elif node_eq == 'label':
     node_eq = lambda x, y: node_label(x) == node_label(y)
   elif not callable(node_eq):
-    raise ValueError('node_eq must be either "obj", "str" or a callable')
+    raise ValueError('node_eq must be either "obj", "label" or a callable')
 
   if default_gv_args is None:
-    default_gv_args = lambda x: mapping_aware_gv_args(x)
+    default_gv_args = mapping_aware_gv_args
   elif not callable(default_gv_args):
     raise ValueError('default_gv_args must be either None or a callable')
 
@@ -132,6 +133,9 @@ class GVWrapper:
       G = self.G
     G.edge(self.node(objsrc), self.node(objdst), **(gv_args or {}))
 
+  def __repr__(self):
+    return 'GVWrapper[\n' + indent(str(self.G), '\t') + ']'
+  
   def _repr_svg_(self):
     return self.G._repr_image_svg_xml()
 
@@ -257,13 +261,14 @@ class Tree:
         edge_attr={'dir': 'none'},
       ),
       make_node_wrapper(
-        node_label=compose(make_mapping_aware_str(), itemgetter(0)),
+        node_label=compose(make_mapping_aware_label(), itemgetter(0)),
         default_gv_args=compose(mapping_aware_gv_args, itemgetter(0)),
       ),
     )
 
     def walk(T):
       curr = (T.root, T)
+      G.node(curr)
       for child in T.children:
         G.edge(curr, (child.root, child))
       if len(T.children) > 1:
@@ -322,7 +327,7 @@ class Graph:
   def __init__(self, arcs, sep=None):
     self.G = GVWrapper(
       dict(graph_attr={'size': '8', 'rankdir': 'LR'}, node_attr={'shape': 'oval'}),  # noqa: C408
-      make_node_wrapper(node_label=make_mapping_aware_str(other_str=partial(letstr, sep=sep))),
+      make_node_wrapper(node_label=make_mapping_aware_label(other_str=partial(letstr, sep=sep))),
     )
     self.adj = {}
     for src, dst in arcs:
@@ -382,7 +387,7 @@ class ProductionGraph:
         },
         edge_attr={'dir': 'none', 'penwidth': '.5', 'arrowsize': '.5'},
       ),
-      make_node_wrapper(node_label=compose(make_mapping_aware_str(), itemgetter(0))),
+      make_node_wrapper(node_label=compose(make_mapping_aware_label(), itemgetter(0))),
     )
 
     def remove_ε(sentence):
@@ -511,7 +516,7 @@ class StateTransitionGraph:
         engine='dot',
       ),
       make_node_wrapper(
-        node_label=make_mapping_aware_str(other_str=partial(letstr, sep=sep)),
+        node_label=make_mapping_aware_label(other_str=partial(letstr, sep=sep)),
         default_gv_args=lambda X: {'peripheries': '2' if X in self.F else '1'},
       ),
     )
