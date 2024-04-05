@@ -125,13 +125,13 @@ class GVWrapper:
       G = self.G
     wn, new = self._obj2wn(obj)
     if new:
-      G.node(wn.gid(), wn.label(), **({'fontname': 'Fira code'} | wn.default_gv_args() | (gv_args or {})))
+      G.node(wn.gid(), wn.label(), **({'fontname': 'Fira Code'} | wn.default_gv_args() | (gv_args or {})))
     return wn.gid()
 
   def edge(self, objsrc, objdst, G=None, gv_args=None):
     if G is None:
       G = self.G
-    G.edge(self.node(objsrc), self.node(objdst), **({'fontname': 'Fira code'} | (gv_args or {})))
+    G.edge(self.node(objsrc), self.node(objdst), **({'fontname': 'Fira Code'} | (gv_args or {})))
 
   def __repr__(self):
     return 'GVWrapper[\n' + indent(str(self.G), '\t') + ']'
