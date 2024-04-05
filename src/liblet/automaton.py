@@ -238,13 +238,14 @@ class InstantaneousDescription:
     c.head_pos = self.head_pos
     return c
 
+  def _stack_str_(self):
+    return ''.join(reversed(list(map(str, self.stack))))
+
+  def _tape_str_(self):
+    return ''.join(self.tape[: self.head_pos :] + ('｜',) + self.tape[self.head_pos :])  # noqa: RUF001
+
   def __repr__(self):
-    return '{}, {}, \x1b[48;5;252m{}\x1b[0m{}'.format(  # https://en.wikipedia.org/wiki/ANSI_escape_code
-      self.steps,
-      ''.join(reversed(list(map(str, self.stack)))),
-      ''.join(self.tape[: self.head_pos :]),
-      ''.join(self.tape[self.head_pos :]),
-    )
+    return f'{self.steps}, {self._stack_str_()}, {self._tape_str_()}'
 
   def head(self):
     """Returns the symbol under the tape head."""
@@ -338,9 +339,11 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
       raise ValueError('The production does not belong to the grammar.')
     c = copy(self)
     children = [c.stack.pop() for _ in P.rhs][::-1]
-    for X, T in zip(P.rhs, children, strict=True):
-      if T.root != X:
-        raise ValueError('The rhs does not correspond to the symbols on the stack.')
+    if tuple(t.root for t in children) != P.rhs:
+      raise ValueError('The rhs does not correspond to the symbols on the stack.')
     c.stack.push(Tree(P.lhs, children))
     c.steps = (P, *c.steps)
     return c
+
+  def _stack_str_(self):
+    return ''.join(map(str, self.stack))
