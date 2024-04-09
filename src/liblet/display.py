@@ -15,8 +15,7 @@ from graphviz import Digraph
 from IPython.display import HTML, SVG, display
 from ipywidgets import IntSlider, interactive
 
-
-from liblet.const import ε, FONT_NAME
+from liblet.const import GV_FONT_NAME, GV_FONT_SIZE, HTML_FONT_NAME, ε
 from liblet.grammar import HAIR_SPACE, Derivation, Productions
 from liblet.utils import AttrDict, CYKTable, compose, letstr
 
@@ -113,10 +112,10 @@ def make_node_wrapper(
 class GVWrapper:
   def __init__(self, gv_graph_args=None, node_wrapper=None):
     gv_graph_args = gv_graph_args or {}
-    gv_graph_args['node_attr'] = {'fontname': f"'{FONT_NAME}'"} | (
+    gv_graph_args['node_attr'] = {'fontname': f"'{GV_FONT_NAME}'", 'fontsize': f"'{GV_FONT_SIZE}'"} | (
       gv_graph_args['node_attr'] if 'node_attr' in gv_graph_args else {}
     )
-    gv_graph_args['edge_attr'] = {'fontname': f"'{FONT_NAME}'"} | (
+    gv_graph_args['edge_attr'] = {'fontname': f"'{GV_FONT_NAME}'", 'fontsize': f"'{GV_FONT_SIZE}'"} | (
       gv_graph_args['edge_attr'] if 'edge_attr' in gv_graph_args else {}
     )
     node_wrapper = node_wrapper or make_node_wrapper()
@@ -576,7 +575,11 @@ def animate_derivation(d, height='300px'):
 
 
 def __bordered_table__(content):  # noqa: N807
-  return HTML(f'<style>td, th {{border: 1pt solid lightgray !important;}} table * {{font-family: "{FONT_NAME}";}}</style><table>' + content + '</table>')
+  return HTML(
+    f'<style>td, th {{border: 1pt solid lightgray !important;}} table * {{font-family: "{HTML_FONT_NAME}";}}</style><table>'
+    + content
+    + '</table>'
+  )
 
 
 def resized_svg_repr(obj, width=800, height=600):

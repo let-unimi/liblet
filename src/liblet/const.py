@@ -1,4 +1,6 @@
 ε = 'ε'
 DIAMOND = '◇'
 HASH = '♯'
-FONT_NAME = "Fira Code"
+GV_FONT_NAME = 'Fira Code'
+GV_FONT_SIZE = '8'
+HTML_FONT_NAME = GV_FONT_NAME

@@ -6,7 +6,8 @@ from itertools import chain
 from sys import stderr
 from warnings import warn as wwarn
 
-from liblet.const import FONT_NAME
+from liblet.const import HTML_FONT_NAME
+
 
 def suffixes(α):
   for i in range(len(α)):
@@ -160,7 +161,7 @@ class AttrDict(MutableMapping):
 
   def __len__(self):
     return len(self.__store)
-  
+
   def __repr__(self):
     return f'AttrDict({self.__store})'
 
@@ -256,7 +257,7 @@ class Table:
   def _repr_html_(self):
     def _table(content):
       return (
-        f'<style>td, th {{border: 1pt solid lightgray !important; text-align: left !important;}} table * {{font-family: "{FONT_NAME}";}}</style><table>'
+        f'<style>td, th {{border: 1pt solid lightgray !important; text-align: left !important;}} table * {{font-family: "{HTML_FONT_NAME}";}}</style><table>'
         + content
         + '</table>'
       )
