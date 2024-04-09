@@ -576,7 +576,7 @@ def animate_derivation(d, height='300px'):
 
 
 def __bordered_table__(content):  # noqa: N807
-  return HTML(f'<style>td, th {{border: 1pt solid lightgray !important;}} * {{font-family: "{FONT_NAME}";}}</style><table>' + content + '</table>')
+  return HTML(f'<style>td, th {{border: 1pt solid lightgray !important;}} table * {{font-family: "{FONT_NAME}";}}</style><table>' + content + '</table>')
 
 
 def resized_svg_repr(obj, width=800, height=600):

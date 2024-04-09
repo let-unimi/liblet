@@ -256,7 +256,7 @@ class Table:
   def _repr_html_(self):
     def _table(content):
       return (
-        f'<style>td, th {{border: 1pt solid lightgray !important; text-align: left !important;}} * {{font-family: "{FONT_NAME}";}}</style><table>'
+        f'<style>td, th {{border: 1pt solid lightgray !important; text-align: left !important;}} table * {{font-family: "{FONT_NAME}";}}</style><table>'
         + content
         + '</table>'
       )
