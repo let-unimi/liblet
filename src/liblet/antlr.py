@@ -95,15 +95,6 @@ class ANTLR:
         modules[qn] = module
         setattr(self, suffix, getattr(module, qn))
 
-  def save(self, path):
-    """Saves this grammar to file.
-
-    Args:
-      path (str): the path of the file where to save the grammar.
-    """
-    with open(path, 'w') as ouf:
-      ouf.write(self.grammar)
-
   @classmethod
   def load(cls, path):
     """Loads a grammar from file.
@@ -113,6 +104,15 @@ class ANTLR:
     """
     with open(path) as inf:
       return cls(inf.read())
+
+  def save(self, path):
+    """Saves this grammar to file.
+
+    Args:
+      path (str): the path of the file where to save the grammar.
+    """
+    with open(path, 'w') as ouf:
+      ouf.write(self.grammar)
 
   def print_grammar(self, number_lines=True):  # pragma: nocover
     """Prints the grammar (with line numbers)

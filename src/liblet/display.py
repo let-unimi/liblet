@@ -15,7 +15,8 @@ from graphviz import Digraph
 from IPython.display import HTML, SVG, display
 from ipywidgets import IntSlider, interactive
 
-from liblet.const import ε
+
+from liblet.const import ε, FONT_NAME
 from liblet.grammar import HAIR_SPACE, Derivation, Productions
 from liblet.utils import AttrDict, CYKTable, compose, letstr
 
@@ -45,13 +46,15 @@ def make_mapping_aware_label(
 
 
 def mapping_aware_gv_args(obj):
-  return {'shape': 'none', 'margin': '0'} if isinstance(obj, Mapping) else {'margin': '.05'}
+  return (
+    {'shape': 'none', 'margin': '0', 'height': '0', 'width': '0'} if isinstance(obj, Mapping) else {'margin': '.05'}
+  )
 
 
 def make_node_wrapper(
   node_label=None,  # how to produce the node label from the node object
   node_eq='obj',  # how to decide equality between nodes
-  default_gv_args=None,  # how to produce the default gv args from the node object
+  node_gv_args=None,  # how to produce the default gv args from the node object
 ):
   if node_label is None:
     node_label = make_mapping_aware_label()
@@ -65,20 +68,32 @@ def make_node_wrapper(
   elif not callable(node_eq):
     raise ValueError('node_eq must be either "obj", "label" or a callable')
 
-  if default_gv_args is None:
-    default_gv_args = mapping_aware_gv_args
-  elif not callable(default_gv_args):
-    raise ValueError('default_gv_args must be either None or a callable')
+  if node_gv_args is None:
+    node_gv_args = mapping_aware_gv_args
+  elif not callable(node_gv_args):
+    raise ValueError('node_gv_args must be either None or a callable')
 
-  class NodeWrapper:
+  class EHW:
     def __init__(self, obj):
       self.obj = obj
 
     def __eq__(self, other):
+      if not isinstance(other, EHW):
+        return False
       return node_eq(self.obj, other.obj)
 
     def __hash__(self):
       return hash(node_label(self.obj))
+
+  class NodeWrapper(EHW):
+    _wn2gid = {}  # noqa: RUF012
+
+    def __new__(cls, obj):
+      ehw = EHW(obj)
+      if ehw not in cls._wn2gid:
+        intsance = cls._wn2gid[ehw] = super().__new__(cls)
+        intsance._gid = f'N{len(cls._wn2gid)}'
+      return cls._wn2gid[ehw]
 
     def gid(self):
       return self._gid
@@ -86,8 +101,8 @@ def make_node_wrapper(
     def label(self):
       return node_label(self.obj)
 
-    def default_gv_args(self):
-      return default_gv_args(self.obj)
+    def gv_args(self):
+      return node_gv_args(self.obj)
 
     def __repr__(self):
       return f'NodeWrapper[obj = {self.obj}, label = {self.label()}, hash = {hash(self)}]'
@@ -97,25 +112,20 @@ def make_node_wrapper(
 
 class GVWrapper:
   def __init__(self, gv_graph_args=None, node_wrapper=None):
-    if gv_graph_args is None:
-      gv_graph_args = {}
-    if node_wrapper is None:
-      node_wrapper = make_node_wrapper()
+    gv_graph_args = gv_graph_args or {}
+    gv_graph_args['node_attr'] = {'fontname': f"'{FONT_NAME}'"} | (
+      gv_graph_args['node_attr'] if 'node_attr' in gv_graph_args else {}
+    )
+    gv_graph_args['edge_attr'] = {'fontname': f"'{FONT_NAME}'"} | (
+      gv_graph_args['edge_attr'] if 'edge_attr' in gv_graph_args else {}
+    )
+    node_wrapper = node_wrapper or make_node_wrapper()
     self.G = Digraph(**gv_graph_args)
     self.node_wrapper = node_wrapper
-    self.wn2gid = {}
+    self.nodes = set()
 
   def wrapped_graph(self):
     return self.G
-
-  def _obj2wn(self, obj):
-    wn = self.node_wrapper(obj)
-    if wn not in self.wn2gid:
-      wn._gid = f'N{len(self.wn2gid)}'
-      self.wn2gid[wn] = wn._gid
-      return (wn, True)
-    wn._gid = self.wn2gid[wn]
-    return (wn, False)
 
   def subgraph(self, **args):
     return self.G.subgraph(**args)
@@ -123,15 +133,16 @@ class GVWrapper:
   def node(self, obj, G=None, gv_args=None):
     if G is None:
       G = self.G
-    wn, new = self._obj2wn(obj)
-    if new:
-      G.node(wn.gid(), wn.label(), **({'fontname': 'Fira Code'} | wn.default_gv_args() | (gv_args or {})))
-    return wn.gid()
+    wn = self.node_wrapper(obj)
+    if wn.gid() not in self.nodes:
+      G.node(wn.gid(), wn.label(), **(wn.gv_args() | (gv_args or {})))
+      self.nodes.add(wn.gid())
+    return wn
 
   def edge(self, objsrc, objdst, G=None, gv_args=None):
     if G is None:
       G = self.G
-    G.edge(self.node(objsrc), self.node(objdst), **({'fontname': 'Fira Code'} | (gv_args or {})))
+    G.edge(self.node(objsrc).gid(), self.node(objdst).gid(), **(gv_args or {}))
 
   def __repr__(self):
     return 'GVWrapper[\n' + indent(str(self.G), '\t') + ']'
@@ -216,7 +227,7 @@ class Tree:
       self.attr = AttrDict(root)
 
   def __iter__(self):
-    return iter([self.root * self.children])
+    return iter([self.root, *self.children])
 
   @classmethod
   def from_lol(cls, lol):
@@ -262,7 +273,7 @@ class Tree:
       ),
       make_node_wrapper(
         node_label=compose(make_mapping_aware_label(), itemgetter(0)),
-        default_gv_args=compose(mapping_aware_gv_args, itemgetter(0)),
+        node_gv_args=compose(mapping_aware_gv_args, itemgetter(0)),
       ),
     )
 
@@ -517,11 +528,11 @@ class StateTransitionGraph:
       ),
       make_node_wrapper(
         node_label=make_mapping_aware_label(other_str=partial(letstr, sep=sep)),
-        default_gv_args=lambda X: {'peripheries': '2' if X in self.F else '1'},
+        node_gv_args=lambda X: {'peripheries': '2' if X in self.F else '1'},
       ),
     )
     if self.S is not None:
-      (G.node('', gv_args={'shape': 'point'}),)
+      G.node('', gv_args={'shape': 'point'})
       G.edge('', self.S)
     for X, x, Y in self.transitions:
       G.edge(X, Y, gv_args={'xlabel' if self.large_labels else 'label': x})
@@ -565,7 +576,7 @@ def animate_derivation(d, height='300px'):
 
 
 def __bordered_table__(content):  # noqa: N807
-  return HTML('<style>td, th {border: 1pt solid lightgray !important ;}</style><table>' + content + '</table>')
+  return HTML(f'<style>td, th {{border: 1pt solid lightgray !important;}} * {{font-family: "{FONT_NAME}";}}</style><table>' + content + '</table>')
 
 
 def resized_svg_repr(obj, width=800, height=600):
