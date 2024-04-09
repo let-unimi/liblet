@@ -201,6 +201,8 @@ This module provides a commodity class to deal with `ANTLR <https://www.antlr.or
 
 .. autoclass:: ANTLR
 
+   .. automethod:: load
+   .. automethod:: save
    .. automethod:: print_grammar
    .. automethod:: context
    .. automethod:: tokens
@@ -208,6 +210,8 @@ This module provides a commodity class to deal with `ANTLR <https://www.antlr.or
 
 .. autoclass:: AnnotatedTreeWalker
 
+   .. automethod:: load
+   .. automethod:: save
    .. automethod:: catchall
    .. automethod:: register
    .. automethod:: RECOURSE_CHILDREN
