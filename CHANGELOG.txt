@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.7.4 (2024-04-11)
+-------------------
+
+- Added save and load to ANTLR and AnnotatedTreeWalker documentation.
+- Now also table use "Fira Code" (and the font name is in liblet.const).
+
 v1.7.3 (2024-04-04)
 -------------------
 
