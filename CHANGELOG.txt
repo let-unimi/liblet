@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.7.5 (2024-04-12)
+-------------------
+
+- Added the line number as attribute of the ANTLR annotated parse tree. 
+- Now TopDownInstantaneousDescription.predict does not put the ε on the stack.
+
 v1.7.4 (2024-04-11)
 -------------------
 

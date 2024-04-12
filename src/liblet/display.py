@@ -112,10 +112,10 @@ def make_node_wrapper(
 class GVWrapper:
   def __init__(self, gv_graph_args=None, node_wrapper=None):
     gv_graph_args = gv_graph_args or {}
-    gv_graph_args['node_attr'] = {'fontname': f"'{GV_FONT_NAME}'", 'fontsize': f"'{GV_FONT_SIZE}'"} | (
+    gv_graph_args['node_attr'] = {'fontname': GV_FONT_NAME, 'fontsize': GV_FONT_SIZE} | (
       gv_graph_args['node_attr'] if 'node_attr' in gv_graph_args else {}
     )
-    gv_graph_args['edge_attr'] = {'fontname': f"'{GV_FONT_NAME}'", 'fontsize': f"'{GV_FONT_SIZE}'"} | (
+    gv_graph_args['edge_attr'] = {'fontname': GV_FONT_NAME, 'fontsize': GV_FONT_SIZE} | (
       gv_graph_args['edge_attr'] if 'edge_attr' in gv_graph_args else {}
     )
     node_wrapper = node_wrapper or make_node_wrapper()
