@@ -81,7 +81,7 @@ class TestGenerationAndParsing(unittest.TestCase):
     tree = str(Bad.tree('z-a+a*x', 'start'))
     self.assertEqual(
       tree,
-      r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 6)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 6)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 4)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 2)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0)}: ({'type': 'token', 'name': 'ID', 'value': 'z', 'src': 0})), ({'type': 'token', 'name': 'OP', 'value': '-', 'src': 1}), ({'type': 'token', 'name': 'ID', 'value': 'a', 'src': 2})), ({'type': 'token', 'name': 'OP', 'value': '+', 'src': 3}), ({'type': 'token', 'name': 'ID', 'value': 'a', 'src': 4})), ({'type': 'token', 'name': '*', 'value': '*', 'src': 5}), ({'type': 'token', 'name': 'ID', 'value': 'x', 'src': 6})))",
+      r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 6), 'line': 1}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 6), 'line': 1}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 4), 'line': 1}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 2), 'line': 1}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0), 'line': 1}: ({'type': 'token', 'name': 'ID', 'value': 'z', 'src': 0, 'line': 1})), ({'type': 'token', 'name': 'OP', 'value': '-', 'src': 1, 'line': 1}), ({'type': 'token', 'name': 'ID', 'value': 'a', 'src': 2, 'line': 1})), ({'type': 'token', 'name': 'OP', 'value': '+', 'src': 3, 'line': 1}), ({'type': 'token', 'name': 'ID', 'value': 'a', 'src': 4, 'line': 1})), ({'type': 'token', 'name': '*', 'value': '*', 'src': 5, 'line': 1}), ({'type': 'token', 'name': 'ID', 'value': 'x', 'src': 6, 'line': 1})))",
     )
 
   def test_nolexersym(self):
@@ -96,7 +96,7 @@ class TestGenerationAndParsing(unittest.TestCase):
     tree = str(NoSym.tree('aa', 'start'))
     self.assertEqual(
       tree,
-      r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 1)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 0})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (1, 1)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 1})))",
+      r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 1), 'line': 1}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0), 'line': 1}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 0, 'line': 1})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (1, 1), 'line': 1}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 1, 'line': 1})))",
     )
 
   def test_eof(self):
@@ -111,7 +111,7 @@ class TestGenerationAndParsing(unittest.TestCase):
     tree = str(NoSym.tree('aa', 'start'))
     self.assertEqual(
       tree,
-      r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 1)}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 0})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (1, 1)}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 1})))",
+      r"({'type': 'rule', 'name': 'start', 'rule': 'start', 'src': (0, 1), 'line': 1}: ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (0, 0), 'line': 1}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 0, 'line': 1})), ({'type': 'rule', 'name': 'expr', 'rule': 'expr', 'src': (1, 1), 'line': 1}: ({'type': 'token', 'name': 'a', 'value': 'a', 'src': 1, 'line': 1})))",
     )
 
   def test_diag(self):
