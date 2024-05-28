@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.7.6 (2024-05-28)
+-------------------
+
+- Tree.with_threads now shows labels for jumps different from next.
+
+
 v1.7.5 (2024-04-12)
 -------------------
 
