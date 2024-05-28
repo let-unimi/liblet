@@ -297,14 +297,14 @@ class Tree:
   def with_threads(self, threads):
     """Draws a *threaded* and *annotated* tree (as a graph).
 
-    Tree *threads* are arcs among tree nodes (or special nodes), more
-    precisely, a :obj:`dict` mapping annotated tree *source* nodes to a
-    :obj:`dict` whose values are *destinations* tree nodes; arcs are
-    represented as dotted arrows. Special nodes are: the *start* tree (an
-    annotated tree whose root contains the ``(type, <START>)`` item), the
-    *join* trees (annotated trees whose root contains the ``(type, <JOIN>)``
-    item) and the ``None`` value; such special nodes are represented as red
-    dots.
+    Tree *threads* are arcs among tree nodes (or special nodes), more precisely,
+    a :obj:`dict` mapping annotated tree *source* nodes to a :obj:`dict` whose
+    values are *destinations* tree nodes; arcs are represented as dotted arrows.
+    Special nodes are: the *begin* tree (an annotated tree whose root contains
+    the ``(type, <BEGIN>)`` item), the *join* trees (annotated trees whose root
+    contains the ``(type, <JOIN>)`` item) and the *end* node  (annotated trees
+    whose root contains the ``(type, <END>)`` item); such special nodes are
+    represented as red dots.
 
 
     Args: threads (dict): a dictionary representing the threads.
@@ -318,17 +318,29 @@ class Tree:
     edge_args = {'dir': 'forward', 'arrowhead': 'vee', 'arrowsize': '.5', 'style': 'dashed', 'color': 'red'}
 
     for node in threads:
-      if 'type' in node.root and node.root['type'] in ('<START>', '<JOIN>'):
+      if 'type' in node.root and node.root['type'] in ('<BEGIN>', '<JOIN>', '<END>'):
         G.node((node.root, node), gv_args=node_args)
-    G.node((None, None), gv_args=node_args)
 
     for node, info in threads.items():
       for nxt in info:
-        G.edge(
-          (node.root if node else None, node),
-          (info[nxt].root if info[nxt] else None, info[nxt]),
-          gv_args=edge_args,
-        )
+        if nxt == 'next':
+          G.edge(
+            (node.root, node),
+            (info[nxt].root, info[nxt]),
+            gv_args=edge_args
+          )
+        else:
+          G.node((nxt, (1, node)), gv_args={'color': 'red', 'fontcolor': 'red', 'fontsize': '10', 'width': '.04', 'height': '.04'})
+          G.edge(
+            (node.root, node),
+            (nxt, (1, node)),
+            gv_args=edge_args | {'arrowhead': 'none'}
+          )
+          G.edge(
+            (nxt, (1, node)),
+            (info[nxt].root, info[nxt]),
+            gv_args=edge_args
+          )
 
     return G
 
