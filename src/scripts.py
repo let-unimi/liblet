@@ -1,5 +1,5 @@
 def install_antlrjar():
-  FILE = 'antlr-4.13.1-complete.jar'
+  FILE = 'antlr-4.13.2-complete.jar'
   URL = 'https://www.antlr.org/download/' + FILE
 
   from pathlib import Path
