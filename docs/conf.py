@@ -60,10 +60,10 @@ html_context = {
   ]
 }
 html_sidebars = {
-  'index': ['project.html', 'localtoc.html', 'versions.html', 'searchbox.html'],
-  '**': ['localtoc.html', 'relations.html', 'versions.html', 'searchbox.html'],
+  'index': ['project.html', 'localtoc.html', 'searchbox.html'],
+  '**': ['localtoc.html', 'relations.html', 'searchbox.html'],
 }
-singlehtml_sidebars = {'index': ['project.html', 'versions.html', 'localtoc.html']}
+singlehtml_sidebars = {'index': ['project.html', 'localtoc.html']}
 html_static_path = ['_static']
 html_logo = '_static/logo.png'
 html_title = f'LibLET Documentation ({version})'
