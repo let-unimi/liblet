@@ -218,7 +218,7 @@ class ANTLR:
       name = ctx.__class__.__name__
       name = name[:-7]  # remove trailing 'Context'
       name = name[0].lower() + name[1:]
-      return {'type': 'rule', 'name': name, 'rule': rule, 'src': ctx.getSourceInterval(), 'line': ctx.start.line} 
+      return {'type': 'rule', 'name': name, 'rule': rule, 'src': ctx.getSourceInterval(), 'line': ctx.start.line}
 
     def _token(token):
       ts = token.symbol

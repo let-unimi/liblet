@@ -2,13 +2,10 @@ import unittest
 import unittest.mock
 from copy import copy
 
-from liblet import AttrDict, Queue, Stack, first, letstr, suffixes, union_of, warn
+from liblet import AttrDict, Queue, Stack, letstr, suffixes, union_of, warn
 
 
 class UtilsTest(unittest.TestCase):
-  def test_first(self):
-    self.assertEqual('a', first({'a'}))
-
   def test_unionof(self):
     self.assertEqual({'a', 'b'}, union_of([{'a'}, {'b'}]))
 

@@ -257,6 +257,47 @@ class Tree:
 
     return _to_tree(lol)
 
+  @classmethod
+  def from_pyast(cls, node):
+    """Builds a tree from a Python AST node.
+    
+    Args:
+      node (ast.AST): the AST node.
+    
+    Example:
+    
+      The following code
+    
+    .. code:: ipython3
+    
+      import ast
+      
+      node = ast.parse('1 + 2', mode = 'eval')
+      Tree.from_pyast(node)
+      
+    produces the following tree
+    
+    .. image:: ast.svg
+      
+    
+    """
+
+    def _to_tree(ast_node):
+      return (
+        cls(
+          {'type': 'ast', 'name': ast_node.__class__.__name__},
+          [
+            cls(name, [_to_tree(v) for v in (value if isinstance(value, list) else [value])])
+            for name, value in ast.iter_fields(ast_node)
+            if name not in {'type_ignores', 'type_comment'}
+          ],
+        )
+        if isinstance(ast_node, ast.AST)
+        else cls({'type': 'token', 'value': ast_node})
+      )
+
+    return _to_tree(node)
+
   def __repr__(self):
     def walk(T):
       return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else f'({T.root})'
@@ -324,23 +365,14 @@ class Tree:
     for node, info in threads.items():
       for nxt in info:
         if nxt == 'next':
-          G.edge(
-            (node.root, node),
-            (info[nxt].root, info[nxt]),
-            gv_args=edge_args
-          )
+          G.edge((node.root, node), (info[nxt].root, info[nxt]), gv_args=edge_args)
         else:
-          G.node((nxt, (1, node)), gv_args={'color': 'red', 'fontcolor': 'red', 'fontsize': '10', 'width': '.04', 'height': '.04'})
-          G.edge(
-            (node.root, node),
+          G.node(
             (nxt, (1, node)),
-            gv_args=edge_args | {'arrowhead': 'none'}
+            gv_args={'color': 'red', 'fontcolor': 'red', 'fontsize': '10', 'width': '.04', 'height': '.04'},
           )
-          G.edge(
-            (nxt, (1, node)),
-            (info[nxt].root, info[nxt]),
-            gv_args=edge_args
-          )
+          G.edge((node.root, node), (nxt, (1, node)), gv_args=edge_args | {'arrowhead': 'none'})
+          G.edge((nxt, (1, node)), (info[nxt].root, info[nxt]), gv_args=edge_args)
 
     return G
 
@@ -558,6 +590,12 @@ class StateTransitionGraph:
 
 
 def pyast2tree(node):
+  """Deprecated. Use Tree.from_pyast instead."""
+  wwarn(
+    'The function "pyast2tree" has been absorbed in Tree (as from_pyast factory method).',
+    DeprecationWarning,
+    stacklevel=2,
+  )
   return (
     Tree(
       {'type': 'ast', 'name': node.__class__.__name__},

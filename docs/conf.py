@@ -50,7 +50,6 @@ intersphinx_mapping = {
 # -- Options for HTML output
 
 html_theme = 'flask'
-# html_theme_options = {"index_sidebar_logo": False}
 html_context = {
   'project_links': [
     ProjectLink('PyPI releases', 'https://pypi.org/project/liblet/'),

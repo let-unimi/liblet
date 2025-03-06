@@ -20,7 +20,8 @@ def warn(msg):
 
 
 def first(s):
-  """Returns the fist element of the given :obj:`set`."""
+  """Deprecated. Use set.pop"""
+  wwarn('The function "first" is now deprecated, please use "pop" instead.', DeprecationWarning, stacklevel=2)
   return next(iter(s)) if s else None
 
 

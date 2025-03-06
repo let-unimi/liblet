@@ -302,7 +302,8 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
       c.stack.pop()
       c.steps += (P,)
       for X in reversed(P.rhs):
-        if X !=  ε :c.stack.push(X)
+        if ε != X:
+          c.stack.push(X)
       return c
     raise ValueError('The top of the stack does not correspond to the production lhs.')
 

@@ -247,6 +247,7 @@ Rich display
 .. autoclass:: Tree
 
    .. automethod:: from_lol
+   .. automethod:: from_pyast
    .. automethod:: with_threads
 
 .. autoclass:: ProductionGraph
@@ -266,8 +267,6 @@ Utilities and decorators
 .. autoclass:: Table
 .. autoclass:: AttrDict
 .. autofunction:: warn
-.. autofunction:: first
-.. autofunction:: peek
 .. autofunction:: union_of
 
 .. currentmodule:: liblet.decorators
