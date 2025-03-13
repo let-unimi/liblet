@@ -17,12 +17,16 @@ def _letlrhstostr(s):
 class Production:
   """A grammar production.
 
-  This class represents a grammar production, it has a left-hand and
-  right-hand sides that can be *nonempty* :obj:`strings <str>`, or
-  :obj:`tuples <tuple>` of *nonempty* strings; the right-hand side can
-  contain ε only if is the only symbol it comprises. A production is
-  :term:`iterable` and unpacking can be used to obtain its sides, so
-  for example
+  This class represents a grammar production, it has a:
+  
+  - *left-hand side* that can be either a *nonempty* :obj:`string <str>`, or a
+    *nonempty* :obj:`tuple <tuple>` of *nonempty* :obj:`strings <str>`, and a
+  - *right-hand side* that is a *nonempty* :obj:`tuple <tuple>` of *nonempty*
+    :obj:`strings <str>`; it can contain ε only if is the only symbol it
+    comprises. 
+    
+  A production is :term:`iterable` and unpacking can be used to obtain its
+  sides, so for example
 
   .. doctest::
 
@@ -34,10 +38,11 @@ class Production:
 
   Args:
     lhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The left-hand side of the production.
-    rhs (:obj:`str` or :obj:`tuple` of :obj:`str`): The right-hand side of the production.
+    rhs (:obj:`tuple` of :obj:`str`): The right-hand side of the production, if empty
+      the right hand side will be the tuple `(ε,)`.
 
   Raises:
-    ValueError: in case the left-hand or right-hand side is not a string, or a tuple of strings.
+    ValueError: in case the left-hand or right-hand side are not valid (as described above).
   """
 
   __slots__ = ('lhs', 'rhs')
@@ -45,14 +50,19 @@ class Production:
   def __init__(self, lhs, rhs):
     if isinstance(lhs, str) and lhs:
       self.lhs = lhs
-    elif isinstance(lhs, list | tuple) and all(isinstance(_, str) and _ for _ in lhs):
+    elif isinstance(lhs, list | tuple) and lhs and all(isinstance(_, str) and _ for _ in lhs):
       self.lhs = tuple(lhs)
     else:
       raise ValueError('The left-hand side is not a nonempty str, nor a tuple (or list) of nonempty str.')
-    if isinstance(rhs, list | tuple) and rhs and all(isinstance(_, str) and _ for _ in rhs):
-      self.rhs = tuple(rhs)
+    if isinstance(rhs, list | tuple):
+      if not rhs: 
+        self.rhs = (ε,)
+      elif all(isinstance(_, str) and _ for _ in rhs):
+        self.rhs = tuple(rhs)
+      else:
+        raise ValueError('The right-hand side is not an empty tuple (or list), or a tuple (or list) of nonempty str.')
     else:
-      raise ValueError('The right-hand side is not a tuple (or list) of nonempty str.')
+      raise ValueError('The right-hand side is not a tuple (or list).')
     if ε in self.rhs and len(self.rhs) != 1:
       raise ValueError('The right-hand side contains ε but has more than one symbol')
 

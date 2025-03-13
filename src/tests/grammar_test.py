@@ -20,9 +20,9 @@ class TestGrammar(unittest.TestCase):
     with self.assertRaisesRegex(ValueError, 'nonempty'):
       Production('a', ['a', '', 'c'])
 
-  def test_production_nonempty_rhs(self):
-    with self.assertRaisesRegex(ValueError, 'nonempty'):
-      Production('a', [])
+  def test_production_empty_rhs(self):
+    P = Production('a', [])
+    self.assertEqual(P.rhs, (ε,))
 
   def test_production_inset(self):
     P = Production('a', ['b', 'c'])
