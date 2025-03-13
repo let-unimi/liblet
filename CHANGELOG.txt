@@ -6,7 +6,10 @@ v1.8.0 (2025-03-xx)
 
 - Deprecated first, to extract an element from a set there is set.pop.
 - Deprecated pyast2tree, not is the from_pyast factory method of Tree.
-- Production if the rhs is the empty tuple or list is created as an epsilon production.
+- Production if the rhs is the empty tuple or list is created as an epsilon
+  rule.
+- Added equals and hash to InstantaneousDescription that can be used to avoid 
+  loops in simulations.
 
 v1.7.9 (2025-02-28)
 -------------------

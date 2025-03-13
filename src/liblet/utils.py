@@ -64,7 +64,7 @@ def letstr(obj, sep=None, sort=True, remove_outer=False):
 
 
 class Queue:
-  """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue``, and ``copy`` methods."""
+  """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue`` methods."""
 
   def __init__(self, iterable=None, maxlen=None):
     self.Q = deque(iterable, maxlen) if iterable is not None else deque(maxlen=maxlen)
@@ -95,9 +95,17 @@ class Queue:
   def __len__(self):
     return len(self.Q)
 
+  def __hash__(self):
+    return hash(tuple(self.Q))
+
+  def __eq__(self, other):
+    if not isinstance(other, Queue):
+      return False
+    return self.Q == other.Q
+
 
 class Stack:
-  """A convenience implementation of a *stack* providing the usual ``push``, ``pop``, ``peek``, and ``copy`` methods."""
+  """A convenience implementation of a *stack* providing the usual ``push``, ``pop``, ``peek``, methods."""
 
   def __init__(self, iterable=None, maxlen=None):
     self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen=maxlen)
@@ -130,6 +138,14 @@ class Stack:
 
   def __len__(self):
     return len(self.S)
+  
+  def __hash__(self):
+    return hash(tuple(self.S))
+  
+  def __eq__(self, other):
+    if not isinstance(other, Stack):
+      return False
+    return self.S == other.S
 
 
 class AttrDict(MutableMapping):
