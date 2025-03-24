@@ -1,6 +1,6 @@
 import ast
 from abc import ABC, abstractmethod
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from collections.abc import Mapping, Set  # noqa: PYI025
 from functools import partial
 from html import escape
@@ -15,9 +15,9 @@ from graphviz import Digraph
 from IPython.display import HTML, SVG, display
 from ipywidgets import IntSlider, interactive
 
-from liblet.const import GV_FONT_NAME, GV_FONT_SIZE, HTML_FONT_NAME, ε
+from liblet.const import CUSTOM_CSS, GV_FONT_NAME, GV_FONT_SIZE, ε
 from liblet.grammar import HAIR_SPACE, Derivation, Productions
-from liblet.utils import AttrDict, CYKTable, compose, letstr
+from liblet.utils import AttrDict, compose, letstr
 
 
 def _escape(label):
@@ -260,26 +260,26 @@ class Tree:
   @classmethod
   def from_pyast(cls, node):
     """Builds a tree from a Python AST node.
-    
+
     Args:
       node (ast.AST): the AST node.
-    
+
     Example:
-    
+
       The following code
-    
+
     .. code:: ipython3
-    
+
       import ast
-      
+
       node = ast.parse('1 + 2', mode = 'eval')
       Tree.from_pyast(node)
-      
+
     produces the following tree
-    
+
     .. image:: ast.svg
-      
-    
+
+
     """
 
     def _to_tree(ast_node):
@@ -586,6 +586,163 @@ class StateTransitionGraph:
     return self._gv_graph_()._repr_svg_()
 
 
+class Table:
+  """A one or two-dimensional *table* able to detect conflicts and with a nice HTML representation, based on :obj:`~collections.defaultdict`."""
+
+  DEFAULT_FORMAT = {  # noqa: RUF012
+    'cols_sort': False,
+    'rows_sort': False,
+    'letstr_sort': False,
+    'cols_sep': ', ',
+    'rows_sep': ', ',
+    'elem_sep': ', ',
+  }
+
+  def __init__(self, ndim=1, element=lambda: None, no_reassign=False, fmt=None):
+    if ndim not in {1, 2}:
+      raise ValueError('The ndim must be 1, or 2.')
+    self.ndim = ndim
+    if ndim == 1:
+      self.data = defaultdict(element)
+    else:
+      self.data = defaultdict(lambda: defaultdict(element))
+    self.element = element
+    self.no_reassign = no_reassign
+    self.fmt = dict(Table.DEFAULT_FORMAT)
+    if fmt is not None:
+      self.fmt.update(fmt)
+
+  @staticmethod
+  def _make_hashable(idx):
+    if isinstance(idx, list):
+      return tuple(idx)
+    if isinstance(idx, set):
+      return frozenset(idx)
+    return idx
+
+  def __getitem__(self, key):
+    if self.ndim == 2:  # noqa: PLR2004
+      if not (isinstance(key, tuple) and len(key) == 2):  # noqa: PLR2004
+        raise ValueError('Index is not a pair of values')
+      r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
+      return self.data[r][c]
+    r = Table._make_hashable(key)
+    return self.data[r]
+
+  def __setitem__(self, key, value):
+    if self.ndim == 2:  # noqa: PLR2004
+      if not (isinstance(key, tuple) and len(key) == 2):  # noqa: PLR2004
+        raise ValueError('Index is not a pair of values')
+      r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
+      if self.no_reassign and c in self.data[r]:
+        wwarn(f'Table already contains value {self.data[r][c]} for ({r}, {c}), cannot store {value}')  # noqa: B028
+      else:
+        self.data[r][c] = value
+    else:
+      r = Table._make_hashable(key)
+      if self.no_reassign and r in self.data:
+        wwarn(f'Table already contains value {self.data[r]} for {r}, cannot store {value}')  # noqa: B028
+      else:
+        self.data[r] = value
+
+  def __eq__(self, other):
+    if not isinstance(other, Table):
+      return False
+    return self.data == other.data
+
+  def __hash__(self):
+    return hash(self.data)
+
+  def restrict_to(self, rows=None, cols=None):
+    if rows is None:
+      rows = list(self.data.keys())
+    R = Table(self.ndim, self.element, self.no_reassign, self.fmt)
+    if self.ndim == 1:
+      if cols is not None:
+        raise ValueError('Columns cannot be specified, since the dimension is 1')
+      for r in rows:
+        if r in self.data:
+          R.data[r] = self.data[r]
+    else:
+      if cols is None and self.ndim == 2:  # noqa: PLR2004
+        cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
+      for r in rows:
+        if r not in self.data:
+          continue
+        for c in cols:
+          if c in self.data[r]:
+            R.data[r][c] = self.data[r][c]
+    return R
+
+  def _repr_html_(self):
+    def _fmt(r, c):
+      if c not in self.data[r]:
+        return '&nbsp;'
+      elem = self.data[r][c]
+      if elem is None:
+        return '&nbsp;'
+      return '<pre>{}</pre>'.format(
+        escape(letstr(elem, self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)),
+      )
+
+    if self.ndim == 2:  # noqa: PLR2004
+      rows = list(self.data.keys())
+      if self.fmt['rows_sort']:
+        rows = sorted(rows)
+      cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
+      if self.fmt['cols_sort']:
+        cols = sorted(cols)
+      head = (
+        '<tr><td>&nbsp;<th><pre>'
+        + '</pre><th><pre>'.join(
+          letstr(col, self.fmt['cols_sep'], sort=self.fmt['letstr_sort'], remove_outer=True) for col in cols
+        )
+        + '</pre>'
+      )
+      body = '\n'.join(
+        '<tr><th><pre>{}<pre><td>'.format(
+          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)
+        )
+        + '<td>'.join(_fmt(r, c) for c in cols)
+        for r in rows
+      )
+      return liblet_table(f'{head}\n{body}')
+    rows = list(self.data.keys())
+    if self.fmt['rows_sort']:
+      rows = sorted(rows)
+    return liblet_table('\n'.join(
+        '<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(
+          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
+          letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
+        )
+        for r in rows
+      )
+    )
+
+
+class CYKTable(Table):
+  def __init__(self):
+    super().__init__(ndim=2, element=set)
+
+  def _repr_html_(self):
+    TABLE = {(i, l): v for i, row in self.data.items() for l, v in row.items()}  # noqa: E741
+    I, L = max(TABLE.keys())  # noqa: E741
+    # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
+    # (otherwise i <= N); in any case the lengths range in [N, L - 1)
+    N = I - 1 if L == 0 else I
+    return liblet_table(
+        '<tr>'
+        + '<tr>'.join(
+          '<td><pre>'
+          + '</pre></td><td><pre>'.join(
+            (letstr(TABLE[(i, l)], sep='\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
+          )
+          + '</pre></td>'
+          for l in range(N, L - 1, -1)  # noqa: E741
+        )
+      )
+ 
+
 # Python AST stuff
 
 
@@ -624,12 +781,12 @@ def animate_derivation(d, height='300px'):
 # HTML/SVG stuff
 
 
-def __bordered_table__(content):  # noqa: N807
-  return HTML(
-    f'<style>td, th {{border: 1pt solid lightgray !important;}} table * {{font-family: "{HTML_FONT_NAME}";}}</style><table>'
-    + content
-    + '</table>'
-  )
+def embed_css(custom_css=CUSTOM_CSS):
+  return HTML(f'<style>{custom_css}</style>')
+
+
+def liblet_table(content):
+  return HTML(f'<table class=liblet>{content}</table>')
 
 
 def resized_svg_repr(obj, width=800, height=600):
@@ -651,20 +808,11 @@ def side_by_side(*iterable):
 
 
 def iter2table(it):
-  return __bordered_table__(
-    '\n'.join(
-      f'<tr><th style="text-align:left">{n}<td style="text-align:left"><pre>{_escape(e)}</pre>'
-      for n, e in enumerate(it)
-    )
-  )
+  return liblet_table('\n'.join(f'<tr><th>{n}<td><pre>{_escape(e)}</pre>' for n, e in enumerate(it)))
 
 
 def dict2table(it):
-  return __bordered_table__(
-    '\n'.join(
-      f'<tr><th style="text-align:left">{k}<td style="text-align:left"><pre>{_escape(v)}</pre>' for k, v in it.items()
-    )
-  )
+  return liblet_table('\n'.join(f'<tr><th>{k}<td><pre>{_escape(v)}</pre>' for k, v in it.items()))
 
 
 def dod2table(dod, sort=False, sep=None):
@@ -682,14 +830,11 @@ def dod2table(dod, sort=False, sep=None):
   cols = list(OrderedDict.fromkeys(chain.from_iterable(dod[x].keys() for x in dod)))
   if sort:
     cols = sorted(cols)
-  head = '<tr><td>&nbsp;<th style="text-align:left">' + '<th style="text-align:left">'.join(cols)
+  head = '<tr><td>&nbsp;<th>' + '<th>'.join(cols)
   body = '\n'.join(
-    '<tr><th style="text-align:left"><pre>{}</pre><td style="text-align:left">{}'.format(
-      letstr(r, sep), '<td style="text-align:left">'.join(fmt(r, c) for c in cols)
-    )
-    for r in rows
+    '<tr><th><pre>{}</pre><td>{}'.format(letstr(r, sep), '<td>'.join(fmt(r, c) for c in cols)) for r in rows
   )
-  return __bordered_table__(f'{head}\n{body}\n')
+  return liblet_table(f'{head}\n{body}\n')
 
 
 def cyk2table(TABLE):

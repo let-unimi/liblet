@@ -1,7 +1,14 @@
 Changelog
 =========
 
-v1.8.0 (2025-03-xx)
+v1.9.0 (2025-03-24)
+-------------------
+
+- Major rewriting of the HTML styles for tables (to improve VScode and Quarto compatibility).
+- Added an embed_css function and a CUSTOM_CSS constant.
+- Moved Table and CYKTable from liblet.utils to liblet.display.
+
+v1.8.0 (2025-03-13)
 -------------------
 
 - Deprecated first, to extract an element from a set there is set.pop.

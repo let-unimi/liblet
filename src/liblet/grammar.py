@@ -4,6 +4,7 @@ from operator import attrgetter
 from warnings import warn as wwarn
 
 from liblet.const import ε
+from liblet.display import liblet_table
 from liblet.utils import letstr
 
 HAIR_SPACE = '\u200a'
@@ -18,13 +19,13 @@ class Production:
   """A grammar production.
 
   This class represents a grammar production, it has a:
-  
+
   - *left-hand side* that can be either a *nonempty* :obj:`string <str>`, or a
     *nonempty* :obj:`tuple <tuple>` of *nonempty* :obj:`strings <str>`, and a
   - *right-hand side* that is a *nonempty* :obj:`tuple <tuple>` of *nonempty*
     :obj:`strings <str>`; it can contain ε only if is the only symbol it
-    comprises. 
-    
+    comprises.
+
   A production is :term:`iterable` and unpacking can be used to obtain its
   sides, so for example
 
@@ -55,14 +56,14 @@ class Production:
     else:
       raise ValueError('The left-hand side is not a nonempty str, nor a tuple (or list) of nonempty str.')
     if isinstance(rhs, list | tuple):
-      if not rhs: 
+      if not rhs:
         self.rhs = (ε,)
       elif all(isinstance(_, str) and _ for _ in rhs):
         self.rhs = tuple(rhs)
       else:
         raise ValueError('The right-hand side is not an empty tuple (or list), or a tuple (or list) of nonempty str.')
     else:
-      raise ValueError('The right-hand side is not a tuple (or list).')
+      raise ValueError('The right-hand side is not a tuple (or list).')  # noqa: TRY004
     if ε in self.rhs and len(self.rhs) != 1:
       raise ValueError('The right-hand side contains ε but has more than one symbol')
 
@@ -202,11 +203,7 @@ class Productions(tuple):
           ),
         )
       )
-    return (
-      '<style>td, th {border: 1pt solid lightgray !important ;}</style><table><tr>'
-      + '<tr>'.join(_[1] for _ in sorted(rows))
-      + '</table>'
-    )
+    return liblet_table('<tr>' + '<tr>'.join(_[1] for _ in sorted(rows)))
 
 
 @total_ordering

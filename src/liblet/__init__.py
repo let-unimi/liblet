@@ -8,17 +8,20 @@ from liblet.automaton import (
   TopDownInstantaneousDescription,
   Transition,
 )
-from liblet.const import DIAMOND, HASH, ε
+from liblet.const import CUSTOM_CSS, DIAMOND, HASH, ε
 from liblet.decorators import closure, show_calls
 from liblet.display import (
+  CYKTable,
   Graph,
   ProductionGraph,
   StateTransitionGraph,
+  Table,
   Tree,
   animate_derivation,
   cyk2table,
   dict2table,
   dod2table,
+  embed_css,
   ff2table,
   iter2table,
   prods2table,
@@ -30,10 +33,8 @@ from liblet.grammar import Derivation, Grammar, Item, Production, Productions
 from liblet.llvm import LLVM
 from liblet.utils import (
   AttrDict,
-  CYKTable,
   Queue,
   Stack,
-  Table,
   compose,
   first,
   letstr,
@@ -54,12 +55,14 @@ __all__ = [
   'BottomUpInstantaneousDescription',
   'closure',
   'compose',
+  'CUSTOM_CSS',
   'cyk2table',
   'CYKTable',
   'Derivation',
   'DIAMOND',
   'dict2table',
   'dod2table',
+  'embed_css',
   'ff2table',
   'first',
   'Grammar',

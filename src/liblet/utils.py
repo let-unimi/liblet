@@ -1,12 +1,8 @@
-from collections import OrderedDict, defaultdict, deque
+from collections import deque
 from collections.abc import MutableMapping, Set  #  noqa: PYI025
 from functools import partial, reduce
-from html import escape
-from itertools import chain
 from sys import stderr
 from warnings import warn as wwarn
-
-from liblet.const import HTML_FONT_NAME
 
 
 def suffixes(α):
@@ -138,10 +134,10 @@ class Stack:
 
   def __len__(self):
     return len(self.S)
-  
+
   def __hash__(self):
     return hash(tuple(self.S))
-  
+
   def __eq__(self, other):
     if not isinstance(other, Stack):
       return False
@@ -181,175 +177,6 @@ class AttrDict(MutableMapping):
 
   def __repr__(self):
     return f'AttrDict({self.__store})'
-
-
-class Table:
-  """A one or two-dimensional *table* able to detect conflicts and with a nice HTML representation, based on :obj:`~collections.defaultdict`."""
-
-  DEFAULT_FORMAT = {  # noqa: RUF012
-    'cols_sort': False,
-    'rows_sort': False,
-    'letstr_sort': False,
-    'cols_sep': ', ',
-    'rows_sep': ', ',
-    'elem_sep': ', ',
-  }
-
-  def __init__(self, ndim=1, element=lambda: None, no_reassign=False, fmt=None):
-    if ndim not in {1, 2}:
-      raise ValueError('The ndim must be 1, or 2.')
-    self.ndim = ndim
-    if ndim == 1:
-      self.data = defaultdict(element)
-    else:
-      self.data = defaultdict(lambda: defaultdict(element))
-    self.element = element
-    self.no_reassign = no_reassign
-    self.fmt = dict(Table.DEFAULT_FORMAT)
-    if fmt is not None:
-      self.fmt.update(fmt)
-
-  @staticmethod
-  def _make_hashable(idx):
-    if isinstance(idx, list):
-      return tuple(idx)
-    if isinstance(idx, set):
-      return frozenset(idx)
-    return idx
-
-  def __getitem__(self, key):
-    if self.ndim == 2:  # noqa: PLR2004
-      if not (isinstance(key, tuple) and len(key) == 2):  # noqa: PLR2004
-        raise ValueError('Index is not a pair of values')
-      r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
-      return self.data[r][c]
-    r = Table._make_hashable(key)
-    return self.data[r]
-
-  def __setitem__(self, key, value):
-    if self.ndim == 2:  # noqa: PLR2004
-      if not (isinstance(key, tuple) and len(key) == 2):  # noqa: PLR2004
-        raise ValueError('Index is not a pair of values')
-      r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
-      if self.no_reassign and c in self.data[r]:
-        warn(f'Table already contains value {self.data[r][c]} for ({r}, {c}), cannot store {value}')
-      else:
-        self.data[r][c] = value
-    else:
-      r = Table._make_hashable(key)
-      if self.no_reassign and r in self.data:
-        warn(f'Table already contains value {self.data[r]} for {r}, cannot store {value}')
-      else:
-        self.data[r] = value
-
-  def __eq__(self, other):
-    if not isinstance(other, Table):
-      return False
-    return self.data == other.data
-
-  def __hash__(self):
-    return hash(self.data)
-
-  def restrict_to(self, rows=None, cols=None):
-    if rows is None:
-      rows = list(self.data.keys())
-    R = Table(self.ndim, self.element, self.no_reassign, self.fmt)
-    if self.ndim == 1:
-      if cols is not None:
-        raise ValueError('Columns cannot be specified, since the dimension is 1')
-      for r in rows:
-        if r in self.data:
-          R.data[r] = self.data[r]
-    else:
-      if cols is None and self.ndim == 2:  # noqa: PLR2004
-        cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
-      for r in rows:
-        if r not in self.data:
-          continue
-        for c in cols:
-          if c in self.data[r]:
-            R.data[r][c] = self.data[r][c]
-    return R
-
-  def _repr_html_(self):
-    def _table(content):
-      return (
-        f'<style>td, th {{border: 1pt solid lightgray !important; text-align: left !important;}} table * {{font-family: "{HTML_FONT_NAME}";}}</style><table>'
-        + content
-        + '</table>'
-      )
-
-    def _fmt(r, c):
-      if c not in self.data[r]:
-        return '&nbsp;'
-      elem = self.data[r][c]
-      if elem is None:
-        return '&nbsp;'
-      return '<pre>{}</pre>'.format(
-        escape(letstr(elem, self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)),
-      )
-
-    if self.ndim == 2:  # noqa: PLR2004
-      rows = list(self.data.keys())
-      if self.fmt['rows_sort']:
-        rows = sorted(rows)
-      cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
-      if self.fmt['cols_sort']:
-        cols = sorted(cols)
-      head = (
-        '<tr><td>&nbsp;<th><pre>'
-        + '</pre><th><pre>'.join(
-          letstr(col, self.fmt['cols_sep'], sort=self.fmt['letstr_sort'], remove_outer=True) for col in cols
-        )
-        + '</pre>'
-      )
-      body = '\n'.join(
-        '<tr><th><pre>{}<pre><td>'.format(
-          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)
-        )
-        + '<td>'.join(_fmt(r, c) for c in cols)
-        for r in rows
-      )
-      return _table(f'{head}\n{body}\n')
-    rows = list(self.data.keys())
-    if self.fmt['rows_sort']:
-      rows = sorted(rows)
-    return _table(
-      '\n'.join(
-        '<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(
-          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
-          letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
-        )
-        for r in rows
-      )
-    )
-
-
-class CYKTable(Table):
-  def __init__(self):
-    super().__init__(ndim=2, element=set)
-
-  def _repr_html_(self):
-    TABLE = {(i, l): v for i, row in self.data.items() for l, v in row.items()}  # noqa: E741
-    I, L = max(TABLE.keys())  # noqa: E741
-    # when the nullable row (-, 0) is present the maximum key is (N + 1, 0)
-    # (otherwise i <= N); in any case the lengths range in [N, L - 1)
-    N = I - 1 if L == 0 else I
-    return (
-      '<style>td, th {border: 1pt solid lightgray !important ;}</style><table>'
-      + (
-        '<tr>'
-        + '<tr>'.join(
-          '<td style="text-align:left"><pre>'
-          + '</pre></td><td style="text-align:left"><pre>'.join(
-            (letstr(TABLE[(i, l)], sep='\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
-          )
-          + '</pre></td>'
-          for l in range(N, L - 1, -1)  # noqa: E741
-        )
-      )
-      + '</table>'
-    )
 
 
 def uc(s, c=''):  # pragma: nocover
