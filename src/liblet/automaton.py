@@ -217,7 +217,7 @@ class Automaton:
 class InstantaneousDescription:
   """An Instantaneous Description.
 
-  This class represents a *instantaneous description* of a *pushdown* auotmata. Even though 
+  This class represents a *instantaneous description* of a *pushdown* auotmata. Even though
   this class remembers the derivation steps, two instantaneous descriptions are considered equal
   if they have the same grammar, tape, stack, and head position (regardless of the steps).
 
@@ -261,15 +261,14 @@ class InstantaneousDescription:
   def is_done(self):
     """Used by subclasses to determine if the automata is in an accepting state."""
     return False
-  
+
   def __hash__(self):
     return hash((self.G, self.tape, self.stack, self.head_pos))
-  
+
   def __eq__(self, other):
     if not isinstance(other, self.__class__):
       return False
-    else:
-      return (self.G, self.tape, self.stack, self.head_pos) == (other.G, other.tape, other.stack, other.head_pos)
+    return (self.G, self.tape, self.stack, self.head_pos) == (other.G, other.tape, other.stack, other.head_pos)
 
 
 class TopDownInstantaneousDescription(InstantaneousDescription):
