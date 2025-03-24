@@ -2,12 +2,18 @@ from collections import deque
 from collections.abc import MutableMapping, Set  #  noqa: PYI025
 from functools import partial, reduce
 from sys import stderr
-from warnings import warn as wwarn
+from warnings import warn as _warn
 
 
 def suffixes(α):
+  """Yields all the suffixes of the given sentential form."""
   for i in range(len(α)):
     yield α[i:]
+
+
+def deprecation_warning(msg):
+  """Emits a *deprecation* warning."""
+  _warn(msg, DeprecationWarning, stacklevel=2)
 
 
 def warn(msg):
@@ -17,13 +23,13 @@ def warn(msg):
 
 def first(s):
   """Deprecated. Use set.pop"""
-  wwarn('The function "first" is now deprecated, please use "pop" instead.', DeprecationWarning, stacklevel=2)
+  deprecation_warning('The function "first" is now deprecated, please use "pop" instead.')
   return next(iter(s)) if s else None
 
 
 def peek(s):  # pragma: nocover
   """Deprecated. Use first"""
-  wwarn('The function "peek" is now deprecated, please use "first" instead.', DeprecationWarning, stacklevel=2)
+  deprecation_warning('The function "peek" is now deprecated, please use "first" instead.')
   return first(s)
 
 
@@ -72,7 +78,7 @@ class Queue:
     return self.Q.popleft()
 
   def copy(self):  # pragma: nocover
-    wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning, stacklevel=2)
+    deprecation_warning('The copy method is deprecated, use the copy module.')
     return self.__copy__()
 
   def __copy__(self):
@@ -116,7 +122,7 @@ class Stack:
     return self.S.pop()
 
   def copy(self):  # pragma: nocover
-    wwarn('The copy method is deprecated, use the copy module.', DeprecationWarning, stacklevel=2)
+    deprecation_warning('The copy method is deprecated, use the copy module.')
     return self.__copy__()
 
   def __copy__(self):

@@ -8,7 +8,6 @@ from itertools import chain, pairwise
 from operator import itemgetter
 from re import sub
 from textwrap import indent
-from warnings import warn as wwarn
 
 import svgutils.transform as svg_ttransform
 from graphviz import Digraph
@@ -17,7 +16,7 @@ from ipywidgets import IntSlider, interactive
 
 from liblet.const import CUSTOM_CSS, GV_FONT_NAME, GV_FONT_SIZE, ε
 from liblet.grammar import HAIR_SPACE, Derivation, Productions
-from liblet.utils import AttrDict, compose, letstr
+from liblet.utils import AttrDict, compose, deprecation_warning, letstr, warn
 
 
 def _escape(label):
@@ -152,7 +151,7 @@ class GVWrapper:
 
 class BaseGraph(ABC):
   def __init__(self):
-    wwarn('Inheriting from BaseGraph is deprecated, use GVWrapper instead', DeprecationWarning, stacklevel=2)
+    deprecation_warning('Inheriting from BaseGraph is deprecated, use GVWrapper instead')
 
   @abstractmethod
   def _gvgraph_(self):
@@ -161,7 +160,7 @@ class BaseGraph(ABC):
   # letstr(node) is always used as node_label
   # node_id is str(x) where x is id (if not None) or hash(node_label)
   def node(self, G, node, id=None, sep=None, gv_args=None):  # noqa: A002
-    wwarn('The method "node" is deprecated, use GVWrapper instead of BaseGraph', DeprecationWarning, stacklevel=2)
+    deprecation_warning('The method "node" is deprecated, use GVWrapper instead of BaseGraph')
     if gv_args is None:
       gv_args = {}
     if not hasattr(self, '_nodes'):
@@ -176,7 +175,7 @@ class BaseGraph(ABC):
 
   # src and dst as str()-ed and used as ids
   def edge(self, G, src, dst, label=None, large_label=False, gv_args=None):
-    wwarn('The method "edge" is deprecated, use GVWrapper instead of BaseGraph', DeprecationWarning, stacklevel=2)
+    deprecation_warning('The method "edge" is deprecated, use GVWrapper instead of BaseGraph')
     if gv_args is None:
       gv_args = {}
     label_param = {} if label is None else {'xlabel' if large_label else 'label': label}
@@ -184,11 +183,7 @@ class BaseGraph(ABC):
     G.edge(str(src), str(dst), **label_param)
 
   def _repr_svg_(self):
-    wwarn(
-      'The method "_repr_svg_" is deprecated, use GVWrapper instead of BaseGraph',
-      DeprecationWarning,
-      stacklevel=2,
-    )
+    deprecation_warning('The method "_repr_svg_" is deprecated, use GVWrapper instead of BaseGraph')
     return self._gvgraph_()._repr_image_svg_xml()
 
 
@@ -635,13 +630,13 @@ class Table:
         raise ValueError('Index is not a pair of values')
       r, c = Table._make_hashable(key[0]), Table._make_hashable(key[1])
       if self.no_reassign and c in self.data[r]:
-        wwarn(f'Table already contains value {self.data[r][c]} for ({r}, {c}), cannot store {value}')  # noqa: B028
+        warn(f'Table already contains value {self.data[r][c]} for ({r}, {c}), cannot store {value}')
       else:
         self.data[r][c] = value
     else:
       r = Table._make_hashable(key)
       if self.no_reassign and r in self.data:
-        wwarn(f'Table already contains value {self.data[r]} for {r}, cannot store {value}')  # noqa: B028
+        warn(f'Table already contains value {self.data[r]} for {r}, cannot store {value}')
       else:
         self.data[r] = value
 
@@ -710,7 +705,8 @@ class Table:
     rows = list(self.data.keys())
     if self.fmt['rows_sort']:
       rows = sorted(rows)
-    return liblet_table('\n'.join(
+    return liblet_table(
+      '\n'.join(
         '<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(
           letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
           letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
@@ -731,28 +727,24 @@ class CYKTable(Table):
     # (otherwise i <= N); in any case the lengths range in [N, L - 1)
     N = I - 1 if L == 0 else I
     return liblet_table(
-        '<tr>'
-        + '<tr>'.join(
-          '<td><pre>'
-          + '</pre></td><td><pre>'.join(
-            (letstr(TABLE[(i, l)], sep='\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
-          )
-          + '</pre></td>'
-          for l in range(N, L - 1, -1)  # noqa: E741
+      '<tr>'
+      + '<tr>'.join(
+        '<td><pre>'
+        + '</pre></td><td><pre>'.join(
+          (letstr(TABLE[(i, l)], sep='\n') if TABLE[(i, l)] else '&nbsp;') for i in range(1, N - l + 2)
         )
+        + '</pre></td>'
+        for l in range(N, L - 1, -1)  # noqa: E741
       )
- 
+    )
+
 
 # Python AST stuff
 
 
 def pyast2tree(node):
   """Deprecated. Use Tree.from_pyast instead."""
-  wwarn(
-    'The function "pyast2tree" has been absorbed in Tree (as from_pyast factory method).',
-    DeprecationWarning,
-    stacklevel=2,
-  )
+  deprecation_warning('The function "pyast2tree" has been absorbed in Tree (as from_pyast factory method).')
   return (
     Tree(
       {'type': 'ast', 'name': node.__class__.__name__},
@@ -839,7 +831,7 @@ def dod2table(dod, sort=False, sep=None):
 
 def cyk2table(TABLE):
   """Deprecated. Use CYKTable instead."""
-  wwarn('The function "cyk2table" has been absorbed in CYKTable.', DeprecationWarning, stacklevel=2)
+  deprecation_warning('The function "cyk2table" has been absorbed in CYKTable.')
   t = CYKTable()
   for il, v in TABLE.items():
     t[il] = v
@@ -848,7 +840,7 @@ def cyk2table(TABLE):
 
 def prods2table(G):
   """Deprecated. Use Productions instead"""
-  wwarn('The function "prods2table" has been absorbed in Productions.', DeprecationWarning, stacklevel=2)
+  deprecation_warning('The function "prods2table" has been absorbed in Productions.')
   return HTML(Productions(G.P)._repr_html_())
 
 

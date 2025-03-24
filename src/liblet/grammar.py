@@ -1,11 +1,9 @@
 from functools import total_ordering
 from itertools import chain, groupby
 from operator import attrgetter
-from warnings import warn as wwarn
 
 from liblet.const import ε
-from liblet.display import liblet_table
-from liblet.utils import letstr
+from liblet.utils import deprecation_warning, letstr
 
 HAIR_SPACE = '\u200a'
 
@@ -89,7 +87,7 @@ class Production:
   @classmethod
   def from_string(cls, prods, context_free=True):  # pragma: no cover
     """Deprecated. Use Productions.from_string"""
-    wwarn('The function "from_string" has been moved to Productions.', DeprecationWarning, stacklevel=2)
+    deprecation_warning('The function "from_string" has been moved to Productions.')
     return Productions.from_string(prods, context_free)
 
   @classmethod
@@ -190,6 +188,8 @@ class Productions(tuple):
     return cls(P)
 
   def _repr_html_(self):  # pragma: no cover
+    from liblet.display import liblet_table
+
     rows = []
     klhs = lambda _: _[1].lhs
     for lhs, rhss in groupby(sorted(enumerate(self), key=klhs), klhs):
