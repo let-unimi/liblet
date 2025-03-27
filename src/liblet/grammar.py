@@ -197,13 +197,13 @@ class Productions(tuple):
       rows.append(
         (
           min(_[0] for _ in rhssl),
-          '<th><pre>{}</pre><td style="text-align:left"><pre>{}</pre>'.format(
+          '<th><pre>{}</pre></th><td><pre>{}</pre></td>'.format(
             _letlrhstostr(lhs),
             ' | '.join(f'{_letlrhstostr(_[1].rhs)}<sub>({_[0]})</sub>' for _ in rhssl),
           ),
         )
       )
-    return liblet_table('<tr>' + '<tr>'.join(_[1] for _ in sorted(rows)))
+    return liblet_table('<tr>' + '</tr><tr>'.join(_[1] for _ in sorted(rows)) + '</tr>', True)
 
 
 @total_ordering

@@ -701,7 +701,7 @@ class Table:
         + '<td>'.join(_fmt(r, c) for c in cols)
         for r in rows
       )
-      return liblet_table(f'{head}\n{body}')
+      return liblet_table(f'{head}\n{body}', True)
     rows = list(self.data.keys())
     if self.fmt['rows_sort']:
       rows = sorted(rows)
@@ -712,7 +712,7 @@ class Table:
           letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
         )
         for r in rows
-      )
+      ), True
     )
 
 
@@ -735,7 +735,7 @@ class CYKTable(Table):
         )
         + '</pre></td>'
         for l in range(N, L - 1, -1)  # noqa: E741
-      )
+      ), True
     )
 
 
@@ -777,9 +777,8 @@ def embed_css(custom_css=CUSTOM_CSS):
   return HTML(f'<style>{custom_css}</style>')
 
 
-def liblet_table(content):
-  return HTML(f'<table class=liblet>{content}</table>')
-
+def liblet_table(content, as_str = False):
+  return f'<table class="liblet" data-quarto-disable-processing="true">{content}</table>' if as_str else HTML(f'<table class=liblet>{content}</table>')
 
 def resized_svg_repr(obj, width=800, height=600):
   if hasattr(obj, '_repr_image_svg_xml'):
