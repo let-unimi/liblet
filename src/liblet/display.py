@@ -293,11 +293,23 @@ class Tree:
 
     return _to_tree(node)
 
+  def to_lol(self):
+    def walk(T):
+      return (T.root, *tuple(walk(child) for child in T.children))
+
+    return walk(self)
+
   def __repr__(self):
     def walk(T):
       return '({}: {})'.format(T.root, ', '.join(map(walk, T.children))) if T.children else f'({T.root})'
 
     return walk(self)
+
+  def __eq__(self, other):
+    return isinstance(other, Tree) and self.to_lol() == other.to_lol()
+
+  def __hash__(self):
+    return hash(self.to_lol())
 
   def _gv_graph_(self):
     G = GVWrapper(
@@ -712,7 +724,8 @@ class Table:
           letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
         )
         for r in rows
-      ), True
+      ),
+      True,
     )
 
 
@@ -735,7 +748,8 @@ class CYKTable(Table):
         )
         + '</pre></td>'
         for l in range(N, L - 1, -1)  # noqa: E741
-      ), True
+      ),
+      True,
     )
 
 
@@ -777,8 +791,13 @@ def embed_css(custom_css=CUSTOM_CSS):
   return HTML(f'<style>{custom_css}</style>')
 
 
-def liblet_table(content, as_str = False):
-  return f'<table class="liblet" data-quarto-disable-processing="true">{content}</table>' if as_str else HTML(f'<table class=liblet>{content}</table>')
+def liblet_table(content, as_str=False):
+  return (
+    f'<table class="liblet" data-quarto-disable-processing="true">{content}</table>'
+    if as_str
+    else HTML(f'<table class=liblet>{content}</table>')
+  )
+
 
 def resized_svg_repr(obj, width=800, height=600):
   if hasattr(obj, '_repr_image_svg_xml'):
