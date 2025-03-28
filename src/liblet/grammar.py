@@ -84,9 +84,13 @@ class Production:
   def __repr__(self):
     return f'{_letlrhstostr(self.lhs)} -> {_letlrhstostr(self.rhs)}'
 
+  def is_epsilon(self):
+    """Returns ``True`` if the right-hand side is the tuple ``(ε,)``."""
+    return self.rhs == (ε,)
+
   @classmethod
   def from_string(cls, prods, context_free=True):  # pragma: no cover
-    """Deprecated. Use Productions.from_string"""
+    """Deprecated. Use Productions.from_string."""
     deprecation_warning('The function "from_string" has been moved to Productions.')
     return Productions.from_string(prods, context_free)
 
@@ -103,7 +107,7 @@ class Production:
       rhs_is_suffix_of: returns a predicate that is ``True`` weather the the argument value ends with the production.
 
     Returns:
-      A predicate (that is a one-argument function that retuns ``True`` or ``False``) that is ``True`` weather the production
+      A predicate (that is a one-argument function that returns ``True`` or ``False``) that is ``True`` weather the production
       given as argument satisfies all the predicates given by the named arguments.
 
     Example:
