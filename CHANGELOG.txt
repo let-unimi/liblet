@@ -1,6 +1,18 @@
 Changelog
 =========
 
+v1.10 (2025-03-27)
+------------------
+
+- Minor cleanups and improvements.
+- Added Production.is_epsilon method.
+- Added Productions.has_epsilon_productions method.
+- Added Grammar.has_epsilon_productions method.
+- Improved TopDownInstantaneousDescription and BottomUpInstantaneousDescription to handle
+  epsilon productions.
+- Added Tree.__eq__ and Tree.__hash__ methods (to allow Stack of trees comparison, required
+  to avoid loops in  simulations of automata combinations).
+
 v1.9.1 (2025-03-24)
 -------------------
 

@@ -294,7 +294,16 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
     return self.top() == self.head() == HASH
 
   def match(self):
-    """Attempts a match move and returns the corresponding new instantaneous description."""
+    """Performs a match move.
+
+    If the top of the stack is ε, it will be removed and the tape head will be left unchanged.
+
+    Raises:
+      ValueError: If the top of the stack and tape head symbol are not equal.
+    Returns:
+      A new updated instantaneous description.
+    """
+    # the stack and tape can never be empty
     if (self.top() == ε) or (self.top() in self.G.T and self.top() == self.head()):
       c = copy(self)
       c.stack = copy(c.stack)
@@ -305,14 +314,24 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
     raise ValueError('The top of the stack and tape head symbol are not equal.')
 
   def predict(self, P):
-    """Attempts a prediction move, given the specified production, and returns the corresponding new instantaneous description."""
+    """Performs a prediction move, given the specified production.
+
+    If the production is an epsilon production, the stack will be left unchanged.
+
+    Args:
+      P (:class:`~liblet.grammar.Production`): The production to predict.
+    Raises:
+      ValueError: If the production does not belong to the grammar, or if the lhs does not correspond to the top of the stack.
+    Returns:
+      A new updated instantaneous description.
+    """
     if P in self.G.P and self.top() == P.lhs:
       c = copy(self)
       c.stack = copy(c.stack)
       c.stack.pop()
       c.steps += (P,)
-      for X in reversed(P.rhs):
-        if ε != X:
+      if not P.is_epsilon():
+        for X in reversed(P.rhs):
           c.stack.push(X)
       return c
     raise ValueError('The top of the stack does not correspond to the production lhs.')
@@ -337,17 +356,45 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
     """Returns `True` if the computation is done, that is if the stack contains the a tree rooted in G.S and the head is at the tape end."""
     return len(self.stack) == 1 and len(self.tape) == self.head_pos and self.top() == self.G.S
 
-  def shift(self):
-    """Performs a shift move and returns the corresponding new instantaneous description."""
+  def shift(self, consume=True):
+    """Performs a shift move.
+
+    If the top of the stack is ε, it will be removed before shifting.
+
+    Args:
+      consume (bool): If `True`, the head position is increased so that the symbol under the tape head is consumed.
+        Otherwise, the head does not move and an ε is pushed. The default is `True`.
+
+    Returns:
+      A new updated instantaneous description.
+    """
     c = copy(self)
-    c.stack.push(Tree(c.head()))
-    c.head_pos += 1
+    if self.stack and self.top() == ε:
+      c.stack.pop()
+    if consume:
+      if self.head_pos < len(self.tape):
+        c.stack.push(Tree(c.head()))
+        c.head_pos += 1
+      else:
+        raise ValueError('The head is already at the end of the tape.')
+    else:
+      c.stack.push(Tree(ε))
     return c
 
   def reduce(self, P):
-    """Attempts a reduce move, given the specified production, and returns the corresponding new instantaneous description."""
+    """Performs a reduce move, given the specified production.
+
+    Args:
+      P (:class:`~liblet.grammar.Production`): The production to reduce.
+    Raises:
+      ValueError: If the production does not belong to the grammar, if the rhs does not correspond to the symbols on the stack or the stack is empty.
+    Returns:
+      A new updated instantaneous description.
+    """
     if P not in self.G.P:
       raise ValueError('The production does not belong to the grammar.')
+    if not self.stack:
+      raise ValueError('The stack is empty.')
     c = copy(self)
     children = [c.stack.pop() for _ in P.rhs][::-1]
     if tuple(t.root for t in children) != P.rhs:

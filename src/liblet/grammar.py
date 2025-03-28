@@ -191,6 +191,10 @@ class Productions(tuple):
       P.extend(Production(lhs, tuple(rh.split())) for rh in rha.split('|'))
     return cls(P)
 
+  def has_epsilon_productions(self):
+    """Returns `True` if the right-hand side of any of the production is ``(ε,)``."""
+    return any(P.is_epsilon() for P in self)
+
   def _repr_html_(self):  # pragma: no cover
     from liblet.display import liblet_table
 
@@ -382,6 +386,10 @@ class Grammar:
       the right-hand sides of all productions having ``N`` as the left-hand side.
     """
     return (P.rhs for P in self.P if P.lhs == N)
+
+  def has_epsilon_productions(self):
+    """Returns `True` if the grammar has epsilon productions."""
+    return self.P.has_epsilon_productions()
 
   def restrict_to(self, symbols):
     """Returns a grammar using only the given symbols.
