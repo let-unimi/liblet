@@ -11,6 +11,7 @@ from liblet.automaton import (
 from liblet.const import CUSTOM_CSS, DIAMOND, HASH, ε
 from liblet.decorators import closure, show_calls
 from liblet.display import (
+  ComputationGraph,
   CYKTable,
   Graph,
   ProductionGraph,
@@ -56,6 +57,7 @@ __all__ = [
   'BottomUpInstantaneousDescription',
   'closure',
   'compose',
+  'ComputationGraph',
   'CUSTOM_CSS',
   'cyk2table',
   'CYKTable',

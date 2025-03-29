@@ -4,7 +4,7 @@ from collections import OrderedDict, defaultdict
 from collections.abc import Mapping, Set  # noqa: PYI025
 from functools import partial
 from html import escape
-from itertools import chain, pairwise
+from itertools import chain, count, pairwise
 from operator import itemgetter
 from re import sub
 from textwrap import indent
@@ -137,10 +137,16 @@ class GVWrapper:
       self.nodes.add(wn.gid())
     return wn
 
-  def edge(self, objsrc, objdst, G=None, gv_args=None):
+  def edge(self, objsrc, objdst, G=None, gv_args=None, srcport=None, dstport=None):
     if G is None:
       G = self.G
-    G.edge(self.node(objsrc).gid(), self.node(objdst).gid(), **(gv_args or {}))
+    src = self.node(objsrc).gid()
+    if srcport is not None:
+      src = f'{src}:{srcport}'
+    dst = self.node(objdst).gid()
+    if dstport is not None:
+      dst = f'{dst}:{dstport}'
+    G.edge(src, dst, **(gv_args or {}))
 
   def __repr__(self):
     return 'GVWrapper[\n' + indent(str(self.G), '\t') + ']'
@@ -421,6 +427,8 @@ class Graph:
 
 
 class ProductionGraph:
+  """A production graph representing a derivation as a dag (or tree, if the grammar is context-free)."""
+
   def __init__(self, derivation, compact=None):
     self.derivation = derivation
     if compact is None:
@@ -591,6 +599,53 @@ class StateTransitionGraph:
 
   def _repr_svg_(self):
     return self._gv_graph_()._repr_svg_()
+
+
+class ComputationGraph:
+  """A class to represent a computation (nodes usually are :class:`~liblet.automaton.InstantaneousDescription`)."""
+
+  def __init__(self, node2color=None, node2label=None, width=800, height=600):
+    self.width = width
+    self.height = height
+    self.counted = {}
+    self.counter = count()
+    if node2color is None:
+      node2color = lambda _: 'black'
+    if node2label is None:
+      node2label = (
+        lambda node: f"""
+        <<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+        <TR><TD PORT="in">{node._stack_str_()}</TD></TR>
+        <TR><TD PORT="out">{node._tape_str_()}</TD><TD BORDER="0"><I>&nbsp;{self.counted[node]}</I></TD></TR>
+        </TABLE>>
+      """.strip()
+      )
+    self.G = GVWrapper(
+      gv_graph_args={'node_attr': {'shape': 'none'}},
+      node_wrapper=make_node_wrapper(node_label=node2label, node_gv_args=node2color),
+    )
+
+  def seen(self, node):
+    return node in self.counted
+
+  def step(self, src, dst, label=''):
+    def count(node):
+      if node not in self.counted:
+        self.counted[node] = next(self.counter)
+      return self.counted[node]
+
+    count(src)
+    count(dst)
+    self.G.edge(src, dst, gv_args={'label': label}, srcport='out', dstport='in')
+
+  def __repr__(self):
+    return self.G.__repr__()
+
+  def _repr_svg_(self):
+    return resized_svg_repr(self.G, width=self.width, height=self.height, as_str=True)
+
+  def resized_svg(self, height, width):
+    return resized_svg_repr(self.G, width, height)
 
 
 class Table:
@@ -799,7 +854,7 @@ def liblet_table(content, as_str=False):
   )
 
 
-def resized_svg_repr(obj, width=800, height=600):
+def resized_svg_repr(obj, width=800, height=600, as_str=False):
   if hasattr(obj, '_repr_image_svg_xml'):
     svg_str = obj._repr_image_svg_xml()
   elif hasattr(obj, '_repr_svg_'):
@@ -808,7 +863,7 @@ def resized_svg_repr(obj, width=800, height=600):
     raise TypeError('The given object has no svg representation')
   svg_figure = svg_ttransform.fromstring(svg_str)
   svg_figure.set_size((str(width), str(height)))
-  return SVG(svg_figure.to_str())
+  return svg_figure.to_str().decode('utf-8') if as_str else SVG(svg_figure.to_str())
 
 
 def side_by_side(*iterable):
