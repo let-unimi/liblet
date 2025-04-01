@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.11.1 (2025-04-01)
+--------------------
+
+- Fixed Tree SVG rendering (after introducing Tree.__eq__).
+
 v1.11 (2025-03-29)
 ------------------
 

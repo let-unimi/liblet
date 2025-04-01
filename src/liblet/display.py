@@ -220,11 +220,15 @@ class Tree:
     children: an :term:`iterable` of trees to become the current tree children.
   """
 
+  __INSTANCE_COUNT = 0
+
   def __init__(self, root, children=None):
     self.root = root
     self.children = list(children) if children else []
     if isinstance(root, Mapping):
       self.attr = AttrDict(root)
+    Tree.__INSTANCE_COUNT += 1
+    self.__instance_count = Tree.__INSTANCE_COUNT
 
   def __iter__(self):
     return iter([self.root, *self.children])
@@ -331,14 +335,14 @@ class Tree:
     )
 
     def walk(T):
-      curr = (T.root, T)
+      curr = (T.root, T.__instance_count)
       G.node(curr)
       for child in T.children:
-        G.edge(curr, (child.root, child))
+        G.edge(curr, (child.root, child.__instance_count))
       if len(T.children) > 1:
         with G.subgraph(edge_attr={'style': 'invis'}, graph_attr={'rank': 'same'}) as S:
           for f, t in pairwise(T.children):
-            G.edge((f.root, f), (t.root, t), S)
+            G.edge((f.root, f.__instance_count), (t.root, t.__instance_count), S)
       for child in T.children:
         walk(child)
 
