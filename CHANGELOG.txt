@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.12.0 (2025-04-03)
+--------------------
+
+- Moved Table from utils to display (in src and docs).
+- Minor tweaks to doc configurations and css.
+- Refactored HTML table rendering.
+- Changed (and documented) iteration order of Stack.
+
 v1.11.1 (2025-04-01)
 --------------------
 
