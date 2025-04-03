@@ -1,18 +1,31 @@
-@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css);
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
-pre {font-family: "Fira Code";}
+pre, code {
+  font-family: 'Fira Code', monospace !important;
+  font-variant-ligatures: contextual common-ligatures !important;
+  line-height: 1 !important;
+}
 
-table {
-    border: solid 1px black;
-    border-collapse: collapse;
-    border-spacing: 0;
+table.liblet {
+  border-collapse: collapse !important;
+  font-family: 'Fira Code', monospace !important;
+  font-variant-ligatures: contextual common-ligatures !important;
 }
-th {
-    border: solid 1px black;
-    padding: 5px;
-    text-align: left;
+
+table.liblet th,
+table.liblet td {
+  border: 1px solid black !important;
+  padding: 0.5em !important;
+  text-align: left !important;
 }
-td {
-    border: solid 1px black;
-    padding: 5px;
+
+table.liblet th {
+  font-weight: bold !important;
+}
+
+table.liblet th pre,
+table.liblet td pre {
+  margin: 0 !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
 }
