@@ -241,7 +241,7 @@ class InstantaneousDescription:
     return c
 
   def _stack_str_(self):
-    return ''.join(reversed(list(map(str, self.stack))))
+    return ''.join(map(str, self.stack))
 
   def _tape_str_(self):
     return ''.join(self.tape[: self.head_pos :] + ('｜',) + self.tape[self.head_pos :])  # noqa: RUF001
@@ -404,4 +404,4 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
     return c
 
   def _stack_str_(self):
-    return ''.join(map(str, self.stack))
+    return ''.join(reversed(list(map(str, self.stack))))
