@@ -66,7 +66,33 @@ def letstr(obj, sep=None, sort=True, remove_outer=False):
 
 
 class Queue:
-  """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue`` methods."""
+  """A convenience implementation of a *queue* providing the usual ``enqueue``, ``dequeue`` methods.
+
+  An instance of this class can be created with an iterable and the final result will be
+  the as if the elements of the iterable were added to an empty queue. Similarly, iterating
+  a queue, returns (without consuming) the elements in the order they could be obtained by 
+  dequeuing them.
+
+  Example:
+
+    .. doctest::
+
+      >>> from liblet.utils import Queue
+      >>> q0 = Queue([1, 2, 3])
+      >>> q1 = Queue()
+      >>> for i in 1, 2, 3:
+      ...   q1.enqueue(i)
+      >>> q0 == q1
+      True
+      >>> list(q0)
+      [1, 2, 3]
+      >>> while q0:
+      ...   print(q0.dequeue())
+      1
+      2
+      3
+
+  """
 
   def __init__(self, iterable=None, maxlen=None):
     self.Q = deque(iterable, maxlen) if iterable is not None else deque(maxlen=maxlen)
@@ -107,8 +133,39 @@ class Queue:
 
 
 class Stack:
-  """A convenience implementation of a *stack* providing the usual ``push``, ``pop``, ``peek``, methods."""
+  """A convenience implementation of a *stack* providing the usual ``push``, ``pop``, ``peek``, methods.
 
+  An instance of this class can be created with an iterable and the final result will be
+  the as if the elements of the iterable were added to an empty stack. Similarly, iterating
+  a stack, returns (without consuming) the elements in the order they could be obtained by 
+  popping them.
+
+  Warnings:
+
+    The iteration order has changed in version 1.12, before it was reversed!
+
+
+  Example:
+
+    .. doctest::
+
+      >>> from liblet.utils import Stack
+      >>> s0 = Stack([1, 2, 3])
+      >>> s1 = Stack()
+      >>> for i in 1, 2, 3:
+      ...   s1.push(i)
+      >>> s0 == s1
+      True
+      >>> list(s0)
+      [3, 2, 1]
+      >>> while s0:
+      ...   print(s0.pop())
+      3
+      2
+      1
+    
+  """
+  
   def __init__(self, iterable=None, maxlen=None):
     self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen=maxlen)
 
@@ -129,10 +186,10 @@ class Stack:
     return Stack(self.S, self.S.maxlen)
 
   def __iter__(self):
-    return iter(self.S)
+    return reversed(self.S)
 
   def __reversed__(self):
-    return reversed(self.S)
+    return iter(self.S)
 
   def __repr__(self):
     el = ', '.join(map(repr, self.S))
