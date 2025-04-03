@@ -256,6 +256,9 @@ Rich display
 
    .. automethod:: from_automaton
 
+.. autoclass:: ComputationGraph
+
+.. autoclass:: Table
 
 Utilities and decorators
 ------------------------
@@ -264,7 +267,6 @@ Utilities and decorators
 
 .. autoclass:: Queue
 .. autoclass:: Stack
-.. autoclass:: Table
 .. autoclass:: AttrDict
 .. autofunction:: warn
 .. autofunction:: union_of
