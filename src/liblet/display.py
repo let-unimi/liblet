@@ -1,7 +1,7 @@
 import ast
 from abc import ABC, abstractmethod
 from collections import OrderedDict, defaultdict
-from collections.abc import Mapping, Set  # noqa: PYI025
+from collections.abc import Iterable, Mapping, Set  # noqa: PYI025
 from functools import partial
 from html import escape
 from itertools import chain, count, pairwise
@@ -741,15 +741,18 @@ class Table:
     return R
 
   def _repr_html_(self):
+    def _pre(s):
+      return (
+        '<pre>' + escape(letstr(s, self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)) + '</pre>'
+      )
+
     def _fmt(r, c):
       if c not in self.data[r]:
         return '&nbsp;'
       elem = self.data[r][c]
       if elem is None:
         return '&nbsp;'
-      return '<pre>{}</pre>'.format(
-        escape(letstr(elem, self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)),
-      )
+      return _pre(elem)
 
     if self.ndim == 2:  # noqa: PLR2004
       rows = list(self.data.keys())
@@ -758,34 +761,15 @@ class Table:
       cols = list(OrderedDict.fromkeys(chain.from_iterable(self.data[x].keys() for x in rows)))
       if self.fmt['cols_sort']:
         cols = sorted(cols)
-      head = (
-        '<tr><td>&nbsp;<th><pre>'
-        + '</pre><th><pre>'.join(
-          letstr(col, self.fmt['cols_sep'], sort=self.fmt['letstr_sort'], remove_outer=True) for col in cols
-        )
-        + '</pre>'
+      return liblet_table(
+        ['<tr><th>&nbsp;</th><th>' + '</th><th>'.join(_pre(col) for col in cols) + '</th></tr>']
+        + [f'<tr><th>{_pre(r)}</th><td>' + '</td><td>'.join(_fmt(r, c) for c in cols) + '</td></tr>' for r in rows],
+        True,
       )
-      body = '\n'.join(
-        '<tr><th><pre>{}<pre><td>'.format(
-          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True)
-        )
-        + '<td>'.join(_fmt(r, c) for c in cols)
-        for r in rows
-      )
-      return liblet_table(f'{head}\n{body}', True)
     rows = list(self.data.keys())
     if self.fmt['rows_sort']:
       rows = sorted(rows)
-    return liblet_table(
-      '\n'.join(
-        '<tr><th><pre>{}</pre><td><pre>{}</pre>'.format(
-          letstr(r, self.fmt['rows_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
-          letstr(self.data[r], self.fmt['elem_sep'], sort=self.fmt['letstr_sort'], remove_outer=True),
-        )
-        for r in rows
-      ),
-      True,
-    )
+    return liblet_table((f'<tr><th>{_pre(r)}</th><td>{_pre(self.data[r])}</td></tr>' for r in rows), True)
 
 
 class CYKTable(Table):
@@ -851,11 +835,10 @@ def embed_css(custom_css=CUSTOM_CSS):
 
 
 def liblet_table(content, as_str=False):
-  return (
-    f'<table class="liblet" data-quarto-disable-processing="true">{content}</table>'
-    if as_str
-    else HTML(f'<table class=liblet>{content}</table>')
-  )
+  if not isinstance(content, str) and isinstance(content, Iterable):
+    content = '\n'.join(str(line) for line in content)
+  html = f'<table class="liblet" data-quarto-disable-processing="true">{content}</table>'
+  return html if as_str else HTML(html)
 
 
 def resized_svg_repr(obj, width=800, height=600, as_str=False):
@@ -877,11 +860,11 @@ def side_by_side(*iterable):
 
 
 def iter2table(it):
-  return liblet_table('\n'.join(f'<tr><th>{n}<td><pre>{_escape(e)}</pre>' for n, e in enumerate(it)))
+  return liblet_table(f'<tr><th>{n}</th><td><pre>{_escape(e)}</pre></td></tr>' for n, e in enumerate(it))
 
 
 def dict2table(it):
-  return liblet_table('\n'.join(f'<tr><th>{k}<td><pre>{_escape(v)}</pre>' for k, v in it.items()))
+  return liblet_table(f'<tr><th>{k}</th><td><pre>{_escape(v)}</pre></td></tr>' for k, v in it.items())
 
 
 def dod2table(dod, sort=False, sep=None):
@@ -899,11 +882,13 @@ def dod2table(dod, sort=False, sep=None):
   cols = list(OrderedDict.fromkeys(chain.from_iterable(dod[x].keys() for x in dod)))
   if sort:
     cols = sorted(cols)
-  head = '<tr><td>&nbsp;<th>' + '<th>'.join(cols)
-  body = '\n'.join(
-    '<tr><th><pre>{}</pre><td>{}'.format(letstr(r, sep), '<td>'.join(fmt(r, c) for c in cols)) for r in rows
+  return liblet_table(
+    ['<tr><th>&nbsp;</th><th>' + '</th><th>'.join(cols) + '</th></tr>']
+    + [
+      f'<tr><th><pre>{letstr(r, sep)}</pre></th><td>' + '</td><td>'.join(fmt(r, c) for c in cols) + '</td></tr>'
+      for r in rows
+    ]
   )
-  return liblet_table(f'{head}\n{body}\n')
 
 
 def cyk2table(TABLE):
