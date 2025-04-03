@@ -8,32 +8,32 @@ CUSTOM_CSS = f"""
 @import url('https://fonts.googleapis.com/css2?family={"+".join(FONT_NAME.split())}&display=swap');
 
 pre, code {{
-  font-family: '{FONT_NAME}', monospace;
-  font-variant-ligatures: contextual common-ligatures;
-  line-height: 1;
+  font-family: '{FONT_NAME}', monospace !important;
+  font-variant-ligatures: contextual common-ligatures !important;
+  line-height: 1 !important;
 }}
 
 table.liblet {{
-  border-collapse: collapse;
-  font-family: '{FONT_NAME}', monospace;
-  font-variant-ligatures: contextual common-ligatures;
+  border-collapse: collapse !important;
+  font-family: '{FONT_NAME}', monospace !important;
+  font-variant-ligatures: contextual common-ligatures !important;
 }}
 
 table.liblet th,
 table.liblet td {{
-  border: 1px solid black;
-  padding: 0.5em;
-  text-align: left;
+  border: 1px solid black !important;
+  padding: 0.5em !important;
+  text-align: left !important;
 }}
 
 table.liblet th {{
-  font-weight: bold;
+  font-weight: bold !important;
 }}
 
 table.liblet th pre,
 table.liblet td pre {{
-  margin: 0;
-  font-family: inherit;
-  font-weight: inherit;
+  margin: 0 !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
 }}
 """
