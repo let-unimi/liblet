@@ -68,12 +68,12 @@ class UtilsTest(unittest.TestCase):
 
   def test_stack_iter(self):
     actual = list(Stack([1, 2, 3]))
-    expected = [1, 2, 3]
+    expected = [3, 2, 1]
     self.assertEqual(expected, actual)
 
   def test_stack_reversed(self):
     actual = list(reversed(Stack([1, 2, 3])))
-    expected = [3, 2, 1]
+    expected = [1, 2, 3]
     self.assertEqual(expected, actual)
 
   def test_empty_stack(self):
