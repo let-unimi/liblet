@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.12.2 (2025-04-09)
+--------------------
+
+- Un-deprecated first, we actually use it with frozenset that have no pop.
+
 v1.12.1 (2025-04-09)
 --------------------
 

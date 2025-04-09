@@ -22,8 +22,7 @@ def warn(msg):
 
 
 def first(s):
-  """Deprecated. Use set.pop"""
-  deprecation_warning('The function "first" is now deprecated, please use "pop" instead')
+  """Returns the first element of the iterable  or `None` if empty."""
   return next(iter(s)) if s else None
 
 
