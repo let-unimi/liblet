@@ -70,7 +70,7 @@ class Queue:
 
   An instance of this class can be created with an iterable and the final result will be
   the as if the elements of the iterable were added to an empty queue. Similarly, iterating
-  a queue, returns (without consuming) the elements in the order they could be obtained by 
+  a queue, returns (without consuming) the elements in the order they could be obtained by
   dequeuing them.
 
   Example:
@@ -137,7 +137,7 @@ class Stack:
 
   An instance of this class can be created with an iterable and the final result will be
   the as if the elements of the iterable were added to an empty stack. Similarly, iterating
-  a stack, returns (without consuming) the elements in the order they could be obtained by 
+  a stack, returns (without consuming) the elements in the order they could be obtained by
   popping them.
 
   Warnings:
@@ -163,9 +163,9 @@ class Stack:
       3
       2
       1
-    
+
   """
-  
+
   def __init__(self, iterable=None, maxlen=None):
     self.S = deque(iterable, maxlen) if iterable is not None else deque(maxlen=maxlen)
 
