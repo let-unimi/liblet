@@ -303,6 +303,21 @@ class Tree:
 
     return _to_tree(node)
 
+  @property
+  def child(self):
+    """Returns the only child of the tree, or raises an exception.
+
+    Returns:
+      The first child of the tree.
+    Raises:
+      ValueError: if the tree has no children or more than one child.
+    """
+    if len(self.children) == 1:
+      return self.children[0]
+    if len(self.children) == 0:
+      raise ValueError('No children available')
+    raise ValueError('More than one child present')
+
   def to_lol(self):
     def walk(T):
       return (T.root, *tuple(walk(child) for child in T.children))
