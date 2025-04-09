@@ -666,7 +666,7 @@ class Table:
 
   def __init__(self, ndim=1, element=lambda: None, no_reassign=False, fmt=None):
     if ndim not in {1, 2}:
-      raise ValueError('The ndim must be 1, or 2.')
+      raise ValueError('The ndim must be 1, or 2')
     self.ndim = ndim
     if ndim == 1:
       self.data = defaultdict(element)
@@ -801,7 +801,7 @@ class CYKTable(Table):
 
 def pyast2tree(node):
   """Deprecated. Use Tree.from_pyast instead."""
-  deprecation_warning('The function "pyast2tree" has been absorbed in Tree (as from_pyast factory method).')
+  deprecation_warning('The function "pyast2tree" has been absorbed in Tree (as from_pyast factory method)')
   return (
     Tree(
       {'type': 'ast', 'name': node.__class__.__name__},
@@ -893,7 +893,7 @@ def dod2table(dod, sort=False, sep=None):
 
 def cyk2table(TABLE):
   """Deprecated. Use CYKTable instead."""
-  deprecation_warning('The function "cyk2table" has been absorbed in CYKTable.')
+  deprecation_warning('The function "cyk2table" has been absorbed in CYKTable')
   t = CYKTable()
   for il, v in TABLE.items():
     t[il] = v
@@ -902,7 +902,7 @@ def cyk2table(TABLE):
 
 def prods2table(G):
   """Deprecated. Use Productions instead"""
-  deprecation_warning('The function "prods2table" has been absorbed in Productions.')
+  deprecation_warning('The function "prods2table" has been absorbed in Productions')
   return HTML(Productions(G.P)._repr_html_())
 
 

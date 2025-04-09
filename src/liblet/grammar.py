@@ -52,16 +52,16 @@ class Production:
     elif isinstance(lhs, list | tuple) and lhs and all(isinstance(_, str) and _ for _ in lhs):
       self.lhs = tuple(lhs)
     else:
-      raise ValueError('The left-hand side is not a nonempty str, nor a tuple (or list) of nonempty str.')
+      raise ValueError('The left-hand side is not a nonempty str, nor a tuple (or list) of nonempty str')
     if isinstance(rhs, list | tuple):
       if not rhs:
         self.rhs = (ε,)
       elif all(isinstance(_, str) and _ for _ in rhs):
         self.rhs = tuple(rhs)
       else:
-        raise ValueError('The right-hand side is not an empty tuple (or list), or a tuple (or list) of nonempty str.')
+        raise ValueError('The right-hand side is not an empty tuple (or list), or a tuple (or list) of nonempty str')
     else:
-      raise ValueError('The right-hand side is not a tuple (or list).')  # noqa: TRY004
+      raise ValueError('The right-hand side is not a tuple (or list)')  # noqa: TRY004
     if ε in self.rhs and len(self.rhs) != 1:
       raise ValueError('The right-hand side contains ε but has more than one symbol')
 
@@ -91,7 +91,7 @@ class Production:
   @classmethod
   def from_string(cls, prods, context_free=True):  # pragma: no cover
     """Deprecated. Use Productions.from_string."""
-    deprecation_warning('The function "from_string" has been moved to Productions.')
+    deprecation_warning('The function "from_string" has been moved to Productions')
     return Productions.from_string(prods, context_free)
 
   @classmethod
@@ -244,9 +244,9 @@ class Item(Production):
 
   def __init__(self, lhs, rhs, pos=0):
     if not isinstance(lhs, str) and lhs:
-      raise ValueError('The left-hand side must be a str.')
+      raise ValueError('The left-hand side must be a str')
     if pos < 0 or pos > len(rhs):
-      raise ValueError('The dot position is invalid.')
+      raise ValueError('The dot position is invalid')
     self.pos = pos
     super().__init__(lhs, rhs)
 
@@ -318,11 +318,11 @@ class Grammar:
         f'The set of terminals and nonterminals are not disjoint, but have {set(self.N & self.T)} in common.'
       )
     if self.S not in self.N:
-      raise ValueError('The start symbol is not a nonterminal.')
+      raise ValueError('The start symbol is not a nonterminal')
     if self.is_context_free:
       bad_prods = tuple(P for P in self.P if P.lhs not in self.N)
       if bad_prods:
-        raise ValueError(f'The following productions have a left-hand side that is not a nonterminal: {bad_prods}.')
+        raise ValueError(f'The following productions have a left-hand side that is not a nonterminal: {bad_prods}')
     bad_prods = tuple(P for P in self.P if not (set(P.as_type0().lhs) | set(P.rhs)).issubset(self.N | self.T | {ε}))
     if bad_prods:
       raise ValueError(
@@ -374,7 +374,7 @@ class Grammar:
       T = symbols - N - {ε}
     G = cls(N, T, P, S)
     if context_free and not G.is_context_free:  # pragma: no cover
-      raise ValueError('The resulting grammar is not context-free, even if so requested.')
+      raise ValueError('The resulting grammar is not context-free, even if so requested')
     return G
 
   def alternatives(self, N):
@@ -404,7 +404,7 @@ class Grammar:
       ValueError: in case the *start symbol* is not among the one to keep.
     """
     if self.S not in symbols:
-      raise ValueError('The start symbol must be present among the symbols to keep.')
+      raise ValueError('The start symbol must be present among the symbols to keep')
     return Grammar(self.N & symbols, self.T & symbols, (P for P in self.P if ({P.lhs} | set(P.rhs)) <= symbols), self.S)
 
 
@@ -551,7 +551,7 @@ class Derivation:
       prod = self.__ensure_prod_idx__(prod)
       P = derivation.G.P[prod].as_type0()
       if sf[pos : pos + len(P.lhs)] != P.lhs:
-        raise ValueError(f'Cannot apply {P} at position {pos} of {HAIR_SPACE.join(sf)}.')
+        raise ValueError(f'Cannot apply {P} at position {pos} of {HAIR_SPACE.join(sf)}')
       copy = Derivation(derivation.G, self.start)
       copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs) :] if _ != ε)
       copy._steps = (*derivation._steps, (prod, pos))

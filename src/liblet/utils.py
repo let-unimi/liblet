@@ -23,13 +23,13 @@ def warn(msg):
 
 def first(s):
   """Deprecated. Use set.pop"""
-  deprecation_warning('The function "first" is now deprecated, please use "pop" instead.')
+  deprecation_warning('The function "first" is now deprecated, please use "pop" instead')
   return next(iter(s)) if s else None
 
 
 def peek(s):  # pragma: nocover
   """Deprecated. Use first"""
-  deprecation_warning('The function "peek" is now deprecated, please use "first" instead.')
+  deprecation_warning('The function "peek" is now deprecated, please use "first" instead')
   return first(s)
 
 
@@ -104,7 +104,7 @@ class Queue:
     return self.Q.popleft()
 
   def copy(self):  # pragma: nocover
-    deprecation_warning('The copy method is deprecated, use the copy module.')
+    deprecation_warning('The copy method is deprecated, use the copy module')
     return self.__copy__()
 
   def __copy__(self):
@@ -179,7 +179,7 @@ class Stack:
     return self.S.pop()
 
   def copy(self):  # pragma: nocover
-    deprecation_warning('The copy method is deprecated, use the copy module.')
+    deprecation_warning('The copy method is deprecated, use the copy module')
     return self.__copy__()
 
   def __copy__(self):

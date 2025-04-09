@@ -134,18 +134,18 @@ class Automaton:
     self.F = set(F)
     if self.N & self.T:
       raise ValueError(
-        f'The set of states and input symbols are not disjoint, but have {letstr(set(self.N & self.T))} in common.'
+        f'The set of states and input symbols are not disjoint, but have {letstr(set(self.N & self.T))} in common'
       )
     if self.q0 not in self.N:
-      raise ValueError(f'The specified q0 ({letstr(q0)}) is not a state.')
+      raise ValueError(f'The specified q0 ({letstr(q0)}) is not a state')
     if not self.F <= self.N:
-      raise ValueError(f'The accepting states {letstr(self.F - self.N)} in F are not states.')
+      raise ValueError(f'The accepting states {letstr(self.F - self.N)} in F are not states')
     bad_trans = tuple(
       t for t in transitions if t.frm not in self.N or t.to not in self.N or t.label not in (self.T | {ε})
     )
     if bad_trans:
       raise ValueError(
-        f'The following transitions contain states or symbols that are neither states nor input symbols: {bad_trans}.'
+        f'The following transitions contain states or symbols that are neither states nor input symbols: {bad_trans}'
       )
 
   def δ(self, X, x):
@@ -284,7 +284,7 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
   def __init__(self, G, word=None):
     super().__init__(G)
     if HASH in (G.N | G.T):
-      raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals.')
+      raise ValueError('The ' + HASH + ' sign must not belong to terminal, or nonterminals')
     if word is not None:
       self.tape = (*tuple(word), HASH)
       self.stack = Stack([HASH, G.S])
@@ -311,7 +311,7 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
       if self.top() != ε:
         c.head_pos += 1
       return c
-    raise ValueError('The top of the stack and tape head symbol are not equal.')
+    raise ValueError('The top of the stack and tape head symbol are not equal')
 
   def predict(self, P):
     """Performs a prediction move, given the specified production.
@@ -334,7 +334,7 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
         for X in reversed(P.rhs):
           c.stack.push(X)
       return c
-    raise ValueError('The top of the stack does not correspond to the production lhs.')
+    raise ValueError('The top of the stack does not correspond to the production lhs')
 
 
 class BottomUpInstantaneousDescription(InstantaneousDescription):
@@ -376,7 +376,7 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
         c.stack.push(Tree(c.head()))
         c.head_pos += 1
       else:
-        raise ValueError('The head is already at the end of the tape.')
+        raise ValueError('The head is already at the end of the tape')
     else:
       c.stack.push(Tree(ε))
     return c
@@ -392,13 +392,13 @@ class BottomUpInstantaneousDescription(InstantaneousDescription):
       A new updated instantaneous description.
     """
     if P not in self.G.P:
-      raise ValueError('The production does not belong to the grammar.')
+      raise ValueError('The production does not belong to the grammar')
     if not self.stack:
-      raise ValueError('The stack is empty.')
+      raise ValueError('The stack is empty')
     c = copy(self)
     children = [c.stack.pop() for _ in P.rhs][::-1]
     if tuple(t.root for t in children) != P.rhs:
-      raise ValueError('The rhs does not correspond to the symbols on the stack.')
+      raise ValueError('The rhs does not correspond to the symbols on the stack')
     c.stack.push(Tree(P.lhs, children))
     c.steps = (P, *c.steps)
     return c
