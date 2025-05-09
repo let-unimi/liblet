@@ -20,6 +20,7 @@ from antlr4.tree.Tree import ParseTreeVisitor
 
 from liblet.display import Tree
 from liblet.utils import warn
+from collections.abc import Iterable
 
 if 'READTHEDOCS' not in environ:  # pragma: nocover
   if 'ANTLR4_JAR' not in environ:
@@ -272,7 +273,9 @@ class AnnotatedTreeWalker:
   invoked on an annotated tree; this will lead to the recursive invocation of
   the registered (and the catchall) functions on subtrees. Such functions are
   invoked with the object as the first argument (and the subtree as second); in this
-  way they can recurse on their subtrees as needed.
+  way they can recurse on their subtrees as needed. If the subtree is actually
+  a list of trees, the function will be invoked on each of them (and the
+  results will be returned as a tuple).
 
   Args:
     key (str): the key that will be looked up in the node :obj:`dict` to
@@ -379,10 +382,13 @@ class AnnotatedTreeWalker:
       name = name[:-1]
     self.dispatch_table[name] = func
 
-  def __call__(self, tree):
-    key = tree.root[self.key]
-    return (
-      self.dispatch_table[key](self.__call__, tree)
-      if key in self.dispatch_table
-      else self.catchall_func(self.__call__, tree)
-    )
+  def __call__(self, tree_or_trees):
+    if isinstance(tree_or_trees, Tree):
+      tree = tree_or_trees
+      visitor = self.dispatch_table.get(tree.root[self.key], self.catchall_func)
+      return visitor(self.__call__, tree)
+    elif isinstance(tree_or_trees, Iterable):
+      trees = list(tree_or_trees)
+      return tuple(self.__call__(t) for t in trees)
+    else:
+      raise TypeError(f'Expected Tree or Iterable, got {type(tree_or_trees)}')
