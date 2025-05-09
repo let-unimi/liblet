@@ -1,4 +1,4 @@
-__version__ = '1.12.2'
+__version__ = '1.13.0'
 
 from liblet.antlr import ANTLR, AnnotatedTreeWalker
 from liblet.automaton import (
