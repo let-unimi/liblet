@@ -318,9 +318,23 @@ class Tree:
       raise ValueError('No children available')
     raise ValueError('More than one child present')
 
-  def to_lol(self):
+  def to_lol(self, undict=False):
+    """
+    Converts the tree to a *list of lists*.
+
+    Args:
+      undict (bool): if True and the root is a Mapping, it will be converted to a sorted tuple of key-value pairs.
+
+    Returns:
+      A list of lists representing the tree.
+    """
+
     def walk(T):
-      return (T.root, *tuple(walk(child) for child in T.children))
+      if undict and isinstance(T.root, Mapping):
+        root = tuple((k, v) for k, v in sorted(T.root.items()) if not k.startswith('_thread_'))
+      else:
+        root = T.root
+      return (root, *tuple(walk(child) for child in T.children))
 
     return walk(self)
 
@@ -334,7 +348,7 @@ class Tree:
     return isinstance(other, Tree) and self.to_lol() == other.to_lol()
 
   def __hash__(self):
-    return hash(self.to_lol())
+    return hash(self.to_lol(True))
 
   def _gv_graph_(self):
     G = GVWrapper(
@@ -392,19 +406,23 @@ class Tree:
 
     for node in threads:
       if 'type' in node.root and node.root['type'] in ('<BEGIN>', '<JOIN>', '<END>'):
-        G.node((node.root, node), gv_args=node_args)
+        G.node((node.root, node.__instance_count), gv_args=node_args)
 
     for node, info in threads.items():
       for nxt in info:
         if nxt == 'next':
-          G.edge((node.root, node), (info[nxt].root, info[nxt]), gv_args=edge_args)
+          G.edge((node.root, node.__instance_count), (info[nxt].root, info[nxt].__instance_count), gv_args=edge_args)
         else:
           G.node(
-            (nxt, (1, node)),
+            (nxt, (1, node.__instance_count)),
             gv_args={'color': 'red', 'fontcolor': 'red', 'fontsize': '10', 'width': '.04', 'height': '.04'},
           )
-          G.edge((node.root, node), (nxt, (1, node)), gv_args=edge_args | {'arrowhead': 'none'})
-          G.edge((nxt, (1, node)), (info[nxt].root, info[nxt]), gv_args=edge_args)
+          G.edge(
+            (node.root, node.__instance_count),
+            (nxt, (1, node.__instance_count)),
+            gv_args=edge_args | {'arrowhead': 'none'},
+          )
+          G.edge((nxt, (1, node.__instance_count)), (info[nxt].root, info[nxt].__instance_count), gv_args=edge_args)
 
     return G
 

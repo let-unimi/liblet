@@ -1,11 +1,18 @@
 Changelog
 =========
 
+v1.13.1 (2025-05-22)
+--------------------
+
+- Improved Tree.to_lol so it avoids _thread_ attributes.
+- Fixed Tree.__hash__ and Tree.__eq__ for annotated trees.
+- Fixed Tree.with_threads.
+
 v1.13.0 (2025-04-10)
 --------------------
 
-- AnnotatedTreeWalker vist accepts an Itrable, now
-  visit(trees) returns tuple(vist(tree) for tree in trees)
+- AnnotatedTreeWalker visit accepts an Iterable: now
+  visit(trees) returns tuple(visit(tree) for tree in trees).
 
 v1.12.2 (2025-04-09)
 --------------------

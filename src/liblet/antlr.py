@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from contextlib import redirect_stderr
 from importlib import util as imputil
 from io import StringIO
@@ -20,7 +21,6 @@ from antlr4.tree.Tree import ParseTreeVisitor
 
 from liblet.display import Tree
 from liblet.utils import warn
-from collections.abc import Iterable
 
 if 'READTHEDOCS' not in environ:  # pragma: nocover
   if 'ANTLR4_JAR' not in environ:
@@ -387,8 +387,7 @@ class AnnotatedTreeWalker:
       tree = tree_or_trees
       visitor = self.dispatch_table.get(tree.root[self.key], self.catchall_func)
       return visitor(self.__call__, tree)
-    elif isinstance(tree_or_trees, Iterable):
+    if isinstance(tree_or_trees, Iterable):
       trees = list(tree_or_trees)
       return tuple(self.__call__(t) for t in trees)
-    else:
-      raise TypeError(f'Expected Tree or Iterable, got {type(tree_or_trees)}')
+    raise TypeError(f'Expected Tree or Iterable, got {type(tree_or_trees)}')
