@@ -384,18 +384,32 @@ class Tree:
   def with_threads(self, threads):
     """Draws a *threaded* and *annotated* tree (as a graph).
 
-    Tree *threads* are arcs among tree nodes (or special nodes), more precisely,
-    a :obj:`dict` mapping annotated tree *source* nodes to a :obj:`dict` whose
-    values are *destinations* tree nodes; arcs are represented as dotted arrows.
+    Tree *threads* are arcs among tree nodes (or special nodes).
+
+    Such threads can be represented in a compact way as a :obj:`dict` mapping
+    annotated tree *source* nodes to a :obj:`dict` whose values are *destinations*
+    tree nodes; arcs are represented as dotted arrows.
+
+    A more verbose is also possible: a :obj:`list` of annotated tree nodes where
+    some attributes begin with ``'_thread_'`` and contain the *destination*
+    tree nodes.
+
     Special nodes are: the *begin* tree (an annotated tree whose root contains
     the ``(type, <BEGIN>)`` item), the *join* trees (annotated trees whose root
     contains the ``(type, <JOIN>)`` item) and the *end* node  (annotated trees
     whose root contains the ``(type, <END>)`` item); such special nodes are
     represented as red dots.
 
-
-    Args: threads (dict): a dictionary representing the threads.
+    Args: threads (dict|list): a compact, or verbose, representation of the threads.
     """
+
+    if isinstance(threads, list):
+      threads = {
+        source: {
+          name.removeprefix('_thread_'): dest for name, dest in source.root.items() if name.startswith('_thread_')
+        }
+        for source in threads
+      }
 
     G = self._gv_graph_()
     del G.wrapped_graph().edge_attr['dir']

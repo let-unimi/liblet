@@ -1,6 +1,13 @@
 Changelog
 =========
 
+
+v1.13.2 (2025-05-22)
+--------------------
+
+- Tree.with_threads accepts also a list (of threads), instead
+  of the more compact dictionary.
+
 v1.13.1 (2025-05-22)
 --------------------
 
