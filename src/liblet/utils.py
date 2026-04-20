@@ -2,7 +2,7 @@ from collections import deque
 from collections.abc import MutableMapping, Set  #  noqa: PYI025
 from functools import partial, reduce
 from sys import stderr
-from warnings import warn as _warn
+from warnings import warn as swarn, filterwarnings
 
 
 def suffixes(α):
@@ -11,9 +11,14 @@ def suffixes(α):
     yield α[i:]
 
 
+def disable_warnings(category=ImportWarning, module='liblet'):
+  """Disables warnings (by default ImportWarning from liblet)."""
+  filterwarnings('ignore', category=category, module=module)
+
+
 def deprecation_warning(msg):
   """Emits a *deprecation* warning."""
-  _warn(msg, DeprecationWarning, stacklevel=2)
+  swarn(msg, DeprecationWarning, stacklevel=2)
 
 
 def warn(msg):

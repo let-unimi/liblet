@@ -3,9 +3,11 @@ from contextlib import redirect_stderr
 from importlib import util as imputil
 from io import StringIO
 from marshal import dumps, loads
+from glob import glob
 from os import environ
-from os.path import exists
+from os.path import abspath, basename, exists
 from os.path import join as pjoin
+from warnings import warn as swarn
 from re import findall
 from subprocess import run
 from sys import modules
@@ -24,7 +26,13 @@ from liblet.utils import warn
 
 if 'READTHEDOCS' not in environ:  # pragma: nocover
   if 'ANTLR4_JAR' not in environ:
-    raise ImportError('Please define the ANTLR4_JAR environment variable')
+    jars = glob(pjoin('.', 'jars', 'antlr-*-complete.jar'))
+    if len(jars) == 1:
+      jar = abspath(jars[0])
+      environ['ANTLR4_JAR'] = jar
+      swarn(f'Inferred ANTLR4_JAR to be {jar}', ImportWarning, stacklevel=2)
+    else:
+      raise ImportError('Please define the ANTLR4_JAR environment variable')
   if not exists(environ['ANTLR4_JAR']):
     raise ImportError(
       f'The ANTLR4_JAR environment variable points to "{environ["ANTLR4_JAR"]}" that is not an existing file'
