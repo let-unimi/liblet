@@ -68,7 +68,6 @@ class Transition:
       self.to = to
     else:
       raise ValueError('The to state is not a nonempty string, or a nonempty set of nonempty strings/items')
-    self.to = to
 
   def __lt__(self, other):
     if not isinstance(other, Transition):
