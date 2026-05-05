@@ -552,7 +552,7 @@ class Derivation:
       P = derivation.G.P[prod].as_type0()
       if sf[pos : pos + len(P.lhs)] != P.lhs:
         raise ValueError(f'Cannot apply {P} at position {pos} of {HAIR_SPACE.join(sf)}')
-      copy = Derivation(derivation.G, self.start)
+      copy = Derivation(derivation.G, derivation.start)
       copy._sf = tuple(_ for _ in sf[:pos] + P.rhs + sf[pos + len(P.lhs) :] if _ != ε)
       copy._steps = (*derivation._steps, (prod, pos))
       copy._repr = derivation._repr + ' -> ' + HAIR_SPACE.join(copy._sf)
