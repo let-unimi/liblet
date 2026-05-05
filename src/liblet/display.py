@@ -89,8 +89,8 @@ def make_node_wrapper(
     def __new__(cls, obj):
       ehw = EHW(obj)
       if ehw not in cls._wn2gid:
-        intsance = cls._wn2gid[ehw] = super().__new__(cls)
-        intsance._gid = f'N{len(cls._wn2gid)}'
+        instance = cls._wn2gid[ehw] = super().__new__(cls)
+        instance._gid = f'N{len(cls._wn2gid)}'
       return cls._wn2gid[ehw]
 
     def gid(self):
