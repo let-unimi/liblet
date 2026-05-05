@@ -443,7 +443,7 @@ class Derivation:
   def __repr__(self):
     return self._repr
 
-  def __ensure_prod_idx__(self, prod):  # pragma: no cover
+  def _ensure_prod_idx(self, prod):  # pragma: no cover
     if isinstance(prod, int):
       if 0 <= prod < len(self.G.P):
         return prod
@@ -470,7 +470,7 @@ class Derivation:
     """
 
     def _leftmost(derivation, prod):
-      prod = self.__ensure_prod_idx__(prod)
+      prod = self._ensure_prod_idx(prod)
       for pos, symbol in enumerate(derivation._sf):
         if symbol in derivation.G.N:
           if derivation.G.P[prod].lhs == symbol:
@@ -508,7 +508,7 @@ class Derivation:
     """
 
     def _rightmost(derivation, prod):
-      prod = self.__ensure_prod_idx__(prod)
+      prod = self._ensure_prod_idx(prod)
       for pos, symbol in list(enumerate(derivation._sf))[::-1]:
         if symbol in derivation.G.N:
           if derivation.G.P[prod].lhs == symbol:
@@ -548,7 +548,7 @@ class Derivation:
 
     def _step(derivation, prod, pos):
       sf = derivation._sf
-      prod = self.__ensure_prod_idx__(prod)
+      prod = self._ensure_prod_idx(prod)
       P = derivation.G.P[prod].as_type0()
       if sf[pos : pos + len(P.lhs)] != P.lhs:
         raise ValueError(f'Cannot apply {P} at position {pos} of {HAIR_SPACE.join(sf)}')
