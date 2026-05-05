@@ -14,7 +14,8 @@ class TestGenerationAndParsing(unittest.TestCase):
 
   def test_invalid_grammar(self):
     with unittest.mock.patch('liblet.antlr.warn') as mock_warn:
-      ANTLR('grammar A; a: rule;')
+      with self.assertRaisesRegex(ValueError, 'ANTLR failed to compile grammar "A"'):
+        ANTLR('grammar A; a: rule;')
       args, kwargs = mock_warn.call_args
     self.assertTrue('reference to undefined rule' in args[0])
 

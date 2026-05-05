@@ -84,7 +84,7 @@ class ANTLR:
       if stderr:
         warn(stderr)
       if res.returncode:
-        return
+        raise ValueError(f'ANTLR failed to compile grammar "{name}"')
 
       for suffix in (
         'Lexer',
