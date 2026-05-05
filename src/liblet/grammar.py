@@ -130,7 +130,7 @@ class Production:
     """  # noqa: RUF002
     conditions = []
     if 'lhs' in kwargs:
-      conditions.append(lambda P: P.lhs == kwargs['lhs'] if isinstance(kwargs['lhs'], str) else tuple(kwargs['lhs']))
+      conditions.append(lambda P: P.lhs == (kwargs['lhs'] if isinstance(kwargs['lhs'], str) else tuple(kwargs['lhs'])))
     if 'rhs' in kwargs:
       conditions.append(lambda P: P.rhs == tuple(kwargs['rhs']))
     if 'rhs_len' in kwargs:
