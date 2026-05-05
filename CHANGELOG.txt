@@ -1,6 +1,25 @@
 Changelog
 =========
 
+v1.14.0 (2026-05-05)
+--------------------
+
+- Update Python version range to 3.12-3.14.
+- Update ReadTheDocs Python version to 3.12.
+- Bump development status classifier from Alpha to Beta.
+- Warn in AnnotatedTreeWalker.load docstring about marshal security.
+- Note show_calls is not thread-safe in docstring.
+- Fix Derivation._step to use derivation.start instead of self.start.
+- Rename __ensure_prod_idx__ to _ensure_prod_idx (non-standard dunder)
+- Fix docstring typos in grammar.py and automaton.py.
+- Fix Item.__init__ lhs validation for falsy non-string values.
+- Raise ValueError on ANTLR compilation failure.
+- Remove Table.__hash__: defaultdict is not hashable.
+- Fix intsance typo in make_node_wrapper.
+- Fix redundant self.to assignment in Transition.__init__
+- Fix Production.such_that lhs predicate for non-string arguments.
+- Added ANTLR4_JAR guessing from cwd.
+- Updated CSS
 
 v1.13.2 (2025-05-22)
 --------------------
