@@ -61,7 +61,10 @@ def show_calls(show_retval=False):
 
   Args:
     f: the function to wrap in the closure computation.
-    show_retval: wether to show also the return values.
+    show_retval: whether to show also the return values.
+
+  Warning:
+    The call-depth counter is stored as a function attribute and is not thread-safe.
 
   Example:
 
