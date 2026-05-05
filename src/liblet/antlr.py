@@ -356,7 +356,9 @@ class AnnotatedTreeWalker:
       path (str): the path of the file where the walker was saved.
       globals_dict (dict): the globals that will be used by the functions registered in the walker.
 
-
+    Warning:
+      This method uses :mod:`marshal` to deserialize Python code objects. Do not load files
+      from untrusted sources, as malicious content could execute arbitrary code.
     """
     if globals_dict is None:
       globals_dict = globals()
