@@ -31,6 +31,18 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel: true
+
+  coveralls-finish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: ${{ always() && needs.test.result != 'cancelled' }}
+    steps:
+      - name: Close parallel build in Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
 
   release:
     runs-on: ubuntu-latest
