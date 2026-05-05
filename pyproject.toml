@@ -19,7 +19,7 @@ keywords = [
   "tree"
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Framework :: IPython",
   "Framework :: Jupyter",
   "Intended Audience :: Developers",
