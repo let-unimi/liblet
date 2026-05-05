@@ -763,9 +763,6 @@ class Table:
       return False
     return self.data == other.data
 
-  def __hash__(self):
-    return hash(self.data)
-
   def restrict_to(self, rows=None, cols=None):
     if rows is None:
       rows = list(self.data.keys())
