@@ -75,6 +75,10 @@ class TestGrammar(unittest.TestCase):
     with self.assertRaises(ValueError):
       Item(1, ['a'])
 
+  def test_item_wrong_lhs_none(self):
+    with self.assertRaisesRegex(ValueError, 'nonempty str'):
+      Item(None, ['a'])
+
   def test_item_neg_pos(self):
     with self.assertRaises(ValueError):
       Item('A', ('B',), -1)

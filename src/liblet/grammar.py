@@ -243,8 +243,8 @@ class Item(Production):
   __slots__ = ('pos',)
 
   def __init__(self, lhs, rhs, pos=0):
-    if not isinstance(lhs, str) and lhs:
-      raise ValueError('The left-hand side must be a str')
+    if not (isinstance(lhs, str) and lhs):
+      raise ValueError('The left-hand side must be a nonempty str')
     if pos < 0 or pos > len(rhs):
       raise ValueError('The dot position is invalid')
     self.pos = pos
