@@ -101,13 +101,13 @@ class Production:
     This method returns a predicate that can be conveniently used with :func:`filter` to
 
     Args:
-      lhs: returns a predicate that is ``True`` weather the production left-hand side is equal to the argument value.
-      rhs: returns a predicate that is ``True`` weather the production right-hand side is equal to the argument value.
-      rhs_len: returns a predicate that is ``True`` weather the length of the production right-hand side is equal to the argument value.
-      rhs_is_suffix_of: returns a predicate that is ``True`` weather the the argument value ends with the production.
+      lhs: returns a predicate that is ``True`` whether the production left-hand side is equal to the argument value.
+      rhs: returns a predicate that is ``True`` whether the production right-hand side is equal to the argument value.
+      rhs_len: returns a predicate that is ``True`` whether the length of the production right-hand side is equal to the argument value.
+      rhs_is_suffix_of: returns a predicate that is ``True`` whether the the argument value ends with the production.
 
     Returns:
-      A predicate (that is a one-argument function that returns ``True`` or ``False``) that is ``True`` weather the production
+      A predicate (that is a one-argument function that returns ``True`` or ``False``) that is ``True`` whether the production
       given as argument satisfies all the predicates given by the named arguments.
 
     Example:

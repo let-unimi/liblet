@@ -93,7 +93,7 @@ class Transition:
     """Builds a tuple of *transitions* obtained from the given string.
 
     Args:
-      trasitions (str): a string representing transitions.
+      transitions (str): a string representing transitions.
 
     The string must be a sequence of lines of the form::
 
@@ -118,7 +118,7 @@ class Automaton:
   Args:
     N (set): The states of the automaton.
     T (set): The transition labels.
-    transitions (:obj:`set` of :class:`Transition`): The transition of the automata.
+    transitions (:obj:`set` of :class:`Transition`): The transitions of the automaton.
     q0: The starting state of the automaton.
     F (set): The set of *final* states.
   """
@@ -216,7 +216,7 @@ class Automaton:
 class InstantaneousDescription:
   """An Instantaneous Description.
 
-  This class represents a *instantaneous description* of a *pushdown* auotmata. Even though
+  This class represents a *instantaneous description* of a *pushdown* automata. Even though
   this class remembers the derivation steps, two instantaneous descriptions are considered equal
   if they have the same grammar, tape, stack, and head position (regardless of the steps).
 
@@ -273,7 +273,7 @@ class InstantaneousDescription:
 class TopDownInstantaneousDescription(InstantaneousDescription):
   """An Instantaneous Description for a *top-down* parsing automaton.
 
-  This class represents a *instantaneous description* of a *pushdown* auotmata.
+  This class represents a *instantaneous description* of a *pushdown* automata.
 
   Args:
     G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
@@ -339,7 +339,7 @@ class TopDownInstantaneousDescription(InstantaneousDescription):
 class BottomUpInstantaneousDescription(InstantaneousDescription):
   """An Instantaneous Description for a *bottom-up* parsing automaton.
 
-  This class represents a *instantaneous description* of a *pushdown* auotmata.
+  This class represents a *instantaneous description* of a *pushdown* automata.
 
   Args:
     G (:class:`~liblet.grammar.Grammar`): The :class:`~liblet.grammar.Grammar` related to the automaton.
