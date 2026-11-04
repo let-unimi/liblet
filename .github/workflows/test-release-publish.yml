@@ -66,6 +66,6 @@ jobs:
       - name: Build the binary wheel and source tarball
         run: hatch build
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.13.0
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
